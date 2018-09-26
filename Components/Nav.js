@@ -24,7 +24,7 @@ export default class Nav extends React.Component {
   render() {
     return (
       <View style={styles.nav}>
-        <NavButton text={text.nav1} bgColor={bgColor.top} />
+        <NavButton changePage={this.props.changePage} text={text.nav1} bgColor={bgColor.top} />
         <NavButton text={text.nav2} bgColor={bgColor.mid} />
         <NavButton text={text.nav3} bgColor={bgColor.bot} />
       </View>
