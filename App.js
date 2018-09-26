@@ -2,6 +2,8 @@ import React from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import Nav from './Components/Nav';
 import Home from './Components/Home';
+import YourCourses from './Components/YourCourses';
+import YourMatches from './Components/YourMatches';
 import Test from './Components/Test';
 
 export default class App extends React.Component {
@@ -13,14 +15,15 @@ export default class App extends React.Component {
   }
 
   changePage = page => {
-    console.log('heres page: ', page);
-    // this.setState({ page });
+    this.setState({ page });
   }
 
   render() {
 
     const pages = {
       home: <Home onPress={() => this.changePage('test')} />,
+      yourCourses: <YourCourses />,
+      yourMatches: <YourMatches />,
       test: <Test />
     }
 

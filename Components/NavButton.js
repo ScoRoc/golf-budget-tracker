@@ -1,12 +1,17 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableHighlight } from 'react-native';
 
 export default class NavButton extends React.Component {
   render() {
     return (
-      <View onPress={() => this.props.changePage('test')} style={[styles.navButton, this.props.bgColor]}>
-          <Text>{this.props.text}</Text>
-      </View>
+      <TouchableHighlight
+        onPress={() => this.props.changePage(this.props.nav.page)}
+        style={[styles.navButton, this.props.bgColor]}
+        underlayColor='rgb(102, 51, 153)'
+        // underlayColor='#b1be2e'
+        >
+          <Text>{this.props.nav.text}</Text>
+      </TouchableHighlight>
     );
   }
 }
