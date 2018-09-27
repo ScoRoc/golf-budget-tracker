@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, TextInput, View, Button } from 'react-native';
+import { AsyncStorage, StyleSheet, Text, TextInput, View, Button } from 'react-native';
 import axios from 'axios';
 
 class Signup extends Component {
@@ -20,7 +20,7 @@ class Signup extends Component {
       password: this.state.password
     }).then( result => {
       console.log(result.data) // result is result from back end responding to post request and .data is where axios stores the returned data
-      localStorage.setItem('mernToken', result.data.token) // change 'mernToken' to your app name or something useful
+      AsyncStorage.setItem('golf-budget-tracker-token', result.data.token) // change 'mernToken' to your app name or something useful
       this.props.liftToken(result.data)
     })
   }

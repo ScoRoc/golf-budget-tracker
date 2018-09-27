@@ -1,6 +1,7 @@
 import React from 'react';
-import { AsyncStorage, StyleSheet, Text, View, ScrollView } from 'react-native';
+import { AsyncStorage, TouchableHighlight, StyleSheet, Text, View, ScrollView } from 'react-native';
 import axios from 'axios';
+import Header from './Components/Header';
 import Nav from './Components/Nav';
 import Home from './Components/Home';
 import YourCourses from './Components/YourCourses';
@@ -67,10 +68,7 @@ export default class App extends React.Component {
     return (
       <View style={styles.app}>
 
-        <View style={styles.top}>
-          <Text>Top asd asd asd asd ads asd asd asd dsa </Text>
-          <Text>Hello User: {userName}</Text>
-        </View>
+        <Header userName={userName} logout={this.logout} />
 
         {pages[this.state.page]}
 
@@ -87,11 +85,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#84d',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  top: {
-    paddingTop: 50,
-    height: 80,
-    alignSelf: 'stretch',
-    backgroundColor: '#5dd'
   }
 });
