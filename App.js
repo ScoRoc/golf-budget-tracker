@@ -1,16 +1,19 @@
 import React from 'react';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { AsyncStorage, StyleSheet, Text, View, ScrollView } from 'react-native';
+import axios from 'axios';
 import Nav from './Components/Nav';
 import Home from './Components/Home';
 import YourCourses from './Components/YourCourses';
 import YourMatches from './Components/YourMatches';
-import Test from './Components/Test';
+import Auth from './Components/Auth';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      page: 'home'
+      page: 'home',
+      token: null,
+      user: null
     }
   }
 
@@ -18,13 +21,47 @@ export default class App extends React.Component {
     this.setState({ page });
   }
 
-  render() {
+  liftTokenToState = data => {
+    this.setState({
+      token: data.token,
+      user: data.user
+    })
+  }
 
+  logout = () => {
+    console.log('Logging out')
+    AsyncStorage.removeItem('golf-budget-tracker-token')
+    this.setState({ token: null, user: null })
+  }
+
+  componentDidMount = () => {
+    var token = AsyncStorage.getItem('golf-budget-tracker-token')
+    if (token === 'undefined' || token === 'null' || token === '' || token === undefined) {
+      AsyncStorage.removeItem('golf-budget-tracker-token')
+      this.setState({
+        token: null,
+        user: null
+      })
+    } else {
+      axios.post('http://localhost:3000/api/auth/me/from/token', {  ////////////// FIX FIX FIX FIX FIX FIX FIX
+        token
+      }).then( result => {
+        AsyncStorage.setItem('golf-budget-tracker-token', result.data.token)
+        this.setState({
+          token: result.data.token,
+          user: result.data.user
+        })
+      }).catch( err => console.log(err))
+    }
+  }
+
+  render() {
+    let userName = this.state.user ? this.state.user.name : 'nothin yet';
     const pages = {
       home: <Home onPress={() => this.changePage('test')} />,
       yourCourses: <YourCourses />,
       yourMatches: <YourMatches />,
-      test: <Test />
+      auth: <Auth liftToken={this.liftTokenToState} />
     }
 
     return (
@@ -32,12 +69,9 @@ export default class App extends React.Component {
 
         <View style={styles.top}>
           <Text>Top asd asd asd asd ads asd asd asd dsa </Text>
+          <Text>Hello User: {userName}</Text>
         </View>
 
-        {/* <ScrollView style={styles.mid}>
-          <Text>Open up App.js to start working on your app!</Text>
-          <Text>BLOOP BLOOP BLOOP</Text>
-        </ScrollView> */}
         {pages[this.state.page]}
 
         <Nav changePage={this.changePage} />

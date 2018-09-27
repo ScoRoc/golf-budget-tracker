@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import Icon from 'react-native-elements';
 import NavButton from './NavButton';
 
 const nav = {
@@ -15,6 +16,11 @@ const nav = {
     text: 'Your matches',
     page: 'yourMatches'
   },
+  auth: {
+    text: 'Auth',
+    page: 'auth',
+    icon: 'lock'
+  }
 };
 
 const bgColor = {
@@ -26,6 +32,9 @@ const bgColor = {
   },
   bot: {
     backgroundColor: '#e83'
+  },
+  fug: {
+    backgroundColor: '#e61'
   }
 }
 
@@ -36,6 +45,11 @@ export default class Nav extends React.Component {
         <NavButton changePage={this.props.changePage} nav={nav.home} bgColor={bgColor.top} />
         <NavButton changePage={this.props.changePage} nav={nav.yourCourses} bgColor={bgColor.mid} />
         <NavButton changePage={this.props.changePage} nav={nav.yourMatches} bgColor={bgColor.bot} />
+        <NavButton
+          changePage={this.props.changePage}
+          nav={nav.auth}
+          bgColor={bgColor.fug}
+        />
       </View>
     );
   }
