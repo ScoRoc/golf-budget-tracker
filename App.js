@@ -35,7 +35,22 @@ export default class App extends React.Component {
     this.setState({ token: null, user: null })
   }
 
+  ////////////////////////////////////////////
+  fakeLogin() {
+    axios.post('http://localhost:3000/api/auth/login', {  ////////////// FIX FIX FIX FIX FIX FIX FIX
+      email: 'g@g.com',
+      password: 'password'
+    }).then( result => {
+      AsyncStorage.setItem('golf-budget-tracker-token', result.data.token) // change 'mernToken' to your app name or something useful
+      this.liftTokenToState(result.data)
+    }).catch( err => console.log(err) )
+  }
+  ////////////////////////////////////////////
+
   componentDidMount = () => {
+    //////////////
+    this.fakeLogin();  ////// GET RID OF THIS
+    //////////////
     var token = AsyncStorage.getItem('golf-budget-tracker-token')
     if (token === 'undefined' || token === 'null' || token === '' || token === undefined) {
       AsyncStorage.removeItem('golf-budget-tracker-token')
@@ -60,8 +75,8 @@ export default class App extends React.Component {
     let userName = this.state.user ? this.state.user.name : 'nothin yet';
     const pages = {
       home: <Home onPress={() => this.changePage('test')} />,
-      yourCourses: <YourCourses />,
-      yourMatches: <YourMatches />,
+      yourCourses: <YourCourses user={this.state.user} />,
+      yourMatches: <YourMatches user={this.state.user} />,
       auth: <Auth liftToken={this.liftTokenToState} />
     }
 

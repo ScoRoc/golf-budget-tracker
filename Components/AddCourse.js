@@ -1,26 +1,43 @@
 import React, { Component } from 'react';
-import { StyleSheet, Dimensions, Animated, DatePickerIOS, Keyboard, TouchableWithoutFeedback, Text, TextInput, View } from 'react-native';
+import {
+  StyleSheet,
+  Dimensions,
+  Animated,
+  DatePickerIOS,
+  Keyboard,
+  TouchableWithoutFeedback,
+  Text,
+  TextInput,
+  View,
+  Button
+} from 'react-native';
 import Modal from 'react-native-modalbox'
+import axios from 'axios';
 import DatePicker from './DatePicker';
 import { Icon } from 'react-native-elements';
 
 const slideTime = 700;
 
-export default class AddMatch extends Component {
+export default class AddCourse extends Component {
   constructor(props) {
     super(props)
     this.state = {
       slideAnim: new Animated.Value(Dimensions.get('window').width),
-      showModal: false,
-      date: new Date(),
-      score: '',
-      price: '',
+      courseName: '',
       notes: ''
     }
   }
 
-  flipModal = bool => {
-    this.setState( {showModal: bool} )
+  addCourse = () => {
+    axios.post('http://localhost:3000/api/course', {
+      courseName: this.state.courseName,
+      notes: this.state.notes,
+      user: this.props.user
+    }).then(result => {
+      console.log('result.data: ', result.data);
+      this.props.getCourses();
+      this.animateClose();
+    })
   }
 
   animateClose = () => {
@@ -55,33 +72,10 @@ export default class AddMatch extends Component {
         <View style={styles.addMatchesView}>
           <Text onPress={this.animateClose}>~~~Close~~~</Text>
           <Text>CourseName</Text>
-          <Text onPress={() => this.flipModal(true)}>
-            {this.state.date.toDateString()} {this.state.date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}
-          </Text>
-          <Modal
-            style={styles.modal}
-            isOpen={this.state.showModal}
-            backdropPressToClose={true}
-            position='bottom'
-            backdrop={true}
-            animationDuration={500}
-            onClosed={() => this.flipModal(false)}
-            >
-              <DatePicker date={this.state.date} setDate={date => this.setState({date})} />
-          </Modal>
-          <Text>Score</Text>
           <TextInput
-            value={this.state.score}
-            onChangeText={score => this.setState({score})}
-            keyboardType='numeric'
-            maxLength={3}
-          />
-          <Text>Price</Text>
-          <TextInput
-            value={this.state.price}
-            onChangeText={price => this.setState({price})}
-            keyboardType='numeric'
-            maxLength={3}
+            value={this.state.courseName}
+            onChangeText={courseName => this.setState({courseName})}
+            style={{backgroundColor: 'red'}}
           />
           <Text>Notes</Text>
           <TextInput
@@ -90,6 +84,7 @@ export default class AddMatch extends Component {
             multiline={true}
             style={{backgroundColor: 'red'}}
           />
+          <Button title='Add course' onPress={this.addCourse} />
         </View>
       </TouchableWithoutFeedback>
       </Animated.View>
@@ -104,9 +99,5 @@ const styles = StyleSheet.create({
   },
   addMatchesView: {
     ...StyleSheet.absoluteFillObject,
-  },
-  modal: {
-    paddingTop: '5%',
-    height: '40%'
   }
 });

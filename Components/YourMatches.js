@@ -11,21 +11,13 @@ export default class YourMatches extends Component {
     }
   }
 
-  openAddMatch = () => {
-    this.setState( {showAddMatch: true} )
-  }
-
-  closeAddMatch = () => {
-    this.setState( {showAddMatch: false} )
-  }
-
   render() {
-    let addMatch = this.state.showAddMatch ? <AddMatch close={this.closeAddMatch} /> : '';
+    let addMatch = this.state.showAddMatch ? <AddMatch close={() => this.setState({showAddMatch: false})} /> : '';
     return (
       <View style={styles.yourMatches}>
           <Text>YourMatches page</Text>
           <View style={styles.addMatchWrap}>
-            <TouchableHighlight onPress={this.openAddMatch} underlayColor='rgb(102, 51, 153)'>
+            <TouchableHighlight onPress={() => this.setState({showAddMatch: true})} underlayColor='rgb(102, 51, 153)'>
               <View style={styles.addMatch}>
                 <Text style={ {marginRight: 10} }>Add a match</Text>
                 <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
