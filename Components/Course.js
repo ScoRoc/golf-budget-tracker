@@ -27,15 +27,25 @@ export default class Course extends Component {
   }
 
   editCourse = () => {
-    console.log('name: ', this.state.name, 'notes: ', this.state.notes)
-    axios.put('http://localhost:3000/api/course', {
+    axios.put('http://localhost:3000/api/course', {  /////// FIX URL
       courseName: this.state.name,
       notes: this.state.notes,
       courseId: this.state.course._id
     }).then(result => {
       console.log('result.data: ', result.data);
       this.props.getCourses();
-      // this.animateClose();
+      this.setState({editable: false})
+    })
+  }
+
+  deleteCourse = () => {
+    axios({  /////// FIX URL
+      url: 'http://localhost:3000/api/course',
+      method: 'delete',
+      data: {courseId: this.state.course._id}
+    }).then(result => {
+      this.props.getCourses();
+      this.animateClose();
     })
   }
 
@@ -73,6 +83,7 @@ export default class Course extends Component {
                  : <Text onPress={() => this.setState({editable: true})}>Edit</Text>;
     let name = this.state.course ? this.state.course.courseName : '';
     let notes = this.state.course ? this.state.course.notes : '';
+    let deleteCourse = this.state.editable ? <Button title='Delete course' onPress={this.deleteCourse}  /> : '';
     return (
       <Animated.View style={[
         styles.addMatchesWrapper,
@@ -94,6 +105,7 @@ export default class Course extends Component {
             value={notes}
             onChangeText={text => this.setState({notes: text})}
           />
+          {deleteCourse}
         </View>
       </TouchableWithoutFeedback>
       </Animated.View>
