@@ -70,6 +70,7 @@ export default class AddMatch extends Component {
                   ? <AddCourse
                       user={this.props.user}
                       close={() => this.setState({showAddCourse: false})}
+                      getCourses={this.props.getCourses}
                       setCourse={this.setCourseFromAddCourse}
                     />
                   : '';

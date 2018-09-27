@@ -31,7 +31,7 @@ export default class AddCourse extends Component {
       user: this.props.user
     }).then(result => {
       console.log('result.data: ', result.data);
-      if (this.props.getCourses) this.props.getCourses();
+      this.props.getCourses();
       if (this.props.setCourse) this.props.setCourse(this.state.courseName);
       this.animateClose();
     })

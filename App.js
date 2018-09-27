@@ -23,6 +23,9 @@ export default class App extends React.Component {
     this.setState({ page });
   }
 
+    ////////////////////////////////////////////////////////////////
+   // UPDATE THIS TO GET ALL COURSE INFO...NOT JUST COURSE MODEL //
+  ////////////////////////////////////////////////////////////////
   getCourses = () => {
     axios.get(`http://localhost:3000/api/course/${this.state.user._id}`).then(result => {  //////// FIX URL
       this.setState({courses: result.data.courses});
@@ -83,7 +86,7 @@ export default class App extends React.Component {
     const pages = {
       home: <Home onPress={() => this.changePage('test')} />,
       yourCourses: <YourCourses user={this.state.user} getCourses={this.getCourses} courses={this.state.courses} />,
-      yourMatches: <YourMatches user={this.state.user} />,
+      yourMatches: <YourMatches user={this.state.user} getCourses={this.getCourses} courses={this.state.courses} />,
       auth: <Auth liftToken={this.liftTokenToState} />
     }
 

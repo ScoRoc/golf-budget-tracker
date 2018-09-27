@@ -13,7 +13,12 @@ export default class YourMatches extends Component {
 
   render() {
     let addMatch = this.state.showAddMatch
-                 ? <AddMatch user={this.props.user} close={() => this.setState({showAddMatch: false})} />
+                 ? <AddMatch
+                    user={this.props.user}
+                    courses={this.props.courses}
+                    getCourses={this.props.getCourses}
+                    close={() => this.setState({showAddMatch: false})}
+                  />
                  : '';
     return (
       <View style={styles.yourMatches}>
