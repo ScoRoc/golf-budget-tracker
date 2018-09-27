@@ -56,6 +56,7 @@ export default class AddMatch extends Component {
   }
 
   componentDidMount() {
+    this.props.getCourses();
     Animated.timing(
       this.state.slideAnim,
       {
@@ -74,6 +75,9 @@ export default class AddMatch extends Component {
                       setCourse={this.setCourseFromAddCourse}
                     />
                   : '';
+    let courses = this.props.courses.map((course, idx) => {
+      return <Picker.Item label={course.courseName} value={course.courseName} key={idx} />
+    });
     let { slideAnim } = this.state;
     let courseName = this.state.course ? this.state.course : 'Select a course...';
     return (
@@ -105,8 +109,7 @@ export default class AddMatch extends Component {
             >
               <Picker selectedValue={this.state.course} onValueChange={(course, idx) => this.handleCoursePicker(course, idx)}>
                 <Picker.Item label='Please select a course...' value='pick' />
-                <Picker.Item label='one' value='one' />
-                <Picker.Item label='two' value='two' />
+                {courses}
               </Picker>
           </Modal>
           {addCourse}
