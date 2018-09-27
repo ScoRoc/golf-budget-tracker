@@ -3,14 +3,21 @@ import { StyleSheet, TouchableHighlight, Text, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 import axios from 'axios';
 import AddCourse from './AddCourse';
+import Course from './Course';
 
 export default class YourCourses extends Component {
   constructor(props) {
     super(props)
     this.state = {
       showAddMatch: false,
-      courses: []
+      showCourse: false,
+      courses: [],
+      currentCourse: {}
     }
+  }
+
+  touchCourseName = idx => {
+    this.setState({currentCourse: this.state.courses[idx], showCourse: true});
   }
 
   getCourses = () => {
@@ -31,9 +38,21 @@ export default class YourCourses extends Component {
                       getCourses={this.getCourses}
                     />
                   : '';
+    let coursePage = this.state.showCourse
+                  ? <Course
+                      user={this.props.user}
+                      currentCourse={this.state.currentCourse}
+                      close={() => this.setState({showCourse: false})}
+                      getCourses={this.getCourses}
+                    />
+                  : '';
     let courses = this.state.courses.map( (course, id) => {
-      return <Text key={id}>{course.courseName}</Text>
-    })
+      return (
+        <TouchableHighlight onPress={() => this.touchCourseName(id)} underlayColor='rgb(102, 51, 153)' key={id}>
+          <Text style={styles.course}>{course.courseName}</Text>
+        </TouchableHighlight>
+      );
+    });
     return (
       <View style={styles.yourCourses}>
           <Text>YourCourses page</Text>
@@ -47,6 +66,7 @@ export default class YourCourses extends Component {
           </View>
           {courses}
           {addCourse}
+          {coursePage}
       </View>
     );
   }
@@ -61,6 +81,10 @@ const styles = StyleSheet.create({
   addCourseWrap: {
     flexDirection: 'row',
     justifyContent: 'flex-end'
+  },
+  course: {
+    marginBottom: 3,
+    color: 'rgb(195, 58, 161)'
   },
   addCourse: {
     flexDirection: 'row',

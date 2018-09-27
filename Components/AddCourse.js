@@ -3,7 +3,6 @@ import {
   StyleSheet,
   Dimensions,
   Animated,
-  DatePickerIOS,
   Keyboard,
   TouchableWithoutFeedback,
   Text,
@@ -11,10 +10,7 @@ import {
   View,
   Button
 } from 'react-native';
-import Modal from 'react-native-modalbox'
 import axios from 'axios';
-import DatePicker from './DatePicker';
-import { Icon } from 'react-native-elements';
 
 const slideTime = 700;
 
@@ -73,12 +69,15 @@ export default class AddCourse extends Component {
           <Text onPress={this.animateClose}>~~~Close~~~</Text>
           <Text>CourseName</Text>
           <TextInput
+            returnKeyType='next'
+            onSubmitEditing={() => this.notesInput.focus()}
             value={this.state.courseName}
             onChangeText={courseName => this.setState({courseName})}
             style={{backgroundColor: 'red'}}
           />
           <Text>Notes</Text>
           <TextInput
+            ref={input => this.notesInput = input}
             value={this.state.notes}
             onChangeText={notes => this.setState({notes})}
             multiline={true}
