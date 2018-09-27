@@ -13,7 +13,8 @@ export default class AddMatch extends Component {
       slideAnim: new Animated.Value(Dimensions.get('window').width),
       showModal: false,
       date: new Date(),
-      score: '0'
+      score: '0',
+      price: '0'
     }
   }
 
@@ -21,8 +22,8 @@ export default class AddMatch extends Component {
     this.setState( {showModal: bool} )
   }
 
-  setDate = newDate => {
-    this.setState( {date: newDate} );
+  updatePrice = price => {
+    this.setState({price})
   }
 
   animateClose = () => {
@@ -69,7 +70,7 @@ export default class AddMatch extends Component {
             animationDuration={500}
             onClosed={() => this.flipModal(false)}
             >
-              <DatePicker date={this.state.date} setDate={this.setDate} />
+              <DatePicker date={this.state.date} setDate={date => this.setState({date})} />
           </Modal>
           <Text>Score</Text>
           <TextInput
@@ -79,6 +80,11 @@ export default class AddMatch extends Component {
             maxLength={3}
           />
           <Text>Price</Text>
+          <TextInput
+            value={this.state.price}
+            onChangeText={price => this.updatePrice(price)}
+            maxLength={100}
+          />
           <Text>Notes_____________</Text>
         </View>
       </TouchableWithoutFeedback>
