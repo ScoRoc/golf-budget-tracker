@@ -12,7 +12,9 @@ export default class YourMatches extends Component {
   }
 
   render() {
-    let addMatch = this.state.showAddMatch ? <AddMatch close={() => this.setState({showAddMatch: false})} /> : '';
+    let addMatch = this.state.showAddMatch
+                 ? <AddMatch user={this.props.user} close={() => this.setState({showAddMatch: false})} />
+                 : '';
     return (
       <View style={styles.yourMatches}>
           <Text>YourMatches page</Text>

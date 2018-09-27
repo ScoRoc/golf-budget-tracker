@@ -25,13 +25,14 @@ export default class AddCourse extends Component {
   }
 
   addCourse = () => {
-    axios.post('http://localhost:3000/api/course', {
+    axios.post('http://localhost:3000/api/course', {  ///////// FIX URL
       courseName: this.state.courseName,
       notes: this.state.notes,
       user: this.props.user
     }).then(result => {
       console.log('result.data: ', result.data);
-      this.props.getCourses();
+      if (this.props.getCourses) this.props.getCourses();
+      if (this.props.setCourse) this.props.setCourse(this.state.courseName);
       this.animateClose();
     })
   }
@@ -94,7 +95,8 @@ export default class AddCourse extends Component {
 const styles = StyleSheet.create({
   addMatchesWrapper: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'yellow'
+    backgroundColor: 'yellow',
+    zIndex: 10
   },
   addMatchesView: {
     ...StyleSheet.absoluteFillObject,

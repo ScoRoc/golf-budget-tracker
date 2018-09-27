@@ -4,8 +4,8 @@ import axios from 'axios';
 import Header from './Components/Header';
 import Nav from './Components/Nav';
 import Home from './Components/Home';
-import YourCourses from './Components/YourCourses';
-import YourMatches from './Components/YourMatches';
+import YourCourses from './Components/Courses/YourCourses';
+import YourMatches from './Components/Matches/YourMatches';
 import Auth from './Components/Auth';
 
 export default class App extends React.Component {
@@ -14,12 +14,19 @@ export default class App extends React.Component {
     this.state = {
       page: 'home',
       token: null,
-      user: null
+      user: null,
+      courses: []
     }
   }
 
   changePage = page => {
     this.setState({ page });
+  }
+
+  getCourses = () => {
+    axios.get(`http://localhost:3000/api/course/${this.state.user._id}`).then(result => {  //////// FIX URL
+      this.setState({courses: result.data.courses});
+    });
   }
 
   liftTokenToState = data => {
@@ -75,7 +82,7 @@ export default class App extends React.Component {
     let userName = this.state.user ? this.state.user.name : 'nothin yet';
     const pages = {
       home: <Home onPress={() => this.changePage('test')} />,
-      yourCourses: <YourCourses user={this.state.user} />,
+      yourCourses: <YourCourses user={this.state.user} getCourses={this.getCourses} courses={this.state.courses} />,
       yourMatches: <YourMatches user={this.state.user} />,
       auth: <Auth liftToken={this.liftTokenToState} />
     }

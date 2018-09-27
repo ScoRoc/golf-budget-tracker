@@ -39,8 +39,8 @@ export default class Course extends Component {
   }
 
   deleteCourse = () => {
-    axios({  /////// FIX URL
-      url: 'http://localhost:3000/api/course',
+    axios({
+      url: 'http://localhost:3000/api/course',  /////// FIX URL
       method: 'delete',
       data: {courseId: this.state.course._id}
     }).then(result => {

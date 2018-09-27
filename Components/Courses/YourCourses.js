@@ -9,33 +9,26 @@ export default class YourCourses extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      showAddMatch: false,
+      showAddCourse: false,
       showCourse: false,
-      courses: [],
       currentCourse: {}
     }
   }
 
   touchCourseName = idx => {
-    this.setState({currentCourse: this.state.courses[idx], showCourse: true});
-  }
-
-  getCourses = () => {
-    axios.get(`http://localhost:3000/api/course/${this.props.user._id}`).then(result => {
-      this.setState({courses: result.data.courses});
-    });
+    this.setState({currentCourse: this.props.courses[idx], showCourse: true});
   }
 
   componentDidMount() {
-    this.getCourses();
+    this.props.getCourses();
   }
 
   render() {
-    let addCourse = this.state.showAddMatch
+    let addCourse = this.state.showAddCourse
                   ? <AddCourse
                       user={this.props.user}
-                      close={() => this.setState({showAddMatch: false})}
-                      getCourses={this.getCourses}
+                      close={() => this.setState({showAddCourse: false})}
+                      getCourses={this.props.getCourses}
                     />
                   : '';
     let coursePage = this.state.showCourse
@@ -43,10 +36,10 @@ export default class YourCourses extends Component {
                       user={this.props.user}
                       currentCourse={this.state.currentCourse}
                       close={() => this.setState({showCourse: false})}
-                      getCourses={this.getCourses}
+                      getCourses={this.props.getCourses}
                     />
                   : '';
-    let courses = this.state.courses.map( (course, id) => {
+    let courses = this.props.courses.map( (course, id) => {
       return (
         <TouchableHighlight onPress={() => this.touchCourseName(id)} underlayColor='rgb(102, 51, 153)' key={id}>
           <Text style={styles.course}>{course.courseName}</Text>
@@ -57,7 +50,7 @@ export default class YourCourses extends Component {
       <View style={styles.yourCourses}>
           <Text>YourCourses page</Text>
           <View style={styles.addCourseWrap}>
-            <TouchableHighlight onPress={() => this.setState({showAddMatch: true})} underlayColor='rgb(102, 51, 153)'>
+            <TouchableHighlight onPress={() => this.setState({showAddCourse: true})} underlayColor='rgb(102, 51, 153)'>
               <View style={styles.addCourse}>
                 <Text style={ {marginRight: 10} }>Add a course</Text>
                 <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
