@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet,
-  Dimensions,
   Animated,
-  Picker,
+  Button,
+  Dimensions,
   Keyboard,
-  TouchableWithoutFeedback,
-  TouchableHighlight,
+  Picker,
+  StyleSheet,
   Text,
   TextInput,
+  TouchableHighlight,
+  TouchableWithoutFeedback,
   View
 } from 'react-native';
 import Modal from 'react-native-modalbox'
@@ -42,6 +43,23 @@ export default class AddMatch extends Component {
     if (idx !== 0) {
       this.setState({course})
     }
+  }
+
+  addMatch = () => {
+    const { course, date, score, price, notes } = this.state;
+    axios.post('http://localhost:3000/api/match', {  ///////// FIX URL
+      course,
+      date,
+      score,
+      price,
+      notes,
+      user: this.props.user
+    }).then(result => {
+      console.log('result.data: ', result.data);
+      // this.props.getCourses();
+      // if (this.props.setCourse) this.props.setCourse(this.state.courseName);
+      // this.animateClose();
+    })
   }
 
   animateClose = () => {
@@ -152,6 +170,9 @@ export default class AddMatch extends Component {
             multiline={true}
             style={{backgroundColor: 'red'}}
           />
+
+          <Button title='Add course' onPress={this.addMatch} />
+
         </View>
       </TouchableWithoutFeedback>
       </Animated.View>

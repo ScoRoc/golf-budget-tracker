@@ -68,6 +68,7 @@ export default class AddCourse extends Component {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.addMatchesView}>
           <Text onPress={this.animateClose}>~~~Close~~~</Text>
+
           <Text>CourseName</Text>
           <TextInput
             returnKeyType='next'
@@ -76,6 +77,7 @@ export default class AddCourse extends Component {
             onChangeText={courseName => this.setState({courseName})}
             style={{backgroundColor: 'red'}}
           />
+
           <Text>Notes</Text>
           <TextInput
             ref={input => this.notesInput = input}
@@ -84,7 +86,9 @@ export default class AddCourse extends Component {
             multiline={true}
             style={{backgroundColor: 'red'}}
           />
+
           <Button title='Add course' onPress={this.addCourse} />
+          
         </View>
       </TouchableWithoutFeedback>
       </Animated.View>
