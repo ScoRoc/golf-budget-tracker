@@ -51,22 +51,22 @@ export default class App extends React.Component {
     //////////////
     this.fakeLogin();  ////// GET RID OF THIS
     //////////////
-    var token = AsyncStorage.getItem('golf-budget-tracker-token')
-    if (token === 'undefined' || token === 'null' || token === '' || token === undefined) {
-      AsyncStorage.removeItem('golf-budget-tracker-token')
+    var token = AsyncStorage.getItem('golf-budget-tracker-token');
+    if (typeof token !== 'string' || token === 'undefined' || token === 'null' || token === '') {
+      AsyncStorage.removeItem('golf-budget-tracker-token');
       this.setState({
         token: null,
         user: null
-      })
+      });
     } else {
       axios.post('http://localhost:3000/api/auth/me/from/token', {  ////////////// FIX FIX FIX FIX FIX FIX FIX
         token
       }).then( result => {
-        AsyncStorage.setItem('golf-budget-tracker-token', result.data.token)
+        AsyncStorage.setItem('golf-budget-tracker-token', result.data.token);
         this.setState({
           token: result.data.token,
           user: result.data.user
-        })
+        });
       }).catch( err => console.log(err))
     }
   }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, TouchableHighlight, Text, View } from 'react-native';
 import { Icon } from 'react-native-elements';
+import axios from 'axios';
 import AddCourse from './AddCourse';
 
 export default class YourCourses extends Component {
@@ -13,7 +14,9 @@ export default class YourCourses extends Component {
   }
 
   getCourses = () => {
-    console.log('getting courses func');
+    axios.get(`http://localhost:3000/api/course/${this.props.user._id}`).then(result => {
+      this.setState({courses: result.data.courses});
+    });
   }
 
   componentDidMount() {
@@ -28,6 +31,9 @@ export default class YourCourses extends Component {
                       getCourses={this.getCourses}
                     />
                   : '';
+    let courses = this.state.courses.map( (course, id) => {
+      return <Text key={id}>{course.courseName}</Text>
+    })
     return (
       <View style={styles.yourCourses}>
           <Text>YourCourses page</Text>
@@ -39,8 +45,7 @@ export default class YourCourses extends Component {
               </View>
             </TouchableHighlight>
           </View>
-          <Text>CourseName</Text>
-          <Text>CourseName</Text>
+          {courses}
           {addCourse}
       </View>
     );
@@ -57,7 +62,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end'
   },
-  addMatch: {
+  addCourse: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
