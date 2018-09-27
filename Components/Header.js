@@ -9,8 +9,8 @@ export default class Header extends Component {
         <Text>Hello User: {this.props.userName}</Text>
         <TouchableHighlight onPress={this.props.logout} underlayColor='rgb(102, 51, 153)'>
           <View style={styles.logout}>
-            <Text style={ {marginRight: 10} }>Logout</Text>
             <Icon name='lock' />
+            <Text style={ {marginLeft: 10} }>Logout</Text>
           </View>
         </TouchableHighlight>
       </View>

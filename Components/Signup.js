@@ -19,7 +19,6 @@ class Signup extends Component {
       email: this.state.email,
       password: this.state.password
     }).then( result => {
-      console.log(result.data) // result is result from back end responding to post request and .data is where axios stores the returned data
       AsyncStorage.setItem('golf-budget-tracker-token', result.data.token) // change 'mernToken' to your app name or something useful
       this.props.liftToken(result.data)
     })

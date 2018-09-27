@@ -12,7 +12,7 @@ export default class YourCourses extends Component {
 
   render() {
     return (
-      <View style={styles.home}>
+      <View style={styles.yourCourses}>
           <Text>YourCourses page</Text>
           <Button onPress={this.tester} title='Backend test' />
       </View>
@@ -21,7 +21,7 @@ export default class YourCourses extends Component {
 }
 
 const styles = StyleSheet.create({
-  home: {
+  yourCourses: {
     flex: 1,
     alignSelf: 'stretch',
     backgroundColor: '#bfd'
