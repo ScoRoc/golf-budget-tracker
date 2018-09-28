@@ -32,7 +32,6 @@ export default class Course extends Component {
       notes: this.state.notes,
       courseId: this.state.course._id
     }).then(result => {
-      console.log('result.data: ', result.data);
       this.props.getCourses();
       this.setState({editable: false})
     })
@@ -84,6 +83,11 @@ export default class Course extends Component {
     let name = this.state.course ? this.state.course.courseName : '';
     let notes = this.state.course ? this.state.course.notes : '';
     let deleteCourse = this.state.editable ? <Button title='Delete course' onPress={this.deleteCourse}  /> : '';
+    const teeboxes = this.state.course
+                   ? this.state.course.teeboxes.map((teebox, idx) => {
+                       return <Text key={idx}>{teebox.name}</Text>
+                     })
+                   : '';
     return (
       <Animated.View style={[
         styles.addCoursesWrapper,
@@ -95,16 +99,22 @@ export default class Course extends Component {
             <Text onPress={this.animateClose}>~~~Close~~~</Text>
             {editSave}
           </View>
+
           <TextInput
             editable={this.state.editable}
             value={name}
             onChangeText={text => this.setState({name: text})}
           />
+
           <TextInput
             editable={this.state.editable}
             value={notes}
             onChangeText={text => this.setState({notes: text})}
           />
+
+          <Text>Teeboxes below....... \/ \/ \/ \/</Text>
+          {teeboxes}
+
           {deleteCourse}
         </View>
       </TouchableWithoutFeedback>

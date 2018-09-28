@@ -28,7 +28,7 @@ export default class App extends React.Component {
   ////////////////////////////////////////////////////////////////
   getCourses = () => {
     axios.get(`http://localhost:3000/api/course/${this.state.user._id}`).then(result => {  //////// FIX URL
-      this.setState({courses: result.data.courses});
+      this.setState({courses: result.data});
     });
   }
 

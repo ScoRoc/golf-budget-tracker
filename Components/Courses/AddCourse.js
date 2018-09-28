@@ -33,17 +33,17 @@ export default class AddCourse extends Component {
   }
 
   addCourse = () => {
-    console.log('teeboxes: ', this.state.teeboxes);
-    // axios.post('http://localhost:3000/api/course', {  ///////// FIX URL
-    //   courseName: this.state.courseName,
-    //   notes: this.state.notes,
-    //   user: this.props.user
-    // }).then(result => {
-    //   console.log('result.data: ', result.data.newCourse);
-    //   this.props.getCourses();
-    //   if (this.props.setCourse) this.props.setCourse(result.data.newCourse);
-    //   this.animateClose();
-    // })
+    axios.post('http://localhost:3000/api/course', {  ///////// FIX URL
+      courseName: this.state.courseName,
+      notes: this.state.notes,
+      user: this.props.user,
+      teeboxes: this.state.teeboxes
+    }).then(result => {
+      console.log(result.data);
+      this.props.getCourses();
+      if (this.props.setCourse) this.props.setCourse(result.data.newCourse);
+      this.animateClose();
+    })
   }
 
   addTeebox = teebox => {
