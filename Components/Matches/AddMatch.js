@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modalbox'
 import { Icon } from 'react-native-elements';
+import axios from 'axios';
 import DatePicker from '../DatePicker';
 import AddCourse from '../Courses/AddCourse';
 
@@ -28,7 +29,8 @@ export default class AddMatch extends Component {
       showCoursePicker: false,
       showAddCourse: false,
       date: new Date(),
-      course: '',
+      course: null,
+      courseId: '',
       score: '',
       price: '',
       notes: ''
@@ -39,14 +41,19 @@ export default class AddMatch extends Component {
     this.setState({course});
   }
 
-  handleCoursePicker = (course, idx) => {
+  handleCoursePicker = (courseId, idx) => {
+    const course = this.props.courses.filter(course => {
+      return course._id === courseId;
+    });
     if (idx !== 0) {
-      this.setState({course})
+      this.setState({course: course[0], courseId})
     }
   }
 
   addMatch = () => {
-    const { course, date, score, price, notes } = this.state;
+    const { course, date, notes } = this.state;
+    const score = parseInt(this.state.score);
+    const price = parseInt(this.state.price);
     axios.post('http://localhost:3000/api/match', {  ///////// FIX URL
       course,
       date,
@@ -55,7 +62,7 @@ export default class AddMatch extends Component {
       notes,
       user: this.props.user
     }).then(result => {
-      console.log('result.data: ', result.data);
+      console.log('result.data.newMatch: ', result.data.newMatch);
       // this.props.getCourses();
       // if (this.props.setCourse) this.props.setCourse(this.state.courseName);
       // this.animateClose();
@@ -94,10 +101,10 @@ export default class AddMatch extends Component {
                     />
                   : '';
     let courses = this.props.courses.map((course, idx) => {
-      return <Picker.Item label={course.courseName} value={course.courseName} key={idx} />
+      return <Picker.Item label={course.courseName} value={course._id} key={idx} />
     });
     let { slideAnim } = this.state;
-    let courseName = this.state.course ? this.state.course : 'Select a course...';
+    let courseName = this.state.course ? this.state.course.courseName : 'Select a course...';
     return (
       <Animated.View style={[
         styles.addMatchesWrapper,
@@ -125,7 +132,7 @@ export default class AddMatch extends Component {
             animationDuration={500}
             onClosed={() => this.setState({showCoursePicker: false})}
             >
-              <Picker selectedValue={this.state.course} onValueChange={(course, idx) => this.handleCoursePicker(course, idx)}>
+              <Picker selectedValue={this.state.courseId} onValueChange={(courseId, idx) => this.handleCoursePicker(courseId, idx)}>
                 <Picker.Item label='Please select a course...' value='pick' />
                 {courses}
               </Picker>
@@ -171,7 +178,7 @@ export default class AddMatch extends Component {
             style={{backgroundColor: 'red'}}
           />
 
-          <Button title='Add course' onPress={this.addMatch} />
+          <Button title='Add match' onPress={this.addMatch} />
 
         </View>
       </TouchableWithoutFeedback>

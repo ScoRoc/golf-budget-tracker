@@ -30,9 +30,9 @@ export default class AddCourse extends Component {
       notes: this.state.notes,
       user: this.props.user
     }).then(result => {
-      console.log('result.data: ', result.data);
+      console.log('result.data: ', result.data.newCourse);
       this.props.getCourses();
-      if (this.props.setCourse) this.props.setCourse(this.state.courseName);
+      if (this.props.setCourse) this.props.setCourse(result.data.newCourse);
       this.animateClose();
     })
   }
@@ -88,7 +88,7 @@ export default class AddCourse extends Component {
           />
 
           <Button title='Add course' onPress={this.addCourse} />
-          
+
         </View>
       </TouchableWithoutFeedback>
       </Animated.View>
