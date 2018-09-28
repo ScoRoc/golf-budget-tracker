@@ -86,11 +86,11 @@ export default class Course extends Component {
     let deleteCourse = this.state.editable ? <Button title='Delete course' onPress={this.deleteCourse}  /> : '';
     return (
       <Animated.View style={[
-        styles.addMatchesWrapper,
+        styles.addCoursesWrapper,
         { transform: [ {translateY: slideAnim} ]}
       ]}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.addMatchesView}>
+        <View style={styles.addCoursesView}>
           <View style={ {flexDirection: 'row', justifyContent: 'space-between'} }>
             <Text onPress={this.animateClose}>~~~Close~~~</Text>
             {editSave}
@@ -114,11 +114,11 @@ export default class Course extends Component {
 }
 
 const styles = StyleSheet.create({
-  addMatchesWrapper: {
+  addCoursesWrapper: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'orange'
   },
-  addMatchesView: {
+  addCoursesView: {
     ...StyleSheet.absoluteFillObject,
   }
 });

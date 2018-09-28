@@ -5,7 +5,7 @@ import axios from 'axios';
 import AddCourse from './AddCourse';
 import Course from './Course';
 
-export default class YourCourses extends Component {
+export default class MyCourses extends Component {
   constructor(props) {
     super(props)
     this.state = {

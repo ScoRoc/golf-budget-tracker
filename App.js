@@ -4,8 +4,8 @@ import axios from 'axios';
 import Header from './Components/Header';
 import Nav from './Components/Nav';
 import Home from './Components/Home';
-import YourCourses from './Components/Courses/YourCourses';
-import YourMatches from './Components/Matches/YourMatches';
+import MyCourses from './Components/Courses/MyCourses';
+import MyRounds from './Components/Rounds/MyRounds';
 import Auth from './Components/Auth';
 
 export default class App extends React.Component {
@@ -85,8 +85,8 @@ export default class App extends React.Component {
     let userName = this.state.user ? this.state.user.name : 'nothin yet';
     const pages = {
       home: <Home onPress={() => this.changePage('test')} />,
-      yourCourses: <YourCourses user={this.state.user} getCourses={this.getCourses} courses={this.state.courses} />,
-      yourMatches: <YourMatches user={this.state.user} getCourses={this.getCourses} courses={this.state.courses} />,
+      myCourses: <MyCourses user={this.state.user} getCourses={this.getCourses} courses={this.state.courses} />,
+      myRounds: <MyRounds user={this.state.user} getCourses={this.getCourses} courses={this.state.courses} />,
       auth: <Auth liftToken={this.liftTokenToState} />
     }
 

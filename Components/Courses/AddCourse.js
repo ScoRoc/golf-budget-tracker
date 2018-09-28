@@ -62,11 +62,11 @@ export default class AddCourse extends Component {
     let { slideAnim } = this.state;
     return (
       <Animated.View style={[
-        styles.addMatchesWrapper,
+        styles.addCoursesWrapper,
         { transform: [ {translateX: slideAnim} ]}
       ]}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.addMatchesView}>
+        <View style={styles.addCoursesView}>
           <Text onPress={this.animateClose}>~~~Close~~~</Text>
 
           <Text>CourseName</Text>
@@ -97,12 +97,12 @@ export default class AddCourse extends Component {
 }
 
 const styles = StyleSheet.create({
-  addMatchesWrapper: {
+  addCoursesWrapper: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'yellow',
     zIndex: 10
   },
-  addMatchesView: {
+  addCoursesView: {
     ...StyleSheet.absoluteFillObject,
   }
 });

@@ -8,13 +8,13 @@ const nav = {
     text: 'Home',
     page: 'home'
   },
-  yourCourses: {
-    text: 'Your courses',
-    page: 'yourCourses'
+  myCourses: {
+    text: 'My courses',
+    page: 'myCourses'
   },
-  yourMatches: {
-    text: 'Your matches',
-    page: 'yourMatches'
+  myRounds: {
+    text: 'My rounds',
+    page: 'myRounds'
   },
   auth: {
     text: 'Auth',
@@ -43,8 +43,8 @@ export default class Nav extends React.Component {
     return (
       <View style={styles.nav}>
         <NavButton changePage={this.props.changePage} nav={nav.home} bgColor={bgColor.top} />
-        <NavButton changePage={this.props.changePage} nav={nav.yourCourses} bgColor={bgColor.mid} />
-        <NavButton changePage={this.props.changePage} nav={nav.yourMatches} bgColor={bgColor.bot} />
+        <NavButton changePage={this.props.changePage} nav={nav.myCourses} bgColor={bgColor.mid} />
+        <NavButton changePage={this.props.changePage} nav={nav.myRounds} bgColor={bgColor.bot} />
         <NavButton
           changePage={this.props.changePage}
           nav={nav.auth}

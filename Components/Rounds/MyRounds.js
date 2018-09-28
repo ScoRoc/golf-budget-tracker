@@ -1,55 +1,55 @@
 import React, { Component } from 'react';
 import { StyleSheet, TouchableHighlight, Text, View } from 'react-native';
 import { Icon } from 'react-native-elements';
-import AddMatch from './AddMatch';
+import AddRound from './AddRound';
 
-export default class YourMatches extends Component {
+export default class MyRounds extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      showAddMatch: false
+      showAddRound: false
     }
   }
 
   render() {
-    let addMatch = this.state.showAddMatch
-                 ? <AddMatch
+    let addRound = this.state.showAddRound
+                 ? <AddRound
                     user={this.props.user}
                     courses={this.props.courses}
                     getCourses={this.props.getCourses}
-                    close={() => this.setState({showAddMatch: false})}
+                    close={() => this.setState({showAddRound: false})}
                   />
                  : '';
     return (
-      <View style={styles.yourMatches}>
-          <Text>YourMatches page</Text>
-          <View style={styles.addMatchWrap}>
-            <TouchableHighlight onPress={() => this.setState({showAddMatch: true})} underlayColor='rgb(102, 51, 153)'>
-              <View style={styles.addMatch}>
-                <Text style={ {marginRight: 10} }>Add a match</Text>
+      <View style={styles.myRounds}>
+          <Text>MyRounds page</Text>
+          <View style={styles.addRoundWrap}>
+            <TouchableHighlight onPress={() => this.setState({showAddRound: true})} underlayColor='rgb(102, 51, 153)'>
+              <View style={styles.addRound}>
+                <Text style={ {marginRight: 10} }>Add a round</Text>
                 <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
               </View>
             </TouchableHighlight>
           </View>
           <Text>CourseName____Date____Score____Price</Text>
           <Text>Notes_____________</Text>
-          {addMatch}
+          {addRound}
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  yourMatches: {
+  myRounds: {
     flex: 1,
     alignSelf: 'stretch',
     backgroundColor: '#bfd'
   },
-  addMatchWrap: {
+  addRoundWrap: {
     flexDirection: 'row',
     justifyContent: 'flex-end'
   },
-  addMatch: {
+  addRound: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',

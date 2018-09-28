@@ -20,7 +20,7 @@ import AddCourse from '../Courses/AddCourse';
 
 const slideTime = 700;
 
-export default class AddMatch extends Component {
+export default class AddRound extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -50,11 +50,11 @@ export default class AddMatch extends Component {
     }
   }
 
-  addMatch = () => {
+  addRound = () => {
     const { course, date, notes } = this.state;
     const score = parseInt(this.state.score);
     const price = parseInt(this.state.price);
-    axios.post('http://localhost:3000/api/match', {  ///////// FIX URL
+    axios.post('http://localhost:3000/api/round', {  ///////// FIX URL
       course,
       date,
       score,
@@ -62,7 +62,7 @@ export default class AddMatch extends Component {
       notes,
       user: this.props.user
     }).then(result => {
-      console.log('result.data.newMatch: ', result.data.newMatch);
+      console.log('result.data.newRound: ', result.data.newRound);
       // this.props.getCourses();
       // if (this.props.setCourse) this.props.setCourse(this.state.courseName);
       // this.animateClose();
@@ -107,11 +107,11 @@ export default class AddMatch extends Component {
     let courseName = this.state.course ? this.state.course.courseName : 'Select a course...';
     return (
       <Animated.View style={[
-        styles.addMatchesWrapper,
+        styles.addRoundsWrapper,
         { transform: [ {translateX: slideAnim} ]}
       ]}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.addMatchesView}>
+        <View style={styles.addRoundsView}>
           <Text onPress={this.animateClose}>~~~Close~~~</Text>
 
           <View style={styles.selectCourseWrap}>
@@ -178,7 +178,11 @@ export default class AddMatch extends Component {
             style={{backgroundColor: 'red'}}
           />
 
-          <Button title='Add match' onPress={this.addMatch} />
+          <Button title='Add round' onPress={this.addRound} />
+
+          <Text>ADD RATING/SLOPE</Text>
+          <Text>RATING is 2 num/1 dec float: 67.3...83.4...etc</Text>
+          <Text>RATING is 3 digit int....322, 131, 389</Text>
 
         </View>
       </TouchableWithoutFeedback>
@@ -188,11 +192,11 @@ export default class AddMatch extends Component {
 }
 
 const styles = StyleSheet.create({
-  addMatchesWrapper: {
+  addRoundsWrapper: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'yellow'
   },
-  addMatchesView: {
+  addRoundsView: {
     ...StyleSheet.absoluteFillObject,
   },
   selectCourseWrap: {
