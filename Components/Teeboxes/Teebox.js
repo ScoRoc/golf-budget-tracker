@@ -37,21 +37,20 @@ export default class Teebox extends Component {
       id: this.props.teebox._id
     }).then(result => {
       console.log('result.data: ', result.data.updatedTeebox);
-      // this.props.getCourses();
+      this.props.getCourses();
       this.setState({editable: false});
     });
   }
 
   deleteTeebox = () => {
-    console.log('id: ', this.props.teebox._id);
-    // axios({
-    //   url: 'http://localhost:3000/api/course',  /////// FIX URL
-    //   method: 'delete',
-    //   data: {courseId: this.state.course._id}
-    // }).then(result => {
-    //   this.props.getCourses();
-    //   this.animateClose();
-    // })
+    axios({
+      url: 'http://localhost:3000/api/teebox',  /////// FIX URL
+      method: 'delete',
+      data: {id: this.props.teebox._id}
+    }).then(result => {
+      this.props.getCourses();
+      this.animateClose();
+    })
   }
 
   animateClose = () => {

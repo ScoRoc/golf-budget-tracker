@@ -111,7 +111,8 @@ export default class Course extends Component {
                   ? <AddTeebox
                       user={this.props.user}
                       close={() => this.setState({showAddTeebox: false})}
-                      // addTeebox={this.addTeebox}
+                      course={this.state.course}
+                      getCourses={this.props.getCourses}
                     />
                   : '';
     return (

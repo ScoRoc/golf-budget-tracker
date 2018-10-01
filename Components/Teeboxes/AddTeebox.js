@@ -28,6 +28,22 @@ export default class AddTeebox extends Component {
     }
   }
 
+  addTeebox = () => {
+    const { name } = this.state;
+    const rating = parseFloat(this.state.rating);
+    const slope = parseInt(this.state.slope);
+    axios.post('http://localhost:3000/api/teebox', {  /////// FIX URL
+      name,
+      rating,
+      slope,
+      courseId: this.props.course._id
+    }).then(result => {
+      console.log('result.data: ', result.data);
+      this.props.getCourses();
+      this.animateClose();
+    });
+  }
+
   packTeebox = () => {
     const { name } = this.state;
     const rating = parseFloat(this.state.rating);
@@ -60,6 +76,7 @@ export default class AddTeebox extends Component {
 
   render() {
     let { slideAnim } = this.state;
+    let addTeebox = this.props.course ? this.addTeebox : this.packTeebox;
     return (
       <Animated.View style={[
         styles.addTeeboxWrapper,
@@ -99,7 +116,7 @@ export default class AddTeebox extends Component {
               style={{backgroundColor: 'red'}}
             />
 
-            <Button title='Add teebox' onPress={this.packTeebox} />
+            <Button title='Add teebox' onPress={addTeebox} />
 
           </View>
         </TouchableWithoutFeedback>
