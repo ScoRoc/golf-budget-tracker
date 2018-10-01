@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet,
-  Dimensions,
   Animated,
+  Button,
+  Dimensions,
   Keyboard,
-  TouchableWithoutFeedback,
+  StyleSheet,
   Text,
   TextInput,
-  View,
-  Button
+  TouchableHighlight,
+  TouchableWithoutFeedback,
+  View
 } from 'react-native';
+import { Icon } from 'react-native-elements';
 import axios from 'axios';
+import AddTeebox from '../Teeboxes/AddTeebox';
+import Teebox from '../Teeboxes/Teebox';
 
 const slideTime = 700;
 
@@ -19,6 +23,9 @@ export default class Course extends Component {
     super(props)
     this.state = {
       slideAnim: new Animated.Value(Dimensions.get('window').height),
+      showAddTeebox: false,
+      showTeexbox: false,
+      currentTeebox: '',
       course: null,
       name: '',
       notes: '',
@@ -78,16 +85,35 @@ export default class Course extends Component {
   render() {
     let { slideAnim } = this.state;
     let editSave = this.state.editable
-                 ? <Text onPress={this.editCourse}>Save</Text>
+                 ? <Text onPress={this.editCourse}>Done</Text>
                  : <Text onPress={() => this.setState({editable: true})}>Edit</Text>;
     let name = this.state.course ? this.state.course.courseName : '';
     let notes = this.state.course ? this.state.course.notes : '';
     let deleteCourse = this.state.editable ? <Button title='Delete course' onPress={this.deleteCourse}  /> : '';
     const teeboxes = this.state.course
                    ? this.state.course.teeboxes.map((teebox, idx) => {
-                       return <Text key={idx}>{teebox.name}</Text>
+                       return (
+                         <TouchableHighlight onPress={() => this.setState({ currentTeebox: idx, showTeebox: true })} underlayColor='rgb(102, 51, 153)' key={idx}>
+                           <Text style={styles.teebox}>{teebox.name}</Text>
+                         </TouchableHighlight>
+                       )
                      })
                    : '';
+    let teeboxPage = this.state.showTeebox
+                  ? <Teebox
+                      user={this.props.user}
+                      close={() => this.setState({showTeebox: false})}
+                      teebox={this.state.course.teeboxes[this.state.currentTeebox]}
+                      getCourses={this.props.getCourses}
+                    />
+                  : '';
+    let addTeebox = this.state.showAddTeebox
+                  ? <AddTeebox
+                      user={this.props.user}
+                      close={() => this.setState({showAddTeebox: false})}
+                      // addTeebox={this.addTeebox}
+                    />
+                  : '';
     return (
       <Animated.View style={[
         styles.addCoursesWrapper,
@@ -112,8 +138,20 @@ export default class Course extends Component {
             onChangeText={text => this.setState({notes: text})}
           />
 
-          <Text>Teeboxes below....... \/ \/ \/ \/</Text>
+          <View style={styles.addTeeboxWrap}>
+            <Text>Tee Boxes</Text>
+            <TouchableHighlight onPress={() => this.setState({showAddTeebox: true})} underlayColor='rgb(102, 51, 153)'>
+              <View style={styles.addTeebox}>
+                <Text style={ {marginRight: 10} }>Add</Text>
+                <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
+              </View>
+            </TouchableHighlight>
+          </View>
+
           {teeboxes}
+          {teeboxPage}
+
+          {addTeebox}
 
           {deleteCourse}
         </View>
@@ -130,5 +168,20 @@ const styles = StyleSheet.create({
   },
   addCoursesView: {
     ...StyleSheet.absoluteFillObject,
-  }
+  },
+  teebox: {
+    marginBottom: 3,
+    color: 'rgb(195, 58, 161)'
+  },
+  addTeeboxWrap: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  addTeebox: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    paddingRight: 30
+  },
 });

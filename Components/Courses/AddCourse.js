@@ -81,7 +81,6 @@ export default class AddCourse extends Component {
                       user={this.props.user}
                       close={() => this.setState({showAddTeebox: false})}
                       addTeebox={this.addTeebox}
-                      setCourse={this.setCourseFromAddCourse}
                     />
                   : '';
     let teeboxPage = this.state.showTeebox
@@ -128,13 +127,10 @@ export default class AddCourse extends Component {
                 </View>
               </TouchableHighlight>
             </View>
-            {/*  */}
-            {/* teebox .map goes here */}
-            {/*  */}
+            {teeboxes}
           </View>
-          {addTeebox}
 
-          {teeboxes}
+          {addTeebox}
 
           <Text>Notes</Text>
           <TextInput

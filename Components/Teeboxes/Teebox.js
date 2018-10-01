@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet,
-  Dimensions,
   Animated,
+  Button,
+  Dimensions,
   Keyboard,
-  TouchableWithoutFeedback,
+  StyleSheet,
   Text,
   TextInput,
-  View,
-  Button
+  TouchableWithoutFeedback,
+  View
 } from 'react-native';
 import axios from 'axios';
 
@@ -19,34 +19,39 @@ export default class Teebox extends Component {
     super(props)
     this.state = {
       slideAnim: new Animated.Value(Dimensions.get('window').height),
-      course: null,
+      editable: false,
       name: '',
-      notes: '',
-      editable: false
+      rating: '',
+      slope: ''
     }
   }
 
-  editCourse = () => {
-    axios.put('http://localhost:3000/api/course', {  /////// FIX URL
-      courseName: this.state.name,
-      notes: this.state.notes,
-      courseId: this.state.course._id
+  editTeebox = () => {
+    let { name } = this.state;
+    let rating = parseFloat(this.state.rating);
+    let slope = parseInt(this.state.slope);
+    axios.put('http://localhost:3000/api/teebox', {  /////// FIX URL
+      name,
+      rating,
+      slope,
+      id: this.props.teebox._id
     }).then(result => {
-      console.log('result.data: ', result.data);
-      this.props.getCourses();
-      this.setState({editable: false})
-    })
+      console.log('result.data: ', result.data.updatedTeebox);
+      // this.props.getCourses();
+      this.setState({editable: false});
+    });
   }
 
-  deleteCourse = () => {
-    axios({
-      url: 'http://localhost:3000/api/course',  /////// FIX URL
-      method: 'delete',
-      data: {courseId: this.state.course._id}
-    }).then(result => {
-      this.props.getCourses();
-      this.animateClose();
-    })
+  deleteTeebox = () => {
+    console.log('id: ', this.props.teebox._id);
+    // axios({
+    //   url: 'http://localhost:3000/api/course',  /////// FIX URL
+    //   method: 'delete',
+    //   data: {courseId: this.state.course._id}
+    // }).then(result => {
+    //   this.props.getCourses();
+    //   this.animateClose();
+    // })
   }
 
   animateClose = () => {
@@ -61,11 +66,10 @@ export default class Teebox extends Component {
   }
 
   componentDidMount() {
-    let course = this.props.currentCourse;
     this.setState({
-      course: course,
-      name: course.courseName,
-      notes: course.notes
+      name: this.props.teebox.name,
+      rating: this.props.teebox.rating.toString(),
+      slope: this.props.teebox.slope.toString()
     });
     Animated.timing(
       this.state.slideAnim,
@@ -79,47 +83,61 @@ export default class Teebox extends Component {
   render() {
     let { slideAnim } = this.state;
     let editSave = this.state.editable
-                 ? <Text onPress={this.editCourse}>Save</Text>
+                 ? <Text onPress={this.editTeebox}>Done</Text>
                  : <Text onPress={() => this.setState({editable: true})}>Edit</Text>;
-    let name = this.state.course ? this.state.course.courseName : '';
-    let notes = this.state.course ? this.state.course.notes : '';
-    let deleteCourse = this.state.editable ? <Button title='Delete course' onPress={this.deleteCourse}  /> : '';
+    let name = this.state.name ? this.state.name : '';
+    let rating = this.state.rating ? this.state.rating : '';
+    let slope = this.state.slope ? this.state.slope : '';
+    let deleteTeebox = this.state.editable ? <Button title='Delete teebox' onPress={this.deleteTeebox}  /> : '';
     return (
-      <Text>Teebox</Text>
-      // <Animated.View style={[
-      //   styles.addCoursesWrapper,
-      //   { transform: [ {translateY: slideAnim} ]}
-      // ]}>
-      // <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      //   <View style={styles.addCoursesView}>
-      //     <View style={ {flexDirection: 'row', justifyContent: 'space-between'} }>
-      //       <Text onPress={this.animateClose}>~~~Close~~~</Text>
-      //       {editSave}
-      //     </View>
-      //     <TextInput
-      //       editable={this.state.editable}
-      //       value={name}
-      //       onChangeText={text => this.setState({name: text})}
-      //     />
-      //     <TextInput
-      //       editable={this.state.editable}
-      //       value={notes}
-      //       onChangeText={text => this.setState({notes: text})}
-      //     />
-      //     {deleteCourse}
-      //   </View>
-      // </TouchableWithoutFeedback>
-      // </Animated.View>
+      <Animated.View style={[
+        styles.teeboxWrapper,
+        { transform: [ {translateY: slideAnim} ]}
+      ]}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.addTeeboxView}>
+
+          <View style={ {flexDirection: 'row', justifyContent: 'space-between'} }>
+            <Text onPress={this.animateClose}>~~~Close~~~</Text>
+            {editSave}
+          </View>
+
+          <TextInput
+            editable={this.state.editable}
+            value={name}
+            onChangeText={name => this.setState({name})}
+          />
+
+          <TextInput
+            editable={this.state.editable}
+            value={rating}
+            onChangeText={rating => this.setState({rating})}
+            keyboardType='numeric'
+            maxLength={4}
+          />
+
+          <TextInput
+            editable={this.state.editable}
+            value={slope}
+            onChangeText={slope => this.setState({slope})}
+            keyboardType='numeric'
+            maxLength={3}
+          />
+
+          {deleteTeebox}
+        </View>
+      </TouchableWithoutFeedback>
+      </Animated.View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  addCoursesWrapper: {
+  teeboxWrapper: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'orange'
   },
-  addCoursesView: {
+  addTeeboxView: {
     ...StyleSheet.absoluteFillObject,
   }
 });
