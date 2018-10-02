@@ -41,9 +41,10 @@ export default class MyRounds extends Component {
     let roundPage = this.state.showRound
                   ? <Round
                       user={this.props.user}
+                      round={this.state.currentRound}
                       courses={this.props.courses}
                       getUserInfo={this.props.getUserInfo}
-                      close={() => this.setState({showAddRound: false})}
+                      close={() => this.setState({showRound: false})}
                     />
                   : '';
     return (

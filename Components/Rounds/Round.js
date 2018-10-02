@@ -35,7 +35,7 @@ export default class Round extends Component {
     }
   }
 
-  editTeebox = () => {
+  editRound = () => {
     // let { name } = this.state;
     // let rating = parseFloat(this.state.rating);
     // let slope = parseInt(this.state.slope);
@@ -46,7 +46,7 @@ export default class Round extends Component {
     //   id: this.props.teebox._id
     // }).then(result => {
     //   this.props.editTeebox(result.data.updatedTeebox, this.props.teeboxIdx);
-    //   this.setState({editable: false});
+      this.setState({editable: false});
     // });
   }
 
@@ -85,14 +85,13 @@ export default class Round extends Component {
         duration: slideTime
       }
     ).start();
-    console.log('hiyo');
   }
 
   render() {
     let { slideAnim } = this.state;
-    // let editSave = this.state.editable
-    //              ? <Text onPress={this.editTeebox}>Done</Text>
-    //              : <Text onPress={() => this.setState({editable: true})}>Edit</Text>;
+    let editSave = this.state.editable
+                 ? <Text onPress={this.editRound}>Done</Text>
+                 : <Text onPress={() => this.setState({editable: true})}>Edit</Text>;
     // let name = this.state.name ? this.state.name : '';
     // let rating = this.state.rating ? this.state.rating : '';
     // let slope = this.state.slope ? this.state.slope : '';
@@ -105,36 +104,53 @@ export default class Round extends Component {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.addRoundView}>
 
-            <Text>hello from Round</Text>
 
-            {/* <View style={ {flexDirection: 'row', justifyContent: 'space-between'} }>
+            <View style={ {flexDirection: 'row', justifyContent: 'space-between'} }>
               <Text onPress={this.animateClose}>~~~Close~~~</Text>
               {editSave}
             </View>
 
-            <TextInput
+
+
+
+            <Text>hello from Round</Text>
+            <Text>courseId: {this.props.round.courseId}</Text>
+            <Text>teeboxId: {this.props.round.teeboxId}</Text>
+            <Text>date: {this.props.round.date}</Text>
+            <Text>score: {this.props.round.score}</Text>
+            <Text>price: {this.props.round.price}</Text>
+            <Text>notes: {this.props.round.notes}</Text>
+
+
+
+
+            {/* <TextInput
               editable={this.state.editable}
               value={name}
               onChangeText={name => this.setState({name})}
-            />
+            /> */}
 
-            <TextInput
+            {/* <TextInput
               editable={this.state.editable}
               value={rating}
               onChangeText={rating => this.setState({rating})}
               keyboardType='numeric'
               maxLength={4}
-            />
+            /> */}
 
-            <TextInput
+            {/* <TextInput
               editable={this.state.editable}
               value={slope}
               onChangeText={slope => this.setState({slope})}
               keyboardType='numeric'
               maxLength={3}
-            />
+            /> */}
 
-            {deleteTeebox} */}
+            {/* {deleteTeebox} */}
+
+
+
+
           </View>
         </TouchableWithoutFeedback>
       </Animated.View>
