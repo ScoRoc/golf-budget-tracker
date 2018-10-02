@@ -14,7 +14,7 @@ import {
 import { Icon } from 'react-native-elements';
 import axios from 'axios';
 import AddTeebox from '../Teeboxes/AddTeebox';
-import Teebox from '../Teeboxes/Teebox';
+import PendingTeebox from '../Teeboxes/PendingTeebox';
 
 const slideTime = 700;
 
@@ -26,6 +26,7 @@ export default class AddCourse extends Component {
       showAddTeebox: false,
       showTeebox: false,
       currentTeebox: '',
+      currentTeeboxIdx: '',
       courseName: '',
       notes: '',
       teeboxes: []
@@ -39,8 +40,6 @@ export default class AddCourse extends Component {
       user: this.props.user,
       teeboxes: this.state.teeboxes
     }).then(result => {
-      console.log(result.data);
-      this.props.getCourses();
       if (this.props.setCourse) this.props.setCourse(result.data.newCourse);
       this.animateClose();
     })
@@ -50,8 +49,21 @@ export default class AddCourse extends Component {
     this.state.teeboxes.push(teebox);
   }
 
+  updateTeebox = (idx, teebox) => {
+    const updatedTeeboxes = [...this.state.teeboxes];
+    updatedTeeboxes[idx] = teebox;
+    this.setState({teeboxes: updatedTeeboxes});
+  }
+
+  deleteTeebox = idx => {
+    const updatedTeeboxes = this.state.teeboxes;
+    updatedTeeboxes.splice(idx, 1);
+    this.setState({teeboxes: updatedTeeboxes});
+  }
+
   touchTeeboxName = idx => {
-    this.setState({currentTeebox: this.state.teeboxes[idx], showTeebox: true});
+    let touchedTeebox = this.state.teeboxes[idx];
+    this.setState({currentTeebox: touchedTeebox, currentTeeboxIdx: idx, showTeebox: true});
   }
 
   animateClose = () => {
@@ -83,17 +95,19 @@ export default class AddCourse extends Component {
                       addTeebox={this.addTeebox}
                     />
                   : '';
-    let teeboxPage = this.state.showTeebox
-                  ? <Teebox
+    let pendingTeeboxPage = this.state.showTeebox
+                  ? <PendingTeebox
                       user={this.props.user}
-                      currentCourse={this.state.currentCourse}
-                      close={() => this.setState({showCourse: false})}
-                      getCourses={this.props.getCourses}
+                      teebox={this.state.currentTeebox}
+                      teeboxIdx={this.state.currentTeeboxIdx}
+                      close={() => this.setState({showTeebox: false})}
+                      updateTeebox={this.updateTeebox}
+                      deleteTeebox={this.deleteTeebox}
                     />
                   : '';
     let teeboxes = this.state.teeboxes.map( (teebox, id) => {
       return (
-        <TouchableHighlight onPress={() => this.touchCourseName(id)} underlayColor='rgb(102, 51, 153)' key={id}>
+        <TouchableHighlight onPress={() => this.touchTeeboxName(id)} underlayColor='rgb(102, 51, 153)' key={id}>
           <Text style={styles.teebox}>{teebox.name}</Text>
         </TouchableHighlight>
       );
@@ -131,6 +145,8 @@ export default class AddCourse extends Component {
           </View>
 
           {addTeebox}
+
+          {pendingTeeboxPage}
 
           <Text>Notes</Text>
           <TextInput

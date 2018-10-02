@@ -39,7 +39,7 @@ export default class Course extends Component {
       notes: this.state.notes,
       courseId: this.state.course._id
     }).then(result => {
-      this.props.getCourses();
+      this.props.getUserInfo();
       this.setState({editable: false})
     })
   }
@@ -50,7 +50,7 @@ export default class Course extends Component {
       method: 'delete',
       data: {courseId: this.state.course._id}
     }).then(result => {
-      this.props.getCourses();
+      this.props.getUserInfo();
       this.animateClose();
     })
   }
@@ -104,7 +104,7 @@ export default class Course extends Component {
                       user={this.props.user}
                       close={() => this.setState({showTeebox: false})}
                       teebox={this.state.course.teeboxes[this.state.currentTeebox]}
-                      getCourses={this.props.getCourses}
+                      getUserInfo={this.props.getUserInfo}
                     />
                   : '';
     let addTeebox = this.state.showAddTeebox
@@ -112,7 +112,7 @@ export default class Course extends Component {
                       user={this.props.user}
                       close={() => this.setState({showAddTeebox: false})}
                       course={this.state.course}
-                      getCourses={this.props.getCourses}
+                      getUserInfo={this.props.getUserInfo}
                     />
                   : '';
     return (

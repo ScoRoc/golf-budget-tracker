@@ -19,8 +19,14 @@ export default class MyCourses extends Component {
     this.setState({currentCourse: this.props.courses[idx], showCourse: true});
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.courses !== prevProps.courses) {
+      this.props.getUserInfo();
+    }
+  }
+
   componentDidMount() {
-    this.props.getCourses();
+    this.props.getUserInfo();
   }
 
   render() {
@@ -28,7 +34,7 @@ export default class MyCourses extends Component {
                   ? <AddCourse
                       user={this.props.user}
                       close={() => this.setState({showAddCourse: false})}
-                      getCourses={this.props.getCourses}
+                      getUserInfo={this.props.getUserInfo}
                     />
                   : '';
     let coursePage = this.state.showCourse
@@ -36,7 +42,7 @@ export default class MyCourses extends Component {
                       user={this.props.user}
                       currentCourse={this.state.currentCourse}
                       close={() => this.setState({showCourse: false})}
-                      getCourses={this.props.getCourses}
+                      getUserInfo={this.props.getUserInfo}
                     />
                   : '';
     let courses = this.props.courses.map( (course, id) => {

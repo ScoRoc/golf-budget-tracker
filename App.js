@@ -23,13 +23,10 @@ export default class App extends React.Component {
     this.setState({ page });
   }
 
-    ////////////////////////////////////////////////////////////////
-   // UPDATE THIS TO GET ALL COURSE INFO...NOT JUST COURSE MODEL //
-  ////////////////////////////////////////////////////////////////
-  getCourses = () => {
-    axios.get(`http://localhost:3000/api/course/${this.state.user._id}`).then(result => {  //////// FIX URL
+  getUserInfo = () => {
+    axios.get(`http://localhost:3000/api/user/${this.state.user._id}`).then(result => {  //////// FIX URL
       this.setState({courses: result.data});
-      console.log('yoo');
+      // console.log('result.data: ', result.data);
     });
   }
 
@@ -53,7 +50,8 @@ export default class App extends React.Component {
       password: 'password'
     }).then( result => {
       AsyncStorage.setItem('golf-budget-tracker-token', result.data.token) // change 'mernToken' to your app name or something useful
-      this.liftTokenToState(result.data)
+      this.liftTokenToState(result.data);
+      this.getUserInfo();
     }).catch( err => console.log(err) )
   }
   ////////////////////////////////////////////
@@ -78,7 +76,8 @@ export default class App extends React.Component {
           token: result.data.token,
           user: result.data.user
         });
-      }).catch( err => console.log(err))
+      }).catch( err => console.log(err));
+      this.getUserInfo();
     }
   }
 
@@ -86,9 +85,9 @@ export default class App extends React.Component {
     let userName = this.state.user ? this.state.user.name : 'nothin yet';
     const pages = {
       home: <Home onPress={() => this.changePage('test')} />,
-      myCourses: <MyCourses user={this.state.user} getCourses={this.getCourses} courses={this.state.courses} />,
-      myRounds: <MyRounds user={this.state.user} getCourses={this.getCourses} courses={this.state.courses} />,
-      auth: <Auth liftToken={this.liftTokenToState} />
+      myCourses: <MyCourses user={this.state.user} getUserInfo={this.getUserInfo} courses={this.state.courses} />,
+      myRounds: <MyRounds user={this.state.user} getUserInfo={this.getUserInfo} courses={this.state.courses} />,
+      auth: <Auth getUserInfo={this.getUserInfo} liftToken={this.liftTokenToState} />
     }
 
     return (

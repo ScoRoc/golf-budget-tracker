@@ -16,7 +16,7 @@ export default class MyRounds extends Component {
                  ? <AddRound
                     user={this.props.user}
                     courses={this.props.courses}
-                    getCourses={this.props.getCourses}
+                    getUserInfo={this.props.getUserInfo}
                     close={() => this.setState({showAddRound: false})}
                   />
                  : '';

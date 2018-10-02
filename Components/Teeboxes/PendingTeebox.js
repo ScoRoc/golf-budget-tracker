@@ -27,30 +27,18 @@ export default class Teebox extends Component {
   }
 
   editTeebox = () => {
-    let { name } = this.state;
-    let rating = parseFloat(this.state.rating);
-    let slope = parseInt(this.state.slope);
-    axios.put('http://localhost:3000/api/teebox', {  /////// FIX URL
-      name,
-      rating,
-      slope,
-      id: this.props.teebox._id
-    }).then(result => {
-      console.log('result.data: ', result.data.updatedTeebox);
-      // this.props.getUserInfo();
-      this.setState({editable: false});
-    });
+    let editedTeebox = {
+      name: this.state.name,
+      rating: parseFloat(this.state.rating),
+      slope: parseInt(this.state.slope),
+    };
+    this.props.updateTeebox(this.props.teeboxIdx, editedTeebox);
+    this.setState({editable: false});
   }
 
   deleteTeebox = () => {
-    axios({
-      url: 'http://localhost:3000/api/teebox',  /////// FIX URL
-      method: 'delete',
-      data: {id: this.props.teebox._id}
-    }).then(result => {
-      // this.props.getUserInfo();
-      this.animateClose();
-    })
+    this.props.deleteTeebox(this.props.teeboxIdx);
+    this.animateClose();
   }
 
   animateClose = () => {
@@ -65,10 +53,13 @@ export default class Teebox extends Component {
   }
 
   componentDidMount() {
+    let name = this.props.teebox.name ? this.props.teebox.name : '';
+    let rating = this.props.teebox.rating ? this.props.teebox.rating.toString() : '';
+    let slope = this.props.teebox.slope ? this.props.teebox.slope.toString() : '';
     this.setState({
-      name: this.props.teebox.name,
-      rating: this.props.teebox.rating.toString(),
-      slope: this.props.teebox.slope.toString()
+      name: name,
+      rating: rating,
+      slope: slope
     });
     Animated.timing(
       this.state.slideAnim,
@@ -101,12 +92,14 @@ export default class Teebox extends Component {
             {editSave}
           </View>
 
+          <Text>Name:</Text>
           <TextInput
             editable={this.state.editable}
             value={name}
             onChangeText={name => this.setState({name})}
           />
 
+          <Text>Rating:</Text>
           <TextInput
             editable={this.state.editable}
             value={rating}
@@ -115,6 +108,7 @@ export default class Teebox extends Component {
             maxLength={4}
           />
 
+          <Text>Slope:</Text>
           <TextInput
             editable={this.state.editable}
             value={slope}
@@ -134,7 +128,8 @@ export default class Teebox extends Component {
 const styles = StyleSheet.create({
   teeboxWrapper: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'orange'
+    backgroundColor: 'orange',
+    zIndex: 30
   },
   addTeeboxView: {
     ...StyleSheet.absoluteFillObject,

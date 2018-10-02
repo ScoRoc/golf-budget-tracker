@@ -63,7 +63,7 @@ export default class AddRound extends Component {
       user: this.props.user
     }).then(result => {
       console.log('result.data.newRound: ', result.data.newRound);
-      // this.props.getCourses();
+      // this.props.getUserInfo();
       // if (this.props.setCourse) this.props.setCourse(this.state.courseName);
       // this.animateClose();
     })
@@ -81,7 +81,7 @@ export default class AddRound extends Component {
   }
 
   componentDidMount() {
-    this.props.getCourses();
+    this.props.getUserInfo();
     Animated.timing(
       this.state.slideAnim,
       {
@@ -96,7 +96,7 @@ export default class AddRound extends Component {
                   ? <AddCourse
                       user={this.props.user}
                       close={() => this.setState({showAddCourse: false})}
-                      getCourses={this.props.getCourses}
+                      getUserInfo={this.props.getUserInfo}
                       setCourse={this.setCourseFromAddCourse}
                     />
                   : '';

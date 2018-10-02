@@ -39,7 +39,7 @@ export default class AddTeebox extends Component {
       courseId: this.props.course._id
     }).then(result => {
       console.log('result.data: ', result.data);
-      this.props.getCourses();
+      // this.props.getUserInfo();
       this.animateClose();
     });
   }

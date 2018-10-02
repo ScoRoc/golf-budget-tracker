@@ -9,7 +9,7 @@ export default class NavButton extends React.Component {
       <View style={styles.auth}>
         <Signup liftToken={this.props.liftToken} />
         <Text>-- or --</Text>
-        <Login liftToken={this.props.liftToken} />
+        <Login getUserInfo={this.props.getUserInfo} liftToken={this.props.liftToken} />
       </View>
     );
   }
