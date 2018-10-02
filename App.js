@@ -40,7 +40,7 @@ export default class App extends React.Component {
   logout = () => {
     console.log('Logging out')
     AsyncStorage.removeItem('golf-budget-tracker-token')
-    this.setState({ token: null, user: null })
+    this.setState({ token: null, user: null });
   }
 
   ////////////////////////////////////////////
@@ -77,7 +77,6 @@ export default class App extends React.Component {
           user: result.data.user
         });
       }).catch( err => console.log(err));
-      this.getUserInfo();
     }
   }
 

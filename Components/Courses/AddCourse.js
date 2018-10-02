@@ -41,6 +41,7 @@ export default class AddCourse extends Component {
       teeboxes: this.state.teeboxes
     }).then(result => {
       console.log('result: ', result.data);
+      this.props.getUserInfo();
       if (this.props.setCourse) {
         let newCourse = result.data.newCourse;
         newCourse.teeboxes = result.data.newTeeboxes;

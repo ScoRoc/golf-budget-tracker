@@ -19,16 +19,6 @@ export default class MyRounds extends Component {
     this.setState({currentRound: this.props.rounds[idx], showRound: true});
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.courses !== prevProps.courses) {
-      this.props.getUserInfo();
-    }
-  }
-
-  componentDidMount() {
-    this.props.getUserInfo();
-  }
-
   render() {
     let rounds = this.props.rounds.map( (round, id) => {
       return (
@@ -52,6 +42,7 @@ export default class MyRounds extends Component {
                   ? <Round
                       user={this.props.user}
                       courses={this.props.courses}
+                      getUserInfo={this.props.getUserInfo}
                       close={() => this.setState({showAddRound: false})}
                     />
                   : '';

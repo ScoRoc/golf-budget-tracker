@@ -10,7 +10,6 @@ import {
   TouchableWithoutFeedback,
   View
 } from 'react-native';
-import axios from 'axios';
 
 const slideTime = 700;
 

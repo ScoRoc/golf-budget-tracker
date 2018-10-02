@@ -33,21 +33,19 @@ export default class Course extends Component {
     }
   }
 
-  updateCourseFromTeeboxAdd = teebox => {
+  updateCourseLocalState = (teebox, idx, type) => {
     let updatedCourse = {...this.state.course};
-    updatedCourse.teeboxes.push(teebox);
-    this.setState({updatedCourse});
-  }
-
-  updateCourseFromTeeboxEdit = (teebox, idx) => {
-    let updatedCourse = {...this.state.course};
-    updatedCourse.teeboxes[idx] = teebox;
-    this.setState({updatedCourse});
-  }
-
-  updateCourseFromTeeboxDelete = idx => {
-    let updatedCourse = {...this.state.course};
-    updatedCourse.teeboxes.splice(idx, 1);
+    switch (type) {
+      case 'add':
+        updatedCourse.teeboxes.push(teebox);
+        break;
+      case 'edit':
+        updatedCourse.teeboxes[idx] = teebox;
+        break;
+      case 'delete':
+        updatedCourse.teeboxes.splice(idx, 1);
+        break;
+    }
     this.setState({updatedCourse});
   }
 
@@ -57,7 +55,8 @@ export default class Course extends Component {
       notes: this.state.notes,
       courseId: this.state.course._id
     }).then(result => {
-      this.setState({editable: false})
+      this.setState({editable: false});
+      this.props.getUserInfo();
     })
   }
 
@@ -67,6 +66,7 @@ export default class Course extends Component {
       method: 'delete',
       data: {courseId: this.state.course._id}
     }).then(result => {
+      this.props.getUserInfo();
       this.animateClose();
     })
   }
@@ -80,12 +80,6 @@ export default class Course extends Component {
       }
     ).start();
     setTimeout(this.props.close, slideTime);
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.course.teeboxes !== prevProps.course.teeboxes) {
-      this.props.getUserInfo();
-    }
   }
 
   componentDidMount() {
@@ -122,21 +116,22 @@ export default class Course extends Component {
                      })
                    : '';
     let teeboxPage = this.state.showTeebox
-                  ? <Teebox
-                      user={this.props.user}
-                      close={() => this.setState({showTeebox: false})}
-                      teebox={this.state.course.teeboxes[this.state.currentTeeboxIdx]}
-                      teeboxIdx={this.state.currentTeeboxIdx}
-                      editTeebox={this.updateCourseFromTeeboxEdit}
-                      deleteTeebox={this.updateCourseFromTeeboxDelete}
-                    />
-                  : '';
+                   ? <Teebox
+                       user={this.props.user}
+                       close={() => this.setState({showTeebox: false})}
+                       teebox={this.state.course.teeboxes[this.state.currentTeeboxIdx]}
+                       teeboxIdx={this.state.currentTeeboxIdx}
+                       updateCourse={this.updateCourseLocalState}
+                       getUserInfo={this.props.getUserInfo}
+                     />
+                   : '';
     let addTeebox = this.state.showAddTeebox
                   ? <AddTeebox
                       user={this.props.user}
                       close={() => this.setState({showAddTeebox: false})}
                       course={this.state.course}
-                      updateCourse={this.updateCourseFromTeeboxAdd}
+                      updateCourse={this.updateCourseLocalState}
+                      getUserInfo={this.props.getUserInfo}
                     />
                   : '';
     return (

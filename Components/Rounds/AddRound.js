@@ -17,6 +17,7 @@ import { Icon } from 'react-native-elements';
 import axios from 'axios';
 import DatePicker from '../DatePicker';
 import AddCourse from '../Courses/AddCourse';
+import AddTeebox from '../Teeboxes/AddTeebox';
 
 const slideTime = 700;
 
@@ -29,9 +30,10 @@ export default class AddRound extends Component {
       showCoursePicker: false,
       showTeeboxPicker: false,
       showAddCourse: false,
+      showAddTeebox: false,
       course: null,
       courseId: '',
-      teebox: '',
+      teebox: null,
       teeboxId: '',
       date: new Date(),
       score: '',
@@ -42,6 +44,10 @@ export default class AddRound extends Component {
 
   setCourseFromAddCourse = course => {
     this.setState({course});
+  }
+
+  setTeeboxFromAddTeebox = teebox => {
+    this.setState({teebox});
   }
 
   handleCoursePicker = (courseId, idx) => {
@@ -82,7 +88,7 @@ export default class AddRound extends Component {
       user: this.props.user
     }).then(result => {
       console.log('result.data.newRound: ', result.data.newRound);
-      // this.props.getUserInfo();
+      this.props.getUserInfo();
       // if (this.props.setCourse) this.props.setCourse(this.state.courseName);
       this.animateClose();
     })
@@ -119,6 +125,15 @@ export default class AddRound extends Component {
                       setCourse={this.setCourseFromAddCourse}
                     />
                   : '';
+    // let addTeebox = this.state.showAddTeebox
+    //               ? <AddTeebox
+    //                   user={this.props.user}
+    //                   close={() => this.setState({showAddTeebox: false})}
+    //                   course={this.state.course}
+    //                   updateCourse={this.updateCourseLocalState}
+    //                   getUserInfo={this.props.getUserInfo}
+    //                 />
+    //               : '';
     let courses = this.props.courses.map((course, idx) => {
       return <Picker.Item label={course.courseName} value={course._id} key={idx} />
     });
@@ -139,10 +154,10 @@ export default class AddRound extends Component {
         <View style={styles.addRoundsView}>
           <Text onPress={this.animateClose}>~~~Close~~~</Text>
 
-          <View style={styles.selectCourseWrap}>
+          <View style={styles.selectAndAddWrap}>
             <Text onPress={() => this.setState({showCoursePicker: true})}>{courseName}</Text>
             <TouchableHighlight onPress={() => this.setState({showAddCourse: true})} underlayColor='rgb(102, 51, 153)'>
-              <View style={styles.addCourse}>
+              <View style={styles.addButton}>
                 <Text style={ {marginRight: 10} }>Add</Text>
                 <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
               </View>
@@ -164,7 +179,15 @@ export default class AddRound extends Component {
           </Modal>
           {addCourse}
 
-          <Text onPress={this.touchTeeboxName}>{teebox}</Text>
+          {/* <View style={styles.selectAndAddWrap}> */}
+            <Text onPress={this.touchTeeboxName}>{teebox}</Text>
+            {/* <TouchableHighlight onPress={() => this.setState({showAddTeebox: true})} underlayColor='rgb(102, 51, 153)'>
+              <View style={styles.addButton}>
+                <Text style={ {marginRight: 10} }>Add</Text>
+                <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
+              </View>
+            </TouchableHighlight>
+          </View> */}
           <Modal
             style={styles.modal}
             isOpen={this.state.showTeeboxPicker}
@@ -179,6 +202,7 @@ export default class AddRound extends Component {
                 {teeboxes}
               </Picker>
           </Modal>
+          {/* {addTeebox} */}
 
           <Text onPress={() => this.setState({showDatePicker: true})}>
             {this.state.date.toDateString()} {this.state.date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}
@@ -236,12 +260,12 @@ const styles = StyleSheet.create({
   addRoundsView: {
     ...StyleSheet.absoluteFillObject,
   },
-  selectCourseWrap: {
+  selectAndAddWrap: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'
   },
-  addCourse: {
+  addButton: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
