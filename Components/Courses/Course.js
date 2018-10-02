@@ -25,12 +25,30 @@ export default class Course extends Component {
       slideAnim: new Animated.Value(Dimensions.get('window').height),
       showAddTeebox: false,
       showTeexbox: false,
-      currentTeebox: '',
+      currentTeeboxIdx: '',
       course: null,
       name: '',
       notes: '',
       editable: false
     }
+  }
+
+  updateCourseFromTeeboxAdd = teebox => {
+    let updatedCourse = {...this.state.course};
+    updatedCourse.teeboxes.push(teebox);
+    this.setState({updatedCourse});
+  }
+
+  updateCourseFromTeeboxEdit = (teebox, idx) => {
+    let updatedCourse = {...this.state.course};
+    updatedCourse.teeboxes[idx] = teebox;
+    this.setState({updatedCourse});
+  }
+
+  updateCourseFromTeeboxDelete = idx => {
+    let updatedCourse = {...this.state.course};
+    updatedCourse.teeboxes.splice(idx, 1);
+    this.setState({updatedCourse});
   }
 
   editCourse = () => {
@@ -39,7 +57,6 @@ export default class Course extends Component {
       notes: this.state.notes,
       courseId: this.state.course._id
     }).then(result => {
-      this.props.getUserInfo();
       this.setState({editable: false})
     })
   }
@@ -50,7 +67,6 @@ export default class Course extends Component {
       method: 'delete',
       data: {courseId: this.state.course._id}
     }).then(result => {
-      this.props.getUserInfo();
       this.animateClose();
     })
   }
@@ -66,8 +82,14 @@ export default class Course extends Component {
     setTimeout(this.props.close, slideTime);
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.course.teeboxes !== prevProps.course.teeboxes) {
+      this.props.getUserInfo();
+    }
+  }
+
   componentDidMount() {
-    let course = this.props.currentCourse;
+    let course = this.props.course;
     this.setState({
       course: course,
       name: course.courseName,
@@ -93,7 +115,7 @@ export default class Course extends Component {
     const teeboxes = this.state.course
                    ? this.state.course.teeboxes.map((teebox, idx) => {
                        return (
-                         <TouchableHighlight onPress={() => this.setState({ currentTeebox: idx, showTeebox: true })} underlayColor='rgb(102, 51, 153)' key={idx}>
+                         <TouchableHighlight onPress={() => this.setState({ currentTeeboxIdx: idx, showTeebox: true })} underlayColor='rgb(102, 51, 153)' key={idx}>
                            <Text style={styles.teebox}>{teebox.name}</Text>
                          </TouchableHighlight>
                        )
@@ -103,8 +125,10 @@ export default class Course extends Component {
                   ? <Teebox
                       user={this.props.user}
                       close={() => this.setState({showTeebox: false})}
-                      teebox={this.state.course.teeboxes[this.state.currentTeebox]}
-                      getUserInfo={this.props.getUserInfo}
+                      teebox={this.state.course.teeboxes[this.state.currentTeeboxIdx]}
+                      teeboxIdx={this.state.currentTeeboxIdx}
+                      editTeebox={this.updateCourseFromTeeboxEdit}
+                      deleteTeebox={this.updateCourseFromTeeboxDelete}
                     />
                   : '';
     let addTeebox = this.state.showAddTeebox
@@ -112,7 +136,7 @@ export default class Course extends Component {
                       user={this.props.user}
                       close={() => this.setState({showAddTeebox: false})}
                       course={this.state.course}
-                      getUserInfo={this.props.getUserInfo}
+                      updateCourse={this.updateCourseFromTeeboxAdd}
                     />
                   : '';
     return (
@@ -127,12 +151,14 @@ export default class Course extends Component {
             {editSave}
           </View>
 
+          <Text>Course name:</Text>
           <TextInput
             editable={this.state.editable}
             value={name}
             onChangeText={text => this.setState({name: text})}
           />
 
+          <Text>Notes:</Text>
           <TextInput
             editable={this.state.editable}
             value={notes}

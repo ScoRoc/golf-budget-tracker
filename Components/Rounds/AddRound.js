@@ -27,10 +27,13 @@ export default class AddRound extends Component {
       slideAnim: new Animated.Value(Dimensions.get('window').width),
       showDatePicker: false,
       showCoursePicker: false,
+      showTeeboxPicker: false,
       showAddCourse: false,
-      date: new Date(),
       course: null,
       courseId: '',
+      teebox: '',
+      teeboxId: '',
+      date: new Date(),
       score: '',
       price: '',
       notes: ''
@@ -46,16 +49,33 @@ export default class AddRound extends Component {
       return course._id === courseId;
     });
     if (idx !== 0) {
-      this.setState({course: course[0], courseId})
+      this.setState({course: course[0], courseId});
+      console.log('course: ', course[0])
+    }
+  }
+
+  handleTeeboxPicker = (teeboxId, idx) => {
+    const teebox = this.state.course.teeboxes.filter(teebox => {
+      return teebox._id === teeboxId;
+    });
+    if (idx !== 0) {
+      this.setState({teebox: teebox[0], teeboxId});
+    }
+  }
+
+  touchTeeboxName = () => {
+    if (this.state.course) {
+      this.setState({showTeeboxPicker: true});
     }
   }
 
   addRound = () => {
-    const { course, date, notes } = this.state;
+    const { course, teebox, date, notes } = this.state;
     const score = parseInt(this.state.score);
     const price = parseInt(this.state.price);
     axios.post('http://localhost:3000/api/round', {  ///////// FIX URL
       course,
+      teebox,
       date,
       score,
       price,
@@ -103,8 +123,14 @@ export default class AddRound extends Component {
     let courses = this.props.courses.map((course, idx) => {
       return <Picker.Item label={course.courseName} value={course._id} key={idx} />
     });
+    let teeboxes = this.state.course
+                 ? this.state.course.teeboxes.map((teebox, idx) => {
+                     return <Picker.Item label={teebox.name} value={teebox._id} key={idx} />
+                   })
+                 : '';
     let { slideAnim } = this.state;
     let courseName = this.state.course ? this.state.course.courseName : 'Select a course...';
+    let teebox = this.state.teebox ? this.state.teebox.name : 'Pick a course to choose a teebox...';
     return (
       <Animated.View style={[
         styles.addRoundsWrapper,
@@ -138,6 +164,22 @@ export default class AddRound extends Component {
               </Picker>
           </Modal>
           {addCourse}
+
+          <Text onPress={this.touchTeeboxName}>{teebox}</Text>
+          <Modal
+            style={styles.modal}
+            isOpen={this.state.showTeeboxPicker}
+            backdropPressToClose={true}
+            position='bottom'
+            backdrop={true}
+            animationDuration={500}
+            onClosed={() => this.setState({showTeeboxPicker: false})}
+            >
+              <Picker selectedValue={this.state.teeboxId} onValueChange={(teeboxId, idx) => this.handleTeeboxPicker(teeboxId, idx)}>
+                <Picker.Item label='Please select a course...' value='pick' />
+                {teeboxes}
+              </Picker>
+          </Modal>
 
           <Text onPress={() => this.setState({showDatePicker: true})}>
             {this.state.date.toDateString()} {this.state.date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}

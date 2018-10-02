@@ -34,13 +34,12 @@ export default class MyCourses extends Component {
                   ? <AddCourse
                       user={this.props.user}
                       close={() => this.setState({showAddCourse: false})}
-                      getUserInfo={this.props.getUserInfo}
                     />
                   : '';
     let coursePage = this.state.showCourse
                   ? <Course
                       user={this.props.user}
-                      currentCourse={this.state.currentCourse}
+                      course={this.state.currentCourse}
                       close={() => this.setState({showCourse: false})}
                       getUserInfo={this.props.getUserInfo}
                     />

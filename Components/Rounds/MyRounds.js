@@ -7,11 +7,31 @@ export default class MyRounds extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      showAddRound: false
+      showAddRound: false,
+      showRound: false,
+      currentRound: {}
     }
   }
 
+  touchCourseName = idx => {
+    this.setState({currentCourse: this.props.courses[idx], showCourse: true});
+  }
+
+  componentDidMount() {
+    this.props.getUserInfo();
+  }
+
   render() {
+    let rounds = this.props.rounds.map( (round, id) => {
+      return (
+        <TouchableHighlight onPress={() => this.touchCourseName(id)} underlayColor='rgb(102, 51, 153)' key={id}>
+        <View>
+          <Text style={styles.round}>{round.score}</Text>
+          <Text style={styles.round}>courseName teebox date score price notes</Text>
+        </View>
+        </TouchableHighlight>
+      );
+    });
     let addRound = this.state.showAddRound
                  ? <AddRound
                     user={this.props.user}
@@ -33,6 +53,9 @@ export default class MyRounds extends Component {
           </View>
           <Text>CourseName____Date____Score____Price</Text>
           <Text>Notes_____________</Text>
+
+          {rounds}
+
           {addRound}
       </View>
     );
@@ -44,6 +67,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignSelf: 'stretch',
     backgroundColor: '#bfd'
+  },
+  round: {
+    marginBottom: 3,
+    color: 'rgb(195, 58, 161)'
   },
   addRoundWrap: {
     flexDirection: 'row',

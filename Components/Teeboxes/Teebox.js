@@ -36,8 +36,7 @@ export default class Teebox extends Component {
       slope,
       id: this.props.teebox._id
     }).then(result => {
-      console.log('result.data: ', result.data.updatedTeebox);
-      // this.props.getUserInfo();
+      this.props.editTeebox(result.data.updatedTeebox, this.props.teeboxIdx);
       this.setState({editable: false});
     });
   }
@@ -48,7 +47,7 @@ export default class Teebox extends Component {
       method: 'delete',
       data: {id: this.props.teebox._id}
     }).then(result => {
-      // this.props.getUserInfo();
+      this.props.deleteTeebox(this.props.teeboxIdx);
       this.animateClose();
     })
   }

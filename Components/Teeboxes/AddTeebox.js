@@ -38,8 +38,9 @@ export default class AddTeebox extends Component {
       slope,
       courseId: this.props.course._id
     }).then(result => {
-      console.log('result.data: ', result.data);
-      // this.props.getUserInfo();
+      if (this.props.updateCourse) {
+        this.props.updateCourse(result.data.newTeebox);
+      }
       this.animateClose();
     });
   }

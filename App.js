@@ -15,7 +15,8 @@ export default class App extends React.Component {
       page: 'home',
       token: null,
       user: null,
-      courses: []
+      courses: [],
+      rounds: []
     }
   }
 
@@ -25,8 +26,7 @@ export default class App extends React.Component {
 
   getUserInfo = () => {
     axios.get(`http://localhost:3000/api/user/${this.state.user._id}`).then(result => {  //////// FIX URL
-      this.setState({courses: result.data});
-      // console.log('result.data: ', result.data);
+      this.setState({courses: result.data.courses, rounds: result.data.rounds});
     });
   }
 
@@ -86,7 +86,12 @@ export default class App extends React.Component {
     const pages = {
       home: <Home onPress={() => this.changePage('test')} />,
       myCourses: <MyCourses user={this.state.user} getUserInfo={this.getUserInfo} courses={this.state.courses} />,
-      myRounds: <MyRounds user={this.state.user} getUserInfo={this.getUserInfo} courses={this.state.courses} />,
+      myRounds: <MyRounds
+                  user={this.state.user}
+                  getUserInfo={this.getUserInfo}
+                  courses={this.state.courses}
+                  rounds={this.state.rounds}
+                />,
       auth: <Auth getUserInfo={this.getUserInfo} liftToken={this.liftTokenToState} />
     }
 
