@@ -49,8 +49,7 @@ export default class AddRound extends Component {
       return course._id === courseId;
     });
     if (idx !== 0) {
-      this.setState({course: course[0], courseId});
-      console.log('course: ', course[0])
+      this.setState({course: course[0], courseId, teebox: '', teeboxId: ''});
     }
   }
 
@@ -85,7 +84,7 @@ export default class AddRound extends Component {
       console.log('result.data.newRound: ', result.data.newRound);
       // this.props.getUserInfo();
       // if (this.props.setCourse) this.props.setCourse(this.state.courseName);
-      // this.animateClose();
+      this.animateClose();
     })
   }
 
@@ -221,10 +220,6 @@ export default class AddRound extends Component {
           />
 
           <Button title='Add round' onPress={this.addRound} />
-
-          <Text>ADD RATING/SLOPE</Text>
-          <Text>RATING is 2 num/1 dec float: 67.3...83.4...etc</Text>
-          <Text>RATING is 3 digit int....322, 131, 389</Text>
 
         </View>
       </TouchableWithoutFeedback>

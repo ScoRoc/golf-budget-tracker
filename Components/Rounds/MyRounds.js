@@ -17,6 +17,12 @@ export default class MyRounds extends Component {
     this.setState({currentCourse: this.props.courses[idx], showCourse: true});
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.courses !== prevProps.courses) {
+      this.props.getUserInfo();
+    }
+  }
+
   componentDidMount() {
     this.props.getUserInfo();
   }
