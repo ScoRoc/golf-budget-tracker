@@ -24,11 +24,12 @@ export default class Round extends Component {
       showCoursePicker: false,
       showTeeboxPicker: false,
       showAddCourse: false,
+      roundId: '',
       course: null,
       courseId: '',
-      teebox: '',
+      teebox: null,
       teeboxId: '',
-      date: new Date(),
+      date: '',
       score: '',
       price: '',
       notes: ''
@@ -50,15 +51,15 @@ export default class Round extends Component {
     // });
   }
 
-  deleteTeebox = () => {
-    // axios({
-    //   url: 'http://localhost:3000/api/teebox',  /////// FIX URL
-    //   method: 'delete',
-    //   data: {id: this.props.teebox._id}
-    // }).then(result => {
-    //   this.props.deleteTeebox(this.props.teeboxIdx);
-    //   this.animateClose();
-    // })
+  deleteRound = () => {
+    axios({
+      url: 'http://localhost:3000/api/round',  /////// FIX URL
+      method: 'delete',
+      data: {id: this.state.roundId}
+    }).then(result => {
+      this.props.getUserInfo();
+      this.animateClose();
+    });
   }
 
   animateClose = () => {
@@ -73,11 +74,32 @@ export default class Round extends Component {
   }
 
   componentDidMount() {
-    // this.setState({
-    //   name: this.props.teebox.name,
-    //   rating: this.props.teebox.rating.toString(),
-    //   slope: this.props.teebox.slope.toString()
-    // });
+    let { date, notes } = this.props.round;
+    let score = this.props.round.score.toString();
+    let price = this.props.round.score.toString();
+    let course = 'No course selected';
+    let teebox = 'No teebox selected';
+    this.props.courses.forEach(oneCourse => {
+      if (oneCourse._id === this.props.round.courseId) {
+        course = oneCourse;
+        oneCourse.teeboxes.forEach(oneTeebox => {
+          if (oneTeebox._id === this.props.round.teeboxId) {
+            teebox = oneTeebox;
+          }
+        });
+      }
+    });
+    this.setState({
+      roundId: this.props.round._id,
+      course,
+      courseId: course._id,
+      teebox,
+      teeboxId: teebox._id,
+      date,
+      score,
+      price,
+      notes
+    });
     Animated.timing(
       this.state.slideAnim,
       {
@@ -92,10 +114,7 @@ export default class Round extends Component {
     let editSave = this.state.editable
                  ? <Text onPress={this.editRound}>Done</Text>
                  : <Text onPress={() => this.setState({editable: true})}>Edit</Text>;
-    // let name = this.state.name ? this.state.name : '';
-    // let rating = this.state.rating ? this.state.rating : '';
-    // let slope = this.state.slope ? this.state.slope : '';
-    // let deleteTeebox = this.state.editable ? <Button title='Delete teebox' onPress={this.deleteTeebox}  /> : '';
+    let deleteRound = this.state.editable ? <Button title='Delete round' onPress={this.deleteRound}  /> : '';
     return (
       <Animated.View style={[
         styles.roundWrapper,
@@ -114,39 +133,108 @@ export default class Round extends Component {
 
 
             <Text>hello from Round</Text>
-            <Text>courseId: {this.props.round.courseId}</Text>
+            <Text>courseName: {this.state.courseId}</Text>
             <Text>teeboxId: {this.props.round.teeboxId}</Text>
             <Text>date: {this.props.round.date}</Text>
-            <Text>score: {this.props.round.score}</Text>
-            <Text>price: {this.props.round.price}</Text>
-            <Text>notes: {this.props.round.notes}</Text>
 
 
 
 
-            {/* <TextInput
-              editable={this.state.editable}
-              value={name}
-              onChangeText={name => this.setState({name})}
-            /> */}
+            {/* <View style={styles.selectAndAddWrap}>
+              <Text onPress={() => this.setState({showCoursePicker: true})}>{courseName}</Text>
+              <TouchableHighlight onPress={() => this.setState({showAddCourse: true})} underlayColor='rgb(102, 51, 153)'>
+                <View style={styles.addButton}>
+                  <Text style={ {marginRight: 10} }>Add</Text>
+                  <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
+                </View>
+              </TouchableHighlight>
+            </View>
+            <Modal
+              style={styles.modal}
+              isOpen={this.state.showCoursePicker}
+              backdropPressToClose={true}
+              position='bottom'
+              backdrop={true}
+              animationDuration={500}
+              onClosed={() => this.setState({showCoursePicker: false})}
+              >
+                <Picker selectedValue={this.state.courseId} onValueChange={(courseId, idx) => this.handleCoursePicker(courseId, idx)}>
+                  <Picker.Item label='Please select a course...' value='pick' />
+                  {courses}
+                </Picker>
+            </Modal> */}
+            {/* {addCourse} */}
 
-            {/* <TextInput
-              editable={this.state.editable}
-              value={rating}
-              onChangeText={rating => this.setState({rating})}
-              keyboardType='numeric'
-              maxLength={4}
-            /> */}
+            {/* <View style={styles.selectAndAddWrap}> */}
+              {/* <Text onPress={this.touchTeeboxName}>{teebox}</Text> */}
+              {/* <TouchableHighlight onPress={() => this.setState({showAddTeebox: true})} underlayColor='rgb(102, 51, 153)'>
+                <View style={styles.addButton}>
+                  <Text style={ {marginRight: 10} }>Add</Text>
+                  <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
+                </View>
+              </TouchableHighlight>
+            </View> */}
+            {/* <Modal
+              style={styles.modal}
+              isOpen={this.state.showTeeboxPicker}
+              backdropPressToClose={true}
+              position='bottom'
+              backdrop={true}
+              animationDuration={500}
+              onClosed={() => this.setState({showTeeboxPicker: false})}
+              >
+                <Picker selectedValue={this.state.teeboxId} onValueChange={(teeboxId, idx) => this.handleTeeboxPicker(teeboxId, idx)}>
+                  <Picker.Item label='Please select a course...' value='pick' />
+                  {teeboxes}
+                </Picker>
+            </Modal> */}
+            {/* {addTeebox} */}
 
-            {/* <TextInput
-              editable={this.state.editable}
-              value={slope}
-              onChangeText={slope => this.setState({slope})}
+            {/* <Text onPress={() => this.setState({showDatePicker: true})}>
+              {this.state.date.toDateString()} {this.state.date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}
+            </Text>
+            <Modal
+              style={styles.modal}
+              isOpen={this.state.showDatePicker}
+              backdropPressToClose={true}
+              position='bottom'
+              backdrop={true}
+              animationDuration={500}
+              onClosed={() => this.setState({showDatePicker: false})}
+              >
+                <DatePicker date={this.state.date} setDate={date => this.setState({date})} />
+            </Modal> */}
+
+            <Text>Score</Text>
+            <TextInput
+              value={this.state.score}
+              onChangeText={score => this.setState({score})}
               keyboardType='numeric'
               maxLength={3}
-            /> */}
+              editable={this.state.editable}
+            />
 
-            {/* {deleteTeebox} */}
+            <Text>Price</Text>
+            <TextInput
+              value={this.state.price}
+              onChangeText={price => this.setState({price})}
+              keyboardType='numeric'
+              maxLength={3}
+            />
+
+            <Text>Notes</Text>
+            <TextInput
+              value={this.state.notes}
+              onChangeText={notes => this.setState({notes})}
+              multiline={true}
+              style={{backgroundColor: 'red'}}
+            />
+
+
+
+
+
+            {deleteRound}
 
 
 
