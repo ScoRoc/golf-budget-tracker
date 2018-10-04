@@ -134,6 +134,14 @@ export default class Course extends Component {
                       getUserInfo={this.props.getUserInfo}
                     />
                   : '';
+    let addTeeboxPlus = this.state.editable
+                      ? <TouchableHighlight onPress={() => this.setState({showAddTeebox: true})} underlayColor='rgb(102, 51, 153)'>
+                          <View style={styles.addTeebox}>
+                            <Text style={ {marginRight: 10} }>Add</Text>
+                            <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
+                          </View>
+                        </TouchableHighlight>
+                      : '';
     return (
       <Animated.View style={[
         styles.addCoursesWrapper,
@@ -162,12 +170,7 @@ export default class Course extends Component {
 
           <View style={styles.addTeeboxWrap}>
             <Text>Tee Boxes</Text>
-            <TouchableHighlight onPress={() => this.setState({showAddTeebox: true})} underlayColor='rgb(102, 51, 153)'>
-              <View style={styles.addTeebox}>
-                <Text style={ {marginRight: 10} }>Add</Text>
-                <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
-              </View>
-            </TouchableHighlight>
+            {addTeeboxPlus}
           </View>
 
           {teeboxes}

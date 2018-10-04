@@ -43,18 +43,23 @@ export default class Round extends Component {
   }
 
   editRound = () => {
-    // let { name } = this.state;
-    // let rating = parseFloat(this.state.rating);
-    // let slope = parseInt(this.state.slope);
-    // axios.put('http://localhost:3000/api/teebox', {  /////// FIX URL
-    //   name,
-    //   rating,
-    //   slope,
-    //   id: this.props.teebox._id
-    // }).then(result => {
-    //   this.props.editTeebox(result.data.updatedTeebox, this.props.teeboxIdx);
+    const { roundId, course, teebox, date, notes } = this.state;
+    const score = parseInt(this.state.score);
+    const price = parseInt(this.state.price);
+    axios.put('http://localhost:3000/api/round', {  ///////// FIX URL
+      roundId,
+      course,
+      teebox,
+      date,
+      score,
+      price,
+      notes,
+      user: this.props.user
+    }).then(result => {
+      // console.log('result.data: ', result.data);
+      this.props.getUserInfo();
       this.setState({editable: false});
-    // });
+    });
   }
 
   deleteRound = () => {
@@ -69,7 +74,7 @@ export default class Round extends Component {
   }
 
   setCourseFromAddCourse = course => {
-    this.setState({course});
+    this.setState({course, courseId: course._id});
   }
 
   handleCoursePicker = (courseId, idx) => {
@@ -79,6 +84,7 @@ export default class Round extends Component {
     if (idx !== 0) {
       this.setState({course: course[0], courseId, teebox: '', teeboxId: ''});
     }
+    console.log('courseId: ', this.state.courseId);
   }
 
   handleTeeboxPicker = (teeboxId, idx) => {
@@ -117,7 +123,7 @@ export default class Round extends Component {
     let { notes } = this.props.round;
     let date = new Date(this.props.round.date);
     let score = this.props.round.score.toString();
-    let price = this.props.round.score.toString();
+    let price = this.props.round.price.toString();
     let course = 'No course selected';
     let teebox = 'No teebox selected';
     this.props.courses.forEach(oneCourse => {
@@ -159,15 +165,28 @@ export default class Round extends Component {
                       setCourse={this.setCourseFromAddCourse}
                     />
                   : '';
+    let addCoursePlus = this.state.editable
+                      ? <TouchableHighlight onPress={() => this.setState({showAddCourse: true})} underlayColor='rgb(102, 51, 153)'>
+                          <View style={styles.addButton}>
+                            <Text style={ {marginRight: 10} }>Add</Text>
+                            <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
+                          </View>
+                        </TouchableHighlight>
+                      : '';
     let editSave = this.state.editable
                  ? <Text onPress={this.editRound}>Done</Text>
                  : <Text onPress={() => this.setState({editable: true})}>Edit</Text>;
     let courses = this.props.courses.map((course, idx) => {
       return <Picker.Item label={course.courseName} value={course._id} key={idx} />
     });
+    let teeboxes = this.state.course
+                 ? this.state.course.teeboxes.map((teebox, idx) => {
+                     return <Picker.Item label={teebox.name} value={teebox._id} key={idx} />
+                   })
+                 : '';
     let { slideAnim } = this.state;
     let courseName = this.state.course ? this.state.course.courseName : 'Select a course...';
-    // let teebox = this.state.teebox ? this.state.teebox.name : 'Pick a course to choose a teebox...';
+    let teebox = this.state.teebox ? this.state.teebox.name : 'Pick a course to choose a teebox...';
     let deleteRound = this.state.editable ? <Button title='Delete round' onPress={this.deleteRound}  /> : '';
     return (
       <Animated.View style={[
@@ -183,24 +202,10 @@ export default class Round extends Component {
               {editSave}
             </View>
 
-
-
-
-            <Text>courseName: {this.state.courseId}</Text>
-            <Text>teeboxId: {this.props.round.teeboxId}</Text>
-
-
-
-
-            {/* <View style={styles.selectAndAddWrap}>
-              <Text onPress={this.openModal('showCoursePicker')}>{courseName}</Text>
-              <TouchableHighlight onPress={() => this.setState({showAddCourse: true})} underlayColor='rgb(102, 51, 153)'>
-                <View style={styles.addButton}>
-                  <Text style={ {marginRight: 10} }>Add</Text>
-                  <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
-                </View>
-              </TouchableHighlight>
-            </View> */}
+            <View style={styles.selectAndAddWrap}>
+              <Text onPress={() => this.openModal('showCoursePicker')}>{courseName}</Text>
+              {addCoursePlus}
+            </View>
             <Modal
               style={styles.modal}
               isOpen={this.state.showCoursePicker}
@@ -217,16 +222,16 @@ export default class Round extends Component {
             </Modal>
             {addCourse}
 
-            {/* <View style={styles.selectAndAddWrap}> */}
-              {/* <Text onPress={this.touchTeeboxName}>{teebox}</Text> */}
+            <View style={styles.selectAndAddWrap}>
+              <Text onPress={this.touchTeeboxName}>{teebox}</Text>
               {/* <TouchableHighlight onPress={() => this.setState({showAddTeebox: true})} underlayColor='rgb(102, 51, 153)'>
                 <View style={styles.addButton}>
                   <Text style={ {marginRight: 10} }>Add</Text>
                   <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
                 </View>
-              </TouchableHighlight>
-            </View> */}
-            {/* <Modal
+              </TouchableHighlight> */}
+            </View>
+            <Modal
               style={styles.modal}
               isOpen={this.state.showTeeboxPicker}
               backdropPressToClose={true}
@@ -239,7 +244,7 @@ export default class Round extends Component {
                   <Picker.Item label='Please select a course...' value='pick' />
                   {teeboxes}
                 </Picker>
-            </Modal> */}
+            </Modal>
             {/* {addTeebox} */}
 
             <Text onPress={() => this.openModal('showDatePicker')}>
@@ -272,6 +277,7 @@ export default class Round extends Component {
               onChangeText={price => this.setState({price})}
               keyboardType='numeric'
               maxLength={3}
+              editable={this.state.editable}
             />
 
             <Text>Notes</Text>
@@ -279,17 +285,11 @@ export default class Round extends Component {
               value={this.state.notes}
               onChangeText={notes => this.setState({notes})}
               multiline={true}
+              editable={this.state.editable}
               style={{backgroundColor: 'red'}}
             />
 
-
-
-
-
             {deleteRound}
-
-
-
 
           </View>
         </TouchableWithoutFeedback>
