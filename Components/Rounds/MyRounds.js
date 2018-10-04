@@ -58,7 +58,6 @@ export default class MyRounds extends Component {
               </View>
             </TouchableHighlight>
           </View>
-          <Text>CourseName____Date____Score____Price</Text>
 
           {rounds}
 

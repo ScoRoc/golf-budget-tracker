@@ -56,7 +56,6 @@ export default class Round extends Component {
       notes,
       user: this.props.user
     }).then(result => {
-      // console.log('result.data: ', result.data);
       this.props.getUserInfo();
       this.setState({editable: false});
     });
@@ -66,7 +65,7 @@ export default class Round extends Component {
     axios({
       url: 'http://localhost:3000/api/round',  /////// FIX URL
       method: 'delete',
-      data: {id: this.state.roundId}
+      data: {id: this.state.roundId, user: this.props.user}
     }).then(result => {
       this.props.getUserInfo();
       this.animateClose();
@@ -84,7 +83,6 @@ export default class Round extends Component {
     if (idx !== 0) {
       this.setState({course: course[0], courseId, teebox: '', teeboxId: ''});
     }
-    console.log('courseId: ', this.state.courseId);
   }
 
   handleTeeboxPicker = (teeboxId, idx) => {
