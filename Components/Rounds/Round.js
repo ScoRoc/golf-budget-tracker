@@ -4,13 +4,19 @@ import {
   Button,
   Dimensions,
   Keyboard,
+  Picker,
   StyleSheet,
   Text,
   TextInput,
+  TouchableHighlight,
   TouchableWithoutFeedback,
   View
 } from 'react-native';
+import Modal from 'react-native-modalbox';
+import { Icon } from 'react-native-elements';
 import axios from 'axios';
+import DatePicker from '../DatePicker';
+import AddCourse from '../Courses/AddCourse';
 
 const slideTime = 700;
 
@@ -29,7 +35,7 @@ export default class Round extends Component {
       courseId: '',
       teebox: null,
       teeboxId: '',
-      date: '',
+      date: new Date(),
       score: '',
       price: '',
       notes: ''
@@ -62,6 +68,40 @@ export default class Round extends Component {
     });
   }
 
+  setCourseFromAddCourse = course => {
+    this.setState({course});
+  }
+
+  handleCoursePicker = (courseId, idx) => {
+    const course = this.props.courses.filter(course => {
+      return course._id === courseId;
+    });
+    if (idx !== 0) {
+      this.setState({course: course[0], courseId, teebox: '', teeboxId: ''});
+    }
+  }
+
+  handleTeeboxPicker = (teeboxId, idx) => {
+    const teebox = this.state.course.teeboxes.filter(teebox => {
+      return teebox._id === teeboxId;
+    });
+    if (idx !== 0) {
+      this.setState({teebox: teebox[0], teeboxId});
+    }
+  }
+
+  touchTeeboxName = () => {
+    if (this.state.course) {
+      this.setState({showTeeboxPicker: true});
+    }
+  }
+
+  openModal = modal => {
+    if (this.state.editable) {
+      this.setState({[modal]: true});
+    }
+  }
+
   animateClose = () => {
     Animated.timing(
       this.state.slideAnim,
@@ -74,7 +114,8 @@ export default class Round extends Component {
   }
 
   componentDidMount() {
-    let { date, notes } = this.props.round;
+    let { notes } = this.props.round;
+    let date = new Date(this.props.round.date);
     let score = this.props.round.score.toString();
     let price = this.props.round.score.toString();
     let course = 'No course selected';
@@ -110,10 +151,23 @@ export default class Round extends Component {
   }
 
   render() {
-    let { slideAnim } = this.state;
+    let addCourse = this.state.showAddCourse
+                  ? <AddCourse
+                      user={this.props.user}
+                      close={() => this.setState({showAddCourse: false})}
+                      getUserInfo={this.props.getUserInfo}
+                      setCourse={this.setCourseFromAddCourse}
+                    />
+                  : '';
     let editSave = this.state.editable
                  ? <Text onPress={this.editRound}>Done</Text>
                  : <Text onPress={() => this.setState({editable: true})}>Edit</Text>;
+    let courses = this.props.courses.map((course, idx) => {
+      return <Picker.Item label={course.courseName} value={course._id} key={idx} />
+    });
+    let { slideAnim } = this.state;
+    let courseName = this.state.course ? this.state.course.courseName : 'Select a course...';
+    // let teebox = this.state.teebox ? this.state.teebox.name : 'Pick a course to choose a teebox...';
     let deleteRound = this.state.editable ? <Button title='Delete round' onPress={this.deleteRound}  /> : '';
     return (
       <Animated.View style={[
@@ -132,23 +186,21 @@ export default class Round extends Component {
 
 
 
-            <Text>hello from Round</Text>
             <Text>courseName: {this.state.courseId}</Text>
             <Text>teeboxId: {this.props.round.teeboxId}</Text>
-            <Text>date: {this.props.round.date}</Text>
 
 
 
 
             {/* <View style={styles.selectAndAddWrap}>
-              <Text onPress={() => this.setState({showCoursePicker: true})}>{courseName}</Text>
+              <Text onPress={this.openModal('showCoursePicker')}>{courseName}</Text>
               <TouchableHighlight onPress={() => this.setState({showAddCourse: true})} underlayColor='rgb(102, 51, 153)'>
                 <View style={styles.addButton}>
                   <Text style={ {marginRight: 10} }>Add</Text>
                   <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
                 </View>
               </TouchableHighlight>
-            </View>
+            </View> */}
             <Modal
               style={styles.modal}
               isOpen={this.state.showCoursePicker}
@@ -162,8 +214,8 @@ export default class Round extends Component {
                   <Picker.Item label='Please select a course...' value='pick' />
                   {courses}
                 </Picker>
-            </Modal> */}
-            {/* {addCourse} */}
+            </Modal>
+            {addCourse}
 
             {/* <View style={styles.selectAndAddWrap}> */}
               {/* <Text onPress={this.touchTeeboxName}>{teebox}</Text> */}
@@ -190,7 +242,7 @@ export default class Round extends Component {
             </Modal> */}
             {/* {addTeebox} */}
 
-            {/* <Text onPress={() => this.setState({showDatePicker: true})}>
+            <Text onPress={() => this.openModal('showDatePicker')}>
               {this.state.date.toDateString()} {this.state.date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}
             </Text>
             <Modal
@@ -203,7 +255,7 @@ export default class Round extends Component {
               onClosed={() => this.setState({showDatePicker: false})}
               >
                 <DatePicker date={this.state.date} setDate={date => this.setState({date})} />
-            </Modal> */}
+            </Modal>
 
             <Text>Score</Text>
             <TextInput
@@ -254,5 +306,20 @@ const styles = StyleSheet.create({
   },
   addRoundView: {
     ...StyleSheet.absoluteFillObject,
+  },
+  selectAndAddWrap: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  addButton: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    paddingRight: 30
+  },
+  modal: {
+    paddingTop: '5%',
+    height: '40%'
   }
 });
