@@ -27,7 +27,6 @@ export default class App extends React.Component {
   getUserInfo = () => {
     axios.get(`http://localhost:3000/api/user/${this.state.user._id}`).then(result => {  //////// FIX URL
       this.setState({user: result.data.user, courses: result.data.courses, rounds: result.data.rounds});
-      console.log('rounds: ', result.data.rounds);
     });
   }
 
