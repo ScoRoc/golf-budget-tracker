@@ -5,7 +5,7 @@ export default class Home extends Component {
   render() {
     const handicap  = !this.props.user
                     ? ''
-                    : this.props.user.handicap === 0
+                    : this.props.user.handicap === 99
                     ? 'Add a round to find your handicap'
                     : this.props.user.handicap;
     return (
