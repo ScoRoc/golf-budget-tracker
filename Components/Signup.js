@@ -20,7 +20,8 @@ class Signup extends Component {
       password: this.state.password
     }).then( result => {
       AsyncStorage.setItem('golf-budget-tracker-token', result.data.token) // change 'mernToken' to your app name or something useful
-      this.props.liftToken(result.data)
+      this.props.liftToken(result.data);
+      this.props.getUserInfo();
     })
   }
 

@@ -83,7 +83,11 @@ export default class App extends React.Component {
   render() {
     let userName = this.state.user ? this.state.user.name : 'nothin yet';
     const pages = {
-      home: <Home user={this.state.user} onPress={() => this.changePage('test')} />,
+      home: <Home
+              user={this.state.user}
+              getUserInfo={this.getUserInfo}
+              onPress={() => this.changePage('test')}
+            />,
       myCourses: <MyCourses user={this.state.user} getUserInfo={this.getUserInfo} courses={this.state.courses} />,
       myRounds: <MyRounds
                   user={this.state.user}

@@ -2,6 +2,11 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, FlatList } from 'react-native';
 
 export default class Home extends Component {
+
+  componentDidMount() {
+    if (this.props.user) this.props.getUserInfo();
+  }
+
   render() {
     const handicap  = !this.props.user
                     ? ''

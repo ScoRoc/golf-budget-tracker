@@ -7,7 +7,7 @@ export default class NavButton extends React.Component {
   render() {
     return (
       <View style={styles.auth}>
-        <Signup liftToken={this.props.liftToken} />
+        <Signup getUserInfo={this.props.getUserInfo} liftToken={this.props.liftToken} />
         <Text>-- or --</Text>
         <Login getUserInfo={this.props.getUserInfo} liftToken={this.props.liftToken} />
       </View>
