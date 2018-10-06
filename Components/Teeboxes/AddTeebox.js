@@ -36,7 +36,8 @@ export default class AddTeebox extends Component {
       name,
       rating,
       slope,
-      courseId: this.props.course._id
+      courseId: this.props.course._id,
+      userId: this.props.user._id
     }).then(result => {
       if (this.props.updateCourse) {
         this.props.updateCourse(result.data.newTeebox, null, 'add');
