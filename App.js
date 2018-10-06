@@ -58,7 +58,7 @@ export default class App extends React.Component {
 
   componentDidMount = () => {
     //////////////
-    // this.fakeLogin();  ////// GET RID OF THIS
+    this.fakeLogin();  ////// GET RID OF THIS
     //////////////
     var token = AsyncStorage.getItem('golf-budget-tracker-token');
     if (typeof token !== 'string' || token === 'undefined' || token === 'null' || token === '') {
