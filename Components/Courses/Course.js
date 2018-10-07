@@ -99,6 +99,7 @@ export default class Course extends Component {
   }
 
   render() {
+    if (this.state.course) this.state.course.teeboxes.forEach(teebox => console.log('teebox handi: ', teebox))
     let { slideAnim } = this.state;
     let editSave = this.state.editable
                  ? <Text onPress={this.editCourse}>Done</Text>
@@ -110,7 +111,7 @@ export default class Course extends Component {
                    ? this.state.course.teeboxes.map((teebox, idx) => {
                        return (
                          <TouchableHighlight onPress={() => this.setState({ currentTeeboxIdx: idx, showTeebox: true })} underlayColor='rgb(102, 51, 153)' key={idx}>
-                           <Text style={styles.teebox}>{teebox.name}</Text>
+                           <Text style={styles.teebox}>{teebox.name} --- teebox handicap: {teebox.teeboxHandicap}</Text>
                          </TouchableHighlight>
                        )
                      })

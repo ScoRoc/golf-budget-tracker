@@ -17,7 +17,12 @@ export default class Home extends Component {
       <View style={styles.home}>
           <Text>Home page</Text>
 
-          <Text>Your handicap: {handicap}</Text>
+          <Text>Your handicap index: {handicap}</Text>
+          <Text>Your current YTD spent</Text>
+          <Text>Your current MTD spent</Text>
+          <Text>You've played xxx rounds YTD</Text>
+          <Text>You've played xxx rounds MTD</Text>
+          <Text>See total spent in previous months of current year</Text>
 
       </View>
     );

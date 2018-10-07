@@ -21,15 +21,16 @@ export default class MyRounds extends Component {
 
   render() {
     let rounds = this.props.rounds.map( (round, id) => {
+      console.log(round);
       return (
         <TouchableHighlight onPress={() => this.touchRound(id)} underlayColor='rgb(102, 51, 153)' key={id}>
         <View>
-          <Text style={styles.round}>{round.score}</Text>
-          <Text style={styles.round}>courseName teebox date score price notes</Text>
+          <Text style={styles.round}>{(new Date(round.date)).toDateString()} ---------- {round.score}</Text>
+          <Text style={styles.round}>---------</Text>
         </View>
         </TouchableHighlight>
       );
-    });
+    }).reverse();
     let addRound = this.state.showAddRound
                  ? <AddRound
                      user={this.props.user}
