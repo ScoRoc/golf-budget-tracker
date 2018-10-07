@@ -21,7 +21,6 @@ export default class MyRounds extends Component {
 
   render() {
     let rounds = this.props.rounds.map( (round, id) => {
-      console.log(round);
       return (
         <TouchableHighlight onPress={() => this.touchRound(id)} underlayColor='rgb(102, 51, 153)' key={id}>
         <View>

@@ -87,7 +87,6 @@ export default class App extends React.Component {
               user={this.state.user}
               rounds={this.state.rounds}
               getUserInfo={this.getUserInfo}
-              onPress={() => this.changePage('test')}
             />,
       myCourses: <MyCourses user={this.state.user} getUserInfo={this.getUserInfo} courses={this.state.courses} />,
       myRounds: <MyRounds
@@ -96,7 +95,7 @@ export default class App extends React.Component {
                   courses={this.state.courses}
                   rounds={this.state.rounds}
                 />,
-      auth: <Auth getUserInfo={this.getUserInfo} liftToken={this.liftTokenToState} />
+      auth: <Auth getUserInfo={this.getUserInfo} liftToken={this.liftTokenToState} changePage={this.changePage} />
     }
 
     return (

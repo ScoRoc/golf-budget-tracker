@@ -65,7 +65,7 @@ export default class Round extends Component {
     axios({
       url: 'http://localhost:3000/api/round',  /////// FIX URL
       method: 'delete',
-      data: {id: this.state.roundId, user: this.props.user}
+      data: {roundId: this.state.roundId, teeboxId: this.state.teeboxId, user: this.props.user}
     }).then(result => {
       this.props.getUserInfo();
       this.animateClose();

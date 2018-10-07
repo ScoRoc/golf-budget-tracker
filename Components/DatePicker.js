@@ -5,7 +5,12 @@ export default class DatePicker extends React.Component {
   render() {
     return (
       <View style={styles.datePicker}>
-        <DatePickerIOS date={this.props.date} onDateChange={this.props.setDate} minuteInterval={5} />
+        <DatePickerIOS
+          date={this.props.date}
+          onDateChange={this.props.setDate}
+          maximumDate={new Date()}
+          minuteInterval={5}
+        />
       </View>
     );
   }

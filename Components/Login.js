@@ -20,6 +20,7 @@ class Login extends Component {
       AsyncStorage.setItem('golf-budget-tracker-token', result.data.token);
       this.props.liftToken(result.data);
       this.props.getUserInfo();
+      this.props.changePage('home');
     }).catch( err => console.log(err) );
   }
 
