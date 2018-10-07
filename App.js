@@ -46,7 +46,7 @@ export default class App extends React.Component {
   ////////////////////////////////////////////
   fakeLogin() {
     axios.post('http://localhost:3000/api/auth/login', {  ////////////// FIX FIX FIX FIX FIX FIX FIX
-      email: 'donnatester@donnatester.com',
+      email: 'k@k.com',
       password: 'password'
     }).then( result => {
       AsyncStorage.setItem('golf-budget-tracker-token', result.data.token) // change 'mernToken' to your app name or something useful
@@ -85,6 +85,7 @@ export default class App extends React.Component {
     const pages = {
       home: <Home
               user={this.state.user}
+              rounds={this.state.rounds}
               getUserInfo={this.getUserInfo}
               onPress={() => this.changePage('test')}
             />,

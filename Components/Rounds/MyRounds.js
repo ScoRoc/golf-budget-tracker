@@ -30,7 +30,7 @@ export default class MyRounds extends Component {
         </View>
         </TouchableHighlight>
       );
-    }).reverse();
+    });
     let addRound = this.state.showAddRound
                  ? <AddRound
                      user={this.props.user}
