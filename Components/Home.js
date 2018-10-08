@@ -39,7 +39,7 @@ export default class Home extends Component {
     const pastMonths = [];
     const month = round => new Date(round.date).getMonth();
     for (let i = 0; i < currentMonth; i++) {
-      pastMonths.push( {name: monthMap[i], rounds: 0, spent: 0} );
+      pastMonths.push( {name: monthMap[i], rounds: 0, spent: 0, show: false} );
     }
     rounds.forEach(round => {
       if (new Date(round.date).getFullYear() === currentYear) ytdRounds.push(round);
@@ -53,6 +53,7 @@ export default class Home extends Component {
         pastMonths[month(round)].spent += round.price;
       }
     });
+    pastMonths.reverse();
     this.setState({
       ytdRounds: ytdRounds.length,
       ytdSpent,
@@ -62,13 +63,24 @@ export default class Home extends Component {
     })
   }
 
+  showMonthDetails = i => {
+    const pastMonths = [...this.state.pastMonths];
+    pastMonths[i].show = !this.state.pastMonths[i].show;
+    this.setState({pastMonths});
+  }
+
   render() {
-    const pastMonths = this.state.pastMonths.reverse().map((month, i) => {
+    const pastMonths = this.state.pastMonths.map((month, i) => {
+      const details = month.show
+                    ? <View>
+                        <Text>{month.rounds} rounds played</Text>
+                        <Text>${month.spent} spent</Text>
+                      </View>
+                    : '';
       return (
         <View key={i}>
-          <Text>{month.name}</Text>
-          <Text>{month.rounds} rounds played</Text>
-          <Text>${month.spent} spent</Text>
+          <Text onPress={() => this.showMonthDetails(i)}>{month.name}</Text>
+          {details}
           <Text>-------</Text>
         </View>
       )
