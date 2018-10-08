@@ -1,5 +1,22 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, FlatList } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, FlatList } from 'react-native';
+
+const monthMap = {
+  0: 'January',
+  1: 'February',
+  2: 'March',
+  3: 'April',
+  4: 'May',
+  5: 'June',
+  6: 'July',
+  7: 'August',
+  8: 'September',
+  9: 'October',
+  10: 'November',
+  11: 'December'
+};
+const currentYear = new Date().getFullYear();
+const currentMonth = new Date().getMonth();
 
 export default class Home extends Component {
   constructor(props) {
@@ -8,7 +25,8 @@ export default class Home extends Component {
       ytdRounds: 0,
       ytdSpent: 0,
       mtdRounds: 0,
-      mtdSpent: 0
+      mtdSpent: 0,
+      pastMonths: []
     }
   }
 
@@ -18,40 +36,61 @@ export default class Home extends Component {
     let ytdSpent = 0;
     const mtdRounds = [];
     let mtdSpent = 0;
-    const thisYear = new Date().getFullYear();
-    const thisMonth = new Date().getMonth();
+    const pastMonths = [];
+    const month = round => new Date(round.date).getMonth();
+    for (let i = 0; i < currentMonth; i++) {
+      pastMonths.push( {name: monthMap[i], rounds: 0, spent: 0} );
+    }
     rounds.forEach(round => {
-      if (new Date(round.date).getFullYear() === thisYear) ytdRounds.push(round);
-      if (new Date(round.date).getMonth() === thisMonth) mtdRounds.push(round);
+      if (new Date(round.date).getFullYear() === currentYear) ytdRounds.push(round);
+      if (month(round) === currentMonth) mtdRounds.push(round);
     });
     if (ytdRounds.length !== 0) ytdSpent = ytdRounds.map(round => round.price).reduce((acc, cur) => acc + cur);
     if (mtdRounds.length !== 0) mtdSpent = mtdRounds.map(round => round.price).reduce((acc, cur) => acc + cur);
+    ytdRounds.forEach(round => {
+      if (month(round) !== currentMonth) {
+        pastMonths[month(round)].rounds += 1;
+        pastMonths[month(round)].spent += round.price;
+      }
+    });
     this.setState({
       ytdRounds: ytdRounds.length,
       ytdSpent,
       mtdRounds: mtdRounds.length,
-      mtdSpent
+      mtdSpent,
+      pastMonths
     })
   }
 
   render() {
+    const pastMonths = this.state.pastMonths.reverse().map((month, i) => {
+      return (
+        <View key={i}>
+          <Text>{month.name}</Text>
+          <Text>{month.rounds} rounds played</Text>
+          <Text>${month.spent} spent</Text>
+          <Text>-------</Text>
+        </View>
+      )
+    });
     const handicap  = !this.props.user
                     ? ''
                     : this.props.user.handicap === 99
                     ? 'Add a round to find your handicap'
                     : this.props.user.handicap;
     return (
-      <View style={styles.home}>
+      <ScrollView style={styles.home}>
           <Text>Home page</Text>
 
           <Text>Your handicap index: {handicap}</Text>
-          <Text>Your current YTD spent: {this.state.ytdSpent}</Text>
-          <Text>Your current MTD spent: {this.state.mtdSpent}</Text>
-          <Text>You've played {this.state.ytdRounds} rounds YTD</Text>
-          <Text>You've played {this.state.mtdRounds} rounds MTD</Text>
-          <Text>See total spent in previous months of current year</Text>
+          <Text>Rounds played in {currentYear}: {this.state.ytdRounds}</Text>
+          <Text>You've spent ${this.state.ytdSpent} in {currentYear}</Text>
+          <Text>Rounds played in {monthMap[currentMonth]}: {this.state.mtdRounds}</Text>
+          <Text>You've spent ${this.state.mtdSpent} in {monthMap[currentMonth]}</Text>
 
-      </View>
+          {pastMonths}
+
+      </ScrollView>
     );
   }
 }
