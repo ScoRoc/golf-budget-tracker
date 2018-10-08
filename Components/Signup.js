@@ -27,17 +27,22 @@ class Signup extends Component {
   }
 
   render() {
+    const { passedStyles } = this.props;
     return (
-      <View>
-        <Text>Name:</Text>
+      <View style={passedStyles.inputWrap}>
+        {/* <Text style={passedStyles.text}>Name:</Text> */}
         <TextInput
+          placeholder='Full Name'
+          style={passedStyles.textInput}
           value={this.state.name}
           autoCapitalize='words'
           onChangeText={ name => this.setState({name}) }
         />
 
-        <Text>Email:</Text>
+        {/* <Text style={passedStyles.text}>Email:</Text> */}
         <TextInput
+          placeholder='Email'
+          style={passedStyles.textInput}
           value={this.state.email}
           textContentType='emailAddress'
           keyboardType='email-address'
@@ -45,18 +50,28 @@ class Signup extends Component {
           onChangeText={ email => this.setState({email}) }
         />
 
-        <Text>Password:</Text>
+        {/* <Text style={passedStyles.text}>Password:</Text> */}
         <TextInput
+          placeholder='Password'
+          style={passedStyles.textInput}
           value={this.state.password}
           textContentType='password'
           autoCapitalize='none'
           onChangeText={ password => this.setState({password}) }
         />
-        <Button title='Sign Up!' onPress={this.handleSubmit} />
+        <Button
+          title='Sign Up!'
+          onPress={this.handleSubmit}
+          style={passedStyles.button}
+        />
       </View>
     )
   }
 
+};
+
+const styles = {
+//
 }
 
 export default Signup;

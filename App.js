@@ -58,7 +58,7 @@ export default class App extends React.Component {
 
   componentDidMount = () => {
     //////////////
-    this.fakeLogin();  ////// GET RID OF THIS
+    // this.fakeLogin();  ////// GET RID OF THIS
     //////////////
     var token = AsyncStorage.getItem('golf-budget-tracker-token');
     if (typeof token !== 'string' || token === 'undefined' || token === 'null' || token === '') {
@@ -96,19 +96,30 @@ export default class App extends React.Component {
                   rounds={this.state.rounds}
                 />,
       auth: <Auth getUserInfo={this.getUserInfo} liftToken={this.liftTokenToState} changePage={this.changePage} />
+    };
+
+    if (this.state.user) {
+      return (
+        <View style={styles.app}>
+
+          <Header userName={userName} logout={this.logout} />
+
+          {pages[this.state.page]}
+
+          <Nav changePage={this.changePage} />
+
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.app}>
+
+          <Auth getUserInfo={this.getUserInfo} liftToken={this.liftTokenToState} changePage={this.changePage} />
+
+        </View>
+      );
     }
 
-    return (
-      <View style={styles.app}>
-
-        <Header userName={userName} logout={this.logout} />
-
-        {pages[this.state.page]}
-
-        <Nav changePage={this.changePage} />
-
-      </View>
-    );
   }
 }
 

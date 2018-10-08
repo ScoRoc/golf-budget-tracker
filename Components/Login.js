@@ -17,18 +17,23 @@ class Login extends Component {
       email: this.state.email,
       password: this.state.password
     }).then( result => {
-      AsyncStorage.setItem('golf-budget-tracker-token', result.data.token);
-      this.props.liftToken(result.data);
-      this.props.getUserInfo();
-      this.props.changePage('home');
+      console.log(result.data);
+      // AsyncStorage.setItem('golf-budget-tracker-token', result.data.token);
+      // this.props.liftToken(result.data);
+      // this.props.getUserInfo();
+      // this.props.changePage('home');
     }).catch( err => console.log(err) );
   }
 
   render() {
+    const passedStyles = this.props.passedStyles;
     return(
-      <View>
-        <Text>Email:</Text>
+      <View style={passedStyles.inputWrap}>
+        {/* <Text>Email:</Text> */}
         <TextInput
+          placeholder='Email'
+          clearButtonMode='while-editing'
+          style={passedStyles.textInput}
           value={this.state.email}
           textContentType='emailAddress'
           keyboardType='email-address'
@@ -36,8 +41,10 @@ class Login extends Component {
           onChangeText={ email => this.setState({email}) }
         />
 
-        <Text>Password:</Text>
+        {/* <Text>Password:</Text> */}
         <TextInput
+          placeholder='Password'
+          style={passedStyles.textInput}
           value={this.state.password}
           textContentType='password'
           autoCapitalize='none'
