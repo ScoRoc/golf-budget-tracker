@@ -19,6 +19,10 @@ class Signup extends Component {
       email: this.state.email,
       password: this.state.password
     }).then( result => {
+      if (result.data.err) {
+        console.log(result.data.err.msg);
+        return;
+      }
       AsyncStorage.setItem('golf-budget-tracker-token', result.data.token) // change 'mernToken' to your app name or something useful
       this.props.liftToken(result.data);
       this.props.getUserInfo();

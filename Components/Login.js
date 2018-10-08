@@ -17,11 +17,14 @@ class Login extends Component {
       email: this.state.email,
       password: this.state.password
     }).then( result => {
-      console.log(result.data);
-      // AsyncStorage.setItem('golf-budget-tracker-token', result.data.token);
-      // this.props.liftToken(result.data);
-      // this.props.getUserInfo();
-      // this.props.changePage('home');
+      if (result.data.err) {
+        console.log(result.data.err.msg);
+        return;
+      }
+      AsyncStorage.setItem('golf-budget-tracker-token', result.data.token);
+      this.props.liftToken(result.data);
+      this.props.getUserInfo();
+      this.props.changePage('home');
     }).catch( err => console.log(err) );
   }
 
