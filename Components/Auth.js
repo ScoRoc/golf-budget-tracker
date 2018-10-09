@@ -1,5 +1,6 @@
 import React from 'react';
 import { ImageBackground, StyleSheet, Text, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Signup from './Signup';
 import Login from './Login';
 import { colors } from '../global_styles/colors';
@@ -8,24 +9,29 @@ export default class NavButton extends React.Component {
   render() {
     return (
       <ImageBackground imageStyle={styles.image} style={styles.imgBG} source={ require('../assets/imgs/golf_ball_and_hole.jpg') }>
-        <View style={styles.authWrap}>
-          <View style={styles.auth}>
-            <Signup
-              placeholderColor={placeholderColor}
-              passedStyles={passedStyles}
-              getUserInfo={this.props.getUserInfo}
-              liftToken={this.props.liftToken}
-              changePage={this.props.changePage}
-            />
-            <Text style={styles.text}>Or</Text>
-            <Login
-              placeholderColor={placeholderColor}
-              passedStyles={passedStyles}
-              getUserInfo={this.props.getUserInfo}
-              liftToken={this.props.liftToken}
-              changePage={this.props.changePage}
-            />
-          </View>
+        <View style={styles.authView}>
+          <KeyboardAwareScrollView
+            contentContainerStyle={styles.authKeyboardScrollView}
+            resetScrollToCoords={{ x: 0, y: 0 }}
+          >
+            <View style={styles.auth}>
+              <Signup
+                placeholderColor={placeholderColor}
+                passedStyles={passedStyles}
+                getUserInfo={this.props.getUserInfo}
+                liftToken={this.props.liftToken}
+                changePage={this.props.changePage}
+              />
+              <Text style={styles.text}>Or</Text>
+              <Login
+                placeholderColor={placeholderColor}
+                passedStyles={passedStyles}
+                getUserInfo={this.props.getUserInfo}
+                liftToken={this.props.liftToken}
+                changePage={this.props.changePage}
+              />
+            </View>
+          </KeyboardAwareScrollView>
         </View>
       </ImageBackground>
     );
@@ -42,11 +48,16 @@ const styles = StyleSheet.create({
   image: {
     resizeMode: 'cover',
   },
-  authWrap: {
+  authView: {
+    flex: 1,
+    alignItems: 'stretch',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(50, 50, 50, .3)'
+  },
+  authKeyboardScrollView: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(50, 50, 50, .3)'
   },
   auth: {
     height: '70%',
