@@ -8,6 +8,7 @@ import {
   View
 } from 'react-native';
 import { colors } from '../global_styles/colors';
+import HomeMonth from './HomeMonth'
 import WhiteText from './Text/WhiteText';
 
 const monthMap = {
@@ -42,8 +43,8 @@ export default class Home extends Component {
   }
 
   animateReveal = () => {
-    let initialHeight = this.state.revealed ? 40 : 100;
-    let finalHeight = this.state.revealed ? 100 : 40;
+    let initialHeight = this.state.revealed ? 100 : 40;
+    let finalHeight = this.state.revealed ? 40 : 100;
     this.setState({ revealed: !this.state.revealed });
     this.state.revealAnim.setValue(initialHeight);
     Animated.timing(
