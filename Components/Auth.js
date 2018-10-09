@@ -11,13 +11,15 @@ export default class NavButton extends React.Component {
         <View style={styles.authWrap}>
           <View style={styles.auth}>
             <Signup
+              placeholderColor={placeholderColor}
               passedStyles={passedStyles}
               getUserInfo={this.props.getUserInfo}
               liftToken={this.props.liftToken}
               changePage={this.props.changePage}
             />
-            <Text>-- or --</Text>
+            <Text style={styles.text}>Or</Text>
             <Login
+              placeholderColor={placeholderColor}
               passedStyles={passedStyles}
               getUserInfo={this.props.getUserInfo}
               liftToken={this.props.liftToken}
@@ -29,6 +31,8 @@ export default class NavButton extends React.Component {
     );
   }
 }
+
+const placeholderColor = '#555';
 
 const styles = StyleSheet.create({
   imgBG: {
@@ -42,34 +46,56 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(50, 50, 50, .2)'
+    backgroundColor: 'rgba(50, 50, 50, .3)'
   },
   auth: {
     height: '70%',
     width: '100%',
     justifyContent: 'space-around',
+    alignItems: 'center',
     paddingLeft: '8%',
     paddingRight: '8%',
-    backgroundColor: 'rgba(51, 255, 170, .5)'
+    // backgroundColor: 'rgba(51, 255, 170, .5)'
+  },
+  text: {
+    color: 'white',
+    fontSize: 22,
+    fontWeight: 'bold',
   }
 });
 
 const passedStyles = StyleSheet.create({
   inputWrap: {
-    height: '30%',
+    height: '35%',
+    width: '100%',
     justifyContent: 'space-around',
     padding: 10,
     paddingTop: 15,
     borderRadius: 20,
-    backgroundColor: 'rgba(51, 170, 255, .3)'
+    // backgroundColor: 'rgba(51, 170, 255, .3)'
   },
   text: {
     color: colors.offWhite
   },
+  textInputWrap: {
+    backgroundColor: colors.offWhiteTrans,
+  },
   textInput: {
-    backgroundColor: colors.offWhite,
+    padding: 8,
+    backgroundColor: 'transparent',
+    borderBottomWidth: 1,
+    borderBottomColor: colors.darkGrey,
+    color: colors.darkSeafoam,
+    fontWeight: 'bold',
   },
   button: {
-    backgroundColor: colors.offWhite,
+    height: '25%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.yellow,
+  },
+  text: {
+    fontSize: 16,
+    color: '#FF9450'
   }
 })

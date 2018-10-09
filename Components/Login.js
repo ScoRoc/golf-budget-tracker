@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
-import { AsyncStorage, StyleSheet, Text, TextInput, View, Button } from 'react-native';
+import {
+  AsyncStorage,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import axios from 'axios';
 
 class Login extends Component {
@@ -29,31 +36,44 @@ class Login extends Component {
   }
 
   render() {
-    const passedStyles = this.props.passedStyles;
+    const { passedStyles } = this.props;
+    const { placeholderColor } = this.props;
     return(
       <View style={passedStyles.inputWrap}>
-        {/* <Text>Email:</Text> */}
-        <TextInput
-          placeholder='Email'
-          clearButtonMode='while-editing'
-          style={passedStyles.textInput}
-          value={this.state.email}
-          textContentType='emailAddress'
-          keyboardType='email-address'
-          autoCapitalize='none'
-          onChangeText={ email => this.setState({email}) }
-        />
 
-        {/* <Text>Password:</Text> */}
-        <TextInput
-          placeholder='Password'
-          style={passedStyles.textInput}
-          value={this.state.password}
-          textContentType='password'
-          autoCapitalize='none'
-          onChangeText={ password => this.setState({password}) }
-        />
-        <Button title='Log In!' onPress={this.handleSubmit} />
+        <View style={passedStyles.textInputWrap}>
+          <TextInput
+            placeholder='Email'
+            placeholderTextColor={placeholderColor}
+            clearButtonMode='while-editing'
+            style={passedStyles.textInput}
+            value={this.state.email}
+            textContentType='emailAddress'
+            keyboardType='email-address'
+            autoCapitalize='none'
+            onChangeText={ email => this.setState({email}) }
+          />
+        </View>
+
+        <View style={passedStyles.textInputWrap}>
+            <TextInput
+              placeholder='Password'
+              placeholderTextColor={placeholderColor}
+              clearButtonMode='while-editing'
+              style={passedStyles.textInput}
+              value={this.state.password}
+              textContentType='password'
+              autoCapitalize='none'
+              secureTextEntry={true}
+              onChangeText={ password => this.setState({password}) }
+            />
+          </View>
+        <TouchableOpacity
+          // onPress={this.handleSubmit}
+          style={passedStyles.button}
+        >
+          <Text style={passedStyles.text}>Log In</Text>
+        </TouchableOpacity>
       </View>
     )
   }

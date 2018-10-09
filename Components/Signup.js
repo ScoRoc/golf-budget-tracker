@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
-import { AsyncStorage, StyleSheet, Text, TextInput, View, Button } from 'react-native';
+import {
+  AsyncStorage,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import axios from 'axios';
 
 class Signup extends Component {
@@ -27,55 +34,65 @@ class Signup extends Component {
       this.props.liftToken(result.data);
       this.props.getUserInfo();
       this.props.changePage('home');
-    })
+    }).catch( err => console.log(err) );
   }
 
   render() {
     const { passedStyles } = this.props;
+    const { placeholderColor } = this.props;
     return (
       <View style={passedStyles.inputWrap}>
-        {/* <Text style={passedStyles.text}>Name:</Text> */}
-        <TextInput
-          placeholder='Full Name'
-          style={passedStyles.textInput}
-          value={this.state.name}
-          autoCapitalize='words'
-          onChangeText={ name => this.setState({name}) }
-        />
 
-        {/* <Text style={passedStyles.text}>Email:</Text> */}
-        <TextInput
-          placeholder='Email'
-          style={passedStyles.textInput}
-          value={this.state.email}
-          textContentType='emailAddress'
-          keyboardType='email-address'
-          autoCapitalize='none'
-          onChangeText={ email => this.setState({email}) }
-        />
+        <View style={passedStyles.textInputWrap}>
+          <TextInput
+            placeholder='Full Name'
+            placeholderTextColor={placeholderColor}
+            clearButtonMode='while-editing'
+            style={passedStyles.textInput}
+            value={this.state.name}
+            autoCapitalize='words'
+            onChangeText={ name => this.setState({name}) }
+          />
+        </View>
 
-        {/* <Text style={passedStyles.text}>Password:</Text> */}
-        <TextInput
-          placeholder='Password'
-          style={passedStyles.textInput}
-          value={this.state.password}
-          textContentType='password'
-          autoCapitalize='none'
-          onChangeText={ password => this.setState({password}) }
-        />
-        <Button
-          title='Sign Up!'
-          onPress={this.handleSubmit}
+        <View style={passedStyles.textInputWrap}>
+          <TextInput
+            placeholder='Email'
+            placeholderTextColor={placeholderColor}
+            clearButtonMode='while-editing'
+            style={passedStyles.textInput}
+            value={this.state.email}
+            textContentType='emailAddress'
+            keyboardType='email-address'
+            autoCapitalize='none'
+            onChangeText={ email => this.setState({email}) }
+          />
+        </View>
+
+        <View style={passedStyles.textInputWrap}>
+          <TextInput
+            placeholder='Password'
+            placeholderTextColor={placeholderColor}
+            clearButtonMode='while-editing'
+            style={passedStyles.textInput}
+            value={this.state.password}
+            textContentType='password'
+            autoCapitalize='none'
+            secureTextEntry={true}
+            onChangeText={ password => this.setState({password}) }
+          />
+        </View>
+
+        <TouchableOpacity
+          // onPress={this.handleSubmit}
           style={passedStyles.button}
-        />
+        >
+          <Text style={passedStyles.text}>Sign Up!</Text>
+        </TouchableOpacity>
       </View>
     )
   }
 
 };
-
-const styles = {
-//
-}
 
 export default Signup;
