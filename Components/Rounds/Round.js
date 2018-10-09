@@ -46,7 +46,7 @@ export default class Round extends Component {
     const { roundId, course, teebox, date, notes } = this.state;
     const score = parseInt(this.state.score);
     const price = parseInt(this.state.price);
-    axios.put('http://localhost:3000/api/round', {  ///////// FIX URL
+    axios.put(`http://${this.props.api}/api/round`, {  ///////// FIX URL
       roundId,
       course,
       teebox,
@@ -63,7 +63,7 @@ export default class Round extends Component {
 
   deleteRound = () => {
     axios({
-      url: 'http://localhost:3000/api/round',  /////// FIX URL
+      url: `http://${this.props.api}/api/round`,  /////// FIX URL
       method: 'delete',
       data: {roundId: this.state.roundId, teeboxId: this.state.teeboxId, user: this.props.user}
     }).then(result => {
@@ -157,6 +157,7 @@ export default class Round extends Component {
   render() {
     let addCourse = this.state.showAddCourse
                   ? <AddCourse
+                      api={this.props.api}
                       user={this.props.user}
                       close={() => this.setState({showAddCourse: false})}
                       getUserInfo={this.props.getUserInfo}

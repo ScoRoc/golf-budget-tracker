@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, TouchableHighlight, Text, View } from 'react-native';
 import { Icon } from 'react-native-elements';
+import { colors } from '../../global_styles/colors';
+import WhiteText from '../Text/WhiteText';
 import AddRound from './AddRound';
 import Round from './Round';
 
@@ -31,15 +33,17 @@ export default class MyRounds extends Component {
       );
     });
     let addRound = this.state.showAddRound
-                 ? <AddRound
-                     user={this.props.user}
-                     courses={this.props.courses}
-                     getUserInfo={this.props.getUserInfo}
-                     close={() => this.setState({showAddRound: false})}
-                   />
-                 : '';
+                  ? <AddRound
+                      api={this.props.api}
+                      user={this.props.user}
+                      courses={this.props.courses}
+                      getUserInfo={this.props.getUserInfo}
+                      close={() => this.setState({showAddRound: false})}
+                    />
+                  : '';
     let roundPage = this.state.showRound
                   ? <Round
+                      api={this.props.api}
                       user={this.props.user}
                       round={this.state.currentRound}
                       courses={this.props.courses}
@@ -49,11 +53,11 @@ export default class MyRounds extends Component {
                   : '';
     return (
       <View style={styles.myRounds}>
-          <Text>MyRounds page</Text>
+          <WhiteText>MyRounds page</WhiteText>
           <View style={styles.addRoundWrap}>
             <TouchableHighlight onPress={() => this.setState({showAddRound: true})} underlayColor='rgb(102, 51, 153)'>
               <View style={styles.addRound}>
-                <Text style={ {marginRight: 10} }>Add a round</Text>
+                <WhiteText style={ {marginRight: 10} }>Add a round</WhiteText>
                 <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
               </View>
             </TouchableHighlight>
@@ -68,11 +72,14 @@ export default class MyRounds extends Component {
   }
 }
 
+const { purple } = colors;
+
 const styles = StyleSheet.create({
   myRounds: {
     flex: 1,
     alignSelf: 'stretch',
-    backgroundColor: '#bfd'
+    // backgroundColor: '#e83'
+    backgroundColor: purple
   },
   round: {
     marginBottom: 3,

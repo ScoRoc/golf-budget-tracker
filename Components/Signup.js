@@ -20,8 +20,8 @@ class Signup extends Component {
   }
 
   handleSubmit = e => {
-    e.preventDefault()
-    axios.post('http://localhost:3000/api/auth/signup', {  ////////////// FIX FIX FIX FIX FIX FIX FIX
+    e.preventDefault();
+    axios.post(`http://${this.props.api}/api/auth/signup`, {  ////////////// FIX FIX FIX FIX FIX FIX FIX
       name: this.state.name,
       email: this.state.email,
       password: this.state.password
@@ -33,7 +33,7 @@ class Signup extends Component {
       AsyncStorage.setItem('golf-budget-tracker-token', result.data.token) // change 'mernToken' to your app name or something useful
       this.props.liftToken(result.data);
       this.props.getUserInfo();
-      this.props.changePage('home');
+      this.props.changePageFromAuth();
     }).catch( err => console.log(err) );
   }
 
@@ -41,7 +41,9 @@ class Signup extends Component {
     const { passedStyles } = this.props;
     const { placeholderColor } = this.props;
     return (
-      <View style={passedStyles.inputWrap}>
+      <View style={[passedStyles.inputWrap, {height: '45%'}]}>
+
+        <Text style={passedStyles.label}>Signup</Text>
 
         <View style={passedStyles.textInputWrap}>
           <TextInput
@@ -84,10 +86,10 @@ class Signup extends Component {
         </View>
 
         <TouchableOpacity
-          // onPress={this.handleSubmit}
+          onPress={this.handleSubmit}
           style={passedStyles.button}
         >
-          <Text style={passedStyles.text}>Sign Up!</Text>
+          <Text style={passedStyles.buttonText}>Signup</Text>
         </TouchableOpacity>
       </View>
     )

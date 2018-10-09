@@ -1,65 +1,78 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-elements';
+import { colors } from '../global_styles/colors';
 import NavButton from './NavButton';
 
 const nav = {
   home: {
     text: 'Home',
-    page: 'home'
+    page: 'home',
+    icon: 'home',
+    iconType: 'font-awesome'
   },
   myCourses: {
     text: 'My courses',
-    page: 'myCourses'
+    page: 'myCourses',
+    icon: 'trees',
+    iconType: 'foundation'
   },
   myRounds: {
     text: 'My rounds',
-    page: 'myRounds'
+    page: 'myRounds',
+    icon: 'golf',
+    iconType: 'material-community'
   },
-  auth: {
-    text: 'Auth',
-    page: 'auth',
-    icon: 'lock'
+  logout: {
+    text: 'Logout',
+    page: 'home',
+    icon: 'lock',
+    iconType: 'material'
   }
 };
 
 const bgColor = {
-  top: {
-    backgroundColor: '#ef4'
+  home: {
+    // backgroundColor: '#ef4'
+    backgroundColor: colors.seafoam
   },
-  mid: {
-    backgroundColor: '#ea4'
+  myCourses: {
+    // backgroundColor: '#ea4'
+    backgroundColor: colors.lightBlue
+    // backgroundColor: colors.purple
   },
-  bot: {
-    backgroundColor: '#e83'
+  myRounds: {
+    // backgroundColor: '#e83'
+    backgroundColor: colors.purple
   },
-  fug: {
-    backgroundColor: '#e61'
+  logout: {
+    // backgroundColor: '#e61'
+    backgroundColor: colors.orange
   }
 }
 
-export default class Nav extends React.Component {
-  render() {
-    return (
-      <View style={styles.nav}>
-        <NavButton changePage={this.props.changePage} nav={nav.home} bgColor={bgColor.top} />
-        <NavButton changePage={this.props.changePage} nav={nav.myCourses} bgColor={bgColor.mid} />
-        <NavButton changePage={this.props.changePage} nav={nav.myRounds} bgColor={bgColor.bot} />
-        <NavButton
-          changePage={this.props.changePage}
-          nav={nav.auth}
-          bgColor={bgColor.fug}
-        />
-      </View>
-    );
-  }
+const Nav = props => {
+  return (
+    <View style={styles.nav}>
+      <NavButton changePage={props.changePage} nav={nav.home} bgColor={bgColor.home} />
+      <NavButton changePage={props.changePage} nav={nav.myCourses} bgColor={bgColor.myCourses} />
+      <NavButton changePage={props.changePage} nav={nav.myRounds} bgColor={bgColor.myRounds} />
+      <NavButton changePage={props.changePage} nav={nav.logout} bgColor={bgColor.logout} />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
   nav: {
     alignSelf: 'stretch',
-    height: 80,
+    height: 95,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    shadowColor: '#222',
+    shadowOpacity: .4,
+    shadowRadius: 3,
+    shadowOffset: {width: 0, height: -4}
   }
 });
+
+export default Nav;

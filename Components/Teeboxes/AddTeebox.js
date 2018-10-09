@@ -32,7 +32,7 @@ export default class AddTeebox extends Component {
     const { name } = this.state;
     const rating = parseFloat(this.state.rating);
     const slope = parseInt(this.state.slope);
-    axios.post('http://localhost:3000/api/teebox', {  /////// FIX URL
+    axios.post(`http://${this.props.api}/api/teebox`, {  /////// FIX URL
       name,
       rating,
       slope,

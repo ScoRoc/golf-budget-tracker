@@ -1,6 +1,7 @@
 import React from 'react';
 import { AsyncStorage, TouchableHighlight, StyleSheet, Text, View, ScrollView } from 'react-native';
 import axios from 'axios';
+import Expo from 'expo';
 import Header from './Components/Header';
 import Nav from './Components/Nav';
 import Home from './Components/Home';
@@ -8,11 +9,18 @@ import MyCourses from './Components/Courses/MyCourses';
 import MyRounds from './Components/Rounds/MyRounds';
 import Auth from './Components/Auth';
 
+const { manifest } = Expo.Constants;
+const api = (typeof manifest.packagerOpts === `object`) && manifest.packagerOpts.dev
+          ? manifest.debuggerHost.split(`:`).shift().concat(`:3000`)
+          : `api.example.com`;
+
+console.log('top of app - api: ', api);
+
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      page: 'home',
+      page: 'auth',
       token: null,
       user: null,
       courses: [],
@@ -24,8 +32,8 @@ export default class App extends React.Component {
     this.setState({ page });
   }
 
-  getUserInfo = () => {
-    axios.get(`http://localhost:3000/api/user/${this.state.user._id}`).then(result => {  //////// FIX URL
+  getUserInfo = async () => {
+    axios.get(`http://${api}/api/user/${this.state.user._id}`).then(result => {  //////// FIX URL
       this.setState({user: result.data.user, courses: result.data.courses, rounds: result.data.rounds});
     });
   }
@@ -40,25 +48,26 @@ export default class App extends React.Component {
   logout = () => {
     console.log('Logging out')
     AsyncStorage.removeItem('golf-budget-tracker-token')
-    this.setState({ token: null, user: null });
+    this.setState({ token: null, user: null, page: 'auth' });
   }
 
   ////////////////////////////////////////////
   fakeLogin() {
-    axios.post('http://localhost:3000/api/auth/login', {  ////////////// FIX FIX FIX FIX FIX FIX FIX
+    axios.post(`http://${api}/api/auth/login`, {  ////////////// FIX FIX FIX FIX FIX FIX FIX
       email: 'k@k.com',
       password: 'password'
     }).then( result => {
       AsyncStorage.setItem('golf-budget-tracker-token', result.data.token) // change 'mernToken' to your app name or something useful
       this.liftTokenToState(result.data);
       this.getUserInfo();
+      this.setState({ page: 'home' })
     }).catch( err => console.log(err) )
   }
   ////////////////////////////////////////////
 
   componentDidMount = () => {
     //////////////
-    // this.fakeLogin();  ////// GET RID OF THIS
+    this.fakeLogin();  ////// GET RID OF THIS
     //////////////
     var token = AsyncStorage.getItem('golf-budget-tracker-token');
     if (typeof token !== 'string' || token === 'undefined' || token === 'null' || token === '') {
@@ -68,7 +77,7 @@ export default class App extends React.Component {
         user: null
       });
     } else {
-      axios.post('http://localhost:3000/api/auth/me/from/token', {  ////////////// FIX FIX FIX FIX FIX FIX FIX
+      axios.post(`http://${api}/api/auth/me/from/token`, {  ////////////// FIX FIX FIX FIX FIX FIX FIX
         token
       }).then( result => {
         AsyncStorage.setItem('golf-budget-tracker-token', result.data.token);
@@ -88,17 +97,22 @@ export default class App extends React.Component {
               rounds={this.state.rounds}
               getUserInfo={this.getUserInfo}
             />,
-      myCourses: <MyCourses user={this.state.user} getUserInfo={this.getUserInfo} courses={this.state.courses} />,
+      myCourses: <MyCourses
+                    api={api}
+                    user={this.state.user}
+                    getUserInfo={this.getUserInfo}
+                    courses={this.state.courses}
+                  />,
       myRounds: <MyRounds
+                  api={api}
                   user={this.state.user}
                   getUserInfo={this.getUserInfo}
                   courses={this.state.courses}
                   rounds={this.state.rounds}
-                />,
-      auth: <Auth getUserInfo={this.getUserInfo} liftToken={this.liftTokenToState} changePage={this.changePage} />
+                />
     };
 
-    if (this.state.user) {
+    if (this.state.page !== 'auth') {
       return (
         <View style={styles.app}>
 
@@ -114,7 +128,12 @@ export default class App extends React.Component {
       return (
         <View style={styles.app}>
 
-          <Auth getUserInfo={this.getUserInfo} liftToken={this.liftTokenToState} changePage={this.changePage} />
+          <Auth
+            api={api}
+            getUserInfo={this.getUserInfo}
+            liftToken={this.liftTokenToState}
+            changePage={this.changePage}
+          />
 
         </View>
       );

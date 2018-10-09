@@ -1,44 +1,88 @@
 import React from 'react';
-import { ImageBackground, StyleSheet, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  ImageBackground,
+  Keyboard,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View
+} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Signup from './Signup';
 import Login from './Login';
 import { colors } from '../global_styles/colors';
 
 export default class NavButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showSpinner: false
+    }
+  }
+
+  changePageFromAuth = () => {
+    this.setState({ showSpinner: true });
+    setTimeout(() => {
+      this.setState({ showSpinner: false });
+      this.props.changePage('home');
+    }, 500);
+  }
+
   render() {
+    const blur = this.state.showSpinner ? 3 : 0;
     return (
-      <ImageBackground imageStyle={styles.image} style={styles.imgBG} source={ require('../assets/imgs/golf_ball_and_hole.jpg') }>
-        <View style={styles.authView}>
+      <ImageBackground blurRadius={blur} imageStyle={styles.image} style={styles.imgBG} source={ require('../assets/imgs/golf_ball_and_hole.jpg') }>
+        <TouchableWithoutFeedback style={styles.keyboardScrollViewWrap} onPress={Keyboard.dismiss}>
+
           <KeyboardAwareScrollView
             contentContainerStyle={styles.authKeyboardScrollView}
             resetScrollToCoords={{ x: 0, y: 0 }}
           >
+
             <View style={styles.auth}>
               <Signup
+                api={this.props.api}
                 placeholderColor={placeholderColor}
                 passedStyles={passedStyles}
                 getUserInfo={this.props.getUserInfo}
                 liftToken={this.props.liftToken}
-                changePage={this.props.changePage}
+                changePageFromAuth={this.changePageFromAuth}
               />
-              <Text style={styles.text}>Or</Text>
+
+              <ActivityIndicator animating={this.state.showSpinner} size='large' color={purple} />
+
               <Login
+                api={this.props.api}
                 placeholderColor={placeholderColor}
                 passedStyles={passedStyles}
                 getUserInfo={this.props.getUserInfo}
                 liftToken={this.props.liftToken}
-                changePage={this.props.changePage}
+                changePageFromAuth={this.changePageFromAuth}
               />
             </View>
+
           </KeyboardAwareScrollView>
-        </View>
+        </TouchableWithoutFeedback>
       </ImageBackground>
     );
   }
 }
 
-const placeholderColor = '#555';
+const {
+  darkGrey,
+  darkGreyTrans,
+  purple,
+  darkSeafoam,
+  mediumGrey,
+  seafoam,
+  offWhite,
+  offWhiteTrans,
+  orange,
+  yellow
+} = colors;
+
+const placeholderColor = mediumGrey;
 
 const styles = StyleSheet.create({
   imgBG: {
@@ -46,9 +90,9 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
   },
   image: {
-    resizeMode: 'cover',
+    resizeMode: 'cover'
   },
-  authView: {
+  keyboardScrollViewWrap: {
     flex: 1,
     alignItems: 'stretch',
     justifyContent: 'center',
@@ -69,7 +113,7 @@ const styles = StyleSheet.create({
     // backgroundColor: 'rgba(51, 255, 170, .5)'
   },
   text: {
-    color: 'white',
+    color: offWhite,
     fontSize: 22,
     fontWeight: 'bold',
   }
@@ -83,30 +127,39 @@ const passedStyles = StyleSheet.create({
     padding: 10,
     paddingTop: 15,
     borderRadius: 20,
-    // backgroundColor: 'rgba(51, 170, 255, .3)'
-  },
-  text: {
-    color: colors.offWhite
+    // backgroundColor: 'rgba(45, 82, 108, 0.3)'
   },
   textInputWrap: {
-    backgroundColor: colors.offWhiteTrans,
+    backgroundColor: offWhiteTrans,
+  },
+  label: {
+    color: purple,
+    fontSize: 20,
+    fontWeight: 'bold'
   },
   textInput: {
     padding: 8,
     backgroundColor: 'transparent',
-    borderBottomWidth: 1,
-    borderBottomColor: colors.darkGrey,
-    color: colors.darkSeafoam,
+    borderBottomWidth: .5,
+    borderBottomColor: darkGreyTrans,
+    borderTopWidth: .5,
+    borderTopColor: darkGreyTrans,
+    borderLeftWidth: .5,
+    borderLeftColor: darkGreyTrans,
+    borderRightWidth: .5,
+    borderRightColor: darkGreyTrans,
+    color: purple,
     fontWeight: 'bold',
   },
   button: {
-    height: '25%',
+    height: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.yellow,
+    backgroundColor: yellow,
   },
-  text: {
+  buttonText: {
+    color: offWhite,
     fontSize: 16,
-    color: '#FF9450'
+    fontWeight: 'bold'
   }
 })

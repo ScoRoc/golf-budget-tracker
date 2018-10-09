@@ -50,7 +50,7 @@ export default class Course extends Component {
   }
 
   editCourse = () => {
-    axios.put('http://localhost:3000/api/course', {  /////// FIX URL
+    axios.put(`http://${api}/api/course`, {  /////// FIX URL
       courseName: this.state.name,
       notes: this.state.notes,
       courseId: this.state.course._id
@@ -62,7 +62,7 @@ export default class Course extends Component {
 
   deleteCourse = () => {
     axios({
-      url: 'http://localhost:3000/api/course',  /////// FIX URL
+      url: `http://${api}/api/course`,  /////// FIX URL
       method: 'delete',
       data: {courseId: this.state.course._id}
     }).then(result => {
@@ -116,18 +116,20 @@ export default class Course extends Component {
                        )
                      })
                    : '';
-    let teeboxPage = this.state.showTeebox
-                   ? <Teebox
-                       user={this.props.user}
-                       close={() => this.setState({showTeebox: false})}
-                       teebox={this.state.course.teeboxes[this.state.currentTeeboxIdx]}
-                       teeboxIdx={this.state.currentTeeboxIdx}
-                       updateCourse={this.updateCourseLocalState}
-                       getUserInfo={this.props.getUserInfo}
-                     />
-                   : '';
+    let teeboxPage  = this.state.showTeebox
+                    ? <Teebox
+                        api={this.props.api}
+                        user={this.props.user}
+                        close={() => this.setState({showTeebox: false})}
+                        teebox={this.state.course.teeboxes[this.state.currentTeeboxIdx]}
+                        teeboxIdx={this.state.currentTeeboxIdx}
+                        updateCourse={this.updateCourseLocalState}
+                        getUserInfo={this.props.getUserInfo}
+                      />
+                    : '';
     let addTeebox = this.state.showAddTeebox
                   ? <AddTeebox
+                      api={this.props.api}
                       user={this.props.user}
                       close={() => this.setState({showAddTeebox: false})}
                       course={this.state.course}

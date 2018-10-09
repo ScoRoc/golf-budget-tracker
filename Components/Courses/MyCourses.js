@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { StyleSheet, TouchableHighlight, Text, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 import axios from 'axios';
+import { colors } from '../../global_styles/colors';
+import WhiteText from '../Text/WhiteText';
 import AddCourse from './AddCourse';
 import Course from './Course';
 
@@ -22,6 +24,7 @@ export default class MyCourses extends Component {
   render() {
     let addCourse = this.state.showAddCourse
                   ? <AddCourse
+                      api={this.props.api}
                       user={this.props.user}
                       close={() => this.setState({showAddCourse: false})}
                       getUserInfo={this.props.getUserInfo}
@@ -29,6 +32,7 @@ export default class MyCourses extends Component {
                   : '';
     let coursePage = this.state.showCourse
                   ? <Course
+                      api={this.props.api}
                       user={this.props.user}
                       course={this.state.currentCourse}
                       close={() => this.setState({showCourse: false})}
@@ -44,11 +48,11 @@ export default class MyCourses extends Component {
     });
     return (
       <View style={styles.yourCourses}>
-          <Text>YourCourses page</Text>
+          <WhiteText>YourCourses page</WhiteText>
           <View style={styles.addCourseWrap}>
             <TouchableHighlight onPress={() => this.setState({showAddCourse: true})} underlayColor='rgb(102, 51, 153)'>
               <View style={styles.addCourse}>
-                <Text style={ {marginRight: 10} }>Add a course</Text>
+                <WhiteText style={ {marginRight: 10} }>Add a course</WhiteText>
                 <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
               </View>
             </TouchableHighlight>
@@ -61,11 +65,15 @@ export default class MyCourses extends Component {
   }
 }
 
+const { lightBlue, purple } = colors;
+
 const styles = StyleSheet.create({
   yourCourses: {
     flex: 1,
     alignSelf: 'stretch',
-    backgroundColor: '#bfd'
+    // backgroundColor: '#ea4'
+    backgroundColor: lightBlue
+    // backgroundColor: purple
   },
   addCourseWrap: {
     flexDirection: 'row',

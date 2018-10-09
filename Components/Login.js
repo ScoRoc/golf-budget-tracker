@@ -19,19 +19,19 @@ class Login extends Component {
   }
 
   handleSubmit = e => {
-    e.preventDefault()
-    axios.post('http://localhost:3000/api/auth/login', {  ////////////// FIX FIX FIX FIX FIX FIX FIX
+    e.preventDefault();
+    axios.post(`http://${this.props.api}/api/auth/login`, {  ////////////// FIX FIX FIX FIX FIX FIX FIX
       email: this.state.email,
       password: this.state.password
     }).then( result => {
       if (result.data.err) {
-        console.log(result.data.err.msg);
+        console.log('error message: ', result.data.err.msg);
         return;
       }
       AsyncStorage.setItem('golf-budget-tracker-token', result.data.token);
       this.props.liftToken(result.data);
       this.props.getUserInfo();
-      this.props.changePage('home');
+      this.props.changePageFromAuth();
     }).catch( err => console.log(err) );
   }
 
@@ -40,6 +40,8 @@ class Login extends Component {
     const { placeholderColor } = this.props;
     return(
       <View style={passedStyles.inputWrap}>
+
+        <Text style={passedStyles.label}>Login</Text>
 
         <View style={passedStyles.textInputWrap}>
           <TextInput
@@ -56,23 +58,24 @@ class Login extends Component {
         </View>
 
         <View style={passedStyles.textInputWrap}>
-            <TextInput
-              placeholder='Password'
-              placeholderTextColor={placeholderColor}
-              clearButtonMode='while-editing'
-              style={passedStyles.textInput}
-              value={this.state.password}
-              textContentType='password'
-              autoCapitalize='none'
-              secureTextEntry={true}
-              onChangeText={ password => this.setState({password}) }
-            />
-          </View>
+          <TextInput
+            placeholder='Password'
+            placeholderTextColor={placeholderColor}
+            clearButtonMode='while-editing'
+            style={passedStyles.textInput}
+            value={this.state.password}
+            textContentType='password'
+            autoCapitalize='none'
+            secureTextEntry={true}
+            onChangeText={ password => this.setState({password}) }
+          />
+        </View>
+
         <TouchableOpacity
-          // onPress={this.handleSubmit}
+          onPress={this.handleSubmit}
           style={passedStyles.button}
         >
-          <Text style={passedStyles.text}>Log In</Text>
+          <Text style={passedStyles.buttonText}>Login</Text>
         </TouchableOpacity>
       </View>
     )

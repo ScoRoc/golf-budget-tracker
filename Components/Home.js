@@ -1,5 +1,14 @@
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet, Text, View, FlatList } from 'react-native';
+import {
+  Animated,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View
+} from 'react-native';
+import { colors } from '../global_styles/colors';
+import WhiteText from './Text/WhiteText';
 
 const monthMap = {
   0: 'January',
@@ -22,12 +31,34 @@ export default class Home extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      revealAnim: new Animated.Value(40),
+      revealed: false,
       ytdRounds: 0,
       ytdSpent: 0,
       mtdRounds: 0,
       mtdSpent: 0,
       pastMonths: []
     }
+  }
+
+  animateReveal = () => {
+    let initialHeight = this.state.revealed ? 40 : 100;
+    let finalHeight = this.state.revealed ? 100 : 40;
+    this.setState({ revealed: !this.state.revealed });
+    this.state.revealAnim.setValue(initialHeight);
+    Animated.timing(
+      this.state.revealAnim,
+      {
+        toValue: finalHeight,
+        duration: 350
+      }
+    ).start();
+  }
+
+  showMonthDetails = i => {
+    const pastMonths = [...this.state.pastMonths];
+    pastMonths[i].show = !this.state.pastMonths[i].show;
+    this.setState({pastMonths});
   }
 
   componentDidMount() {
@@ -63,26 +94,23 @@ export default class Home extends Component {
     })
   }
 
-  showMonthDetails = i => {
-    const pastMonths = [...this.state.pastMonths];
-    pastMonths[i].show = !this.state.pastMonths[i].show;
-    this.setState({pastMonths});
-  }
-
   render() {
+    let { revealAnim } = this.state;
     const pastMonths = this.state.pastMonths.map((month, i) => {
       const details = month.show
                     ? <View>
-                        <Text>{month.rounds} rounds played</Text>
-                        <Text>${month.spent} spent</Text>
+                        <WhiteText>{month.rounds} rounds played</WhiteText>
+                        <WhiteText>${month.spent} spent</WhiteText>
                       </View>
                     : '';
       return (
-        <View key={i}>
-          <Text onPress={() => this.showMonthDetails(i)}>{month.name}</Text>
-          {details}
-          <Text>-------</Text>
-        </View>
+        <Animated.View key={i} style={ [styles.months, {height: revealAnim}] }>
+          <View>
+            {/* onPress={() => this.showMonthDetails(i)} */}
+            <WhiteText onPress={this.animateReveal}>{month.name}</WhiteText>
+            {details}
+          </View>
+        </Animated.View>
       )
     });
     const handicap  = !this.props.user
@@ -92,13 +120,12 @@ export default class Home extends Component {
                     : this.props.user.handicap;
     return (
       <ScrollView style={styles.home}>
-          <Text>Home page</Text>
 
-          <Text>Your handicap index: {handicap}</Text>
-          <Text>Rounds played in {currentYear}: {this.state.ytdRounds}</Text>
-          <Text>You've spent ${this.state.ytdSpent} in {currentYear}</Text>
-          <Text>Rounds played in {monthMap[currentMonth]}: {this.state.mtdRounds}</Text>
-          <Text>You've spent ${this.state.mtdSpent} in {monthMap[currentMonth]}</Text>
+          <WhiteText>Your handicap index: {handicap}</WhiteText>
+          <WhiteText>Rounds played in {currentYear}: {this.state.ytdRounds}</WhiteText>
+          <WhiteText>You've spent ${this.state.ytdSpent} in {currentYear}</WhiteText>
+          <WhiteText>Rounds played in {monthMap[currentMonth]}: {this.state.mtdRounds}</WhiteText>
+          <WhiteText>You've spent ${this.state.mtdSpent} in {monthMap[currentMonth]}</WhiteText>
 
           {pastMonths}
 
@@ -107,10 +134,19 @@ export default class Home extends Component {
   }
 }
 
+const { purple, darkSeafoam, lightPurple, offWhite, seafoam } = colors;
+
 const styles = StyleSheet.create({
   home: {
     flex: 1,
     alignSelf: 'stretch',
-    backgroundColor: '#bfd'
+    // backgroundColor: '#bfd',
+    backgroundColor: seafoam,
+  },
+  months: {
+    // height: 40,
+    borderBottomWidth: 1,
+    borderBottomColor: offWhite,
+    marginBottom: 15,
   }
 });
