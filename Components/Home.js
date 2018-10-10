@@ -31,6 +31,7 @@ export default class Home extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      showYtd: true,
       ytdRounds: 0,
       ytdSpent: 0,
       mtdRounds: 0,
@@ -102,6 +103,9 @@ export default class Home extends Component {
                     : this.props.user.handicap === 99
                     ? 'Add a round to find your handicap'
                     : this.props.user.handicap;
+    const toDateRounds = this.state.showYtd ? this.state.ytdRounds : this.state.mtdRounds;
+    const toDateSpent = this.state.showYtd ? this.state.ytdSpent : this.state.mtdSpent;
+    const monthOrYear = this.state.showYtd ? 'Year' : 'Month';
     return (
       <ScrollView style={styles.home}>
 
@@ -111,12 +115,14 @@ export default class Home extends Component {
         <WhiteText>Rounds played in {monthMap[currentMonth]}: {this.state.mtdRounds}</WhiteText>
         <WhiteText>You've spent ${this.state.mtdSpent} in {monthMap[currentMonth]}</WhiteText>
 
+        <Text onPress={() => this.setState({showYtd: !this.state.showYtd})}>Month or Year</Text>
+        <Text>Showing {monthOrYear}</Text>
 
         <View style={styles.summary}>
           <View style={styles.summaryCard}>
-            <Text style={styles.summaryText}>{this.state.ytdRounds}</Text>
+            <Text style={styles.summaryText}>{toDateRounds}</Text>
             {/* <Text style={styles.summaryText}>|</Text> */}
-            <Text style={styles.summaryText}>${this.state.ytdSpent}</Text>
+            <Text style={styles.summaryText}>${toDateSpent}</Text>
           </View>
         </View>
 
