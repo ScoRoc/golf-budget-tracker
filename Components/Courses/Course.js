@@ -50,7 +50,7 @@ export default class Course extends Component {
   }
 
   editCourse = () => {
-    axios.put(`http://${api}/api/course`, {  /////// FIX URL
+    axios.put(`http://${this.props.api}/api/course`, {  /////// FIX URL
       courseName: this.state.name,
       notes: this.state.notes,
       courseId: this.state.course._id
@@ -62,7 +62,7 @@ export default class Course extends Component {
 
   deleteCourse = () => {
     axios({
-      url: `http://${api}/api/course`,  /////// FIX URL
+      url: `http://${this.props.api}/api/course`,  /////// FIX URL
       method: 'delete',
       data: {courseId: this.state.course._id}
     }).then(result => {

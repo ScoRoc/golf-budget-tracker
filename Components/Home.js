@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  Animated,
   FlatList,
   ScrollView,
   StyleSheet,
@@ -32,34 +31,12 @@ export default class Home extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      revealAnim: new Animated.Value(40),
-      revealed: false,
       ytdRounds: 0,
       ytdSpent: 0,
       mtdRounds: 0,
       mtdSpent: 0,
       pastMonths: []
     }
-  }
-
-  animateReveal = () => {
-    let initialHeight = this.state.revealed ? 100 : 40;
-    let finalHeight = this.state.revealed ? 40 : 100;
-    this.setState({ revealed: !this.state.revealed });
-    this.state.revealAnim.setValue(initialHeight);
-    Animated.timing(
-      this.state.revealAnim,
-      {
-        toValue: finalHeight,
-        duration: 350
-      }
-    ).start();
-  }
-
-  showMonthDetails = i => {
-    const pastMonths = [...this.state.pastMonths];
-    pastMonths[i].show = !this.state.pastMonths[i].show;
-    this.setState({pastMonths});
   }
 
   componentDidMount() {
@@ -71,7 +48,7 @@ export default class Home extends Component {
     const pastMonths = [];
     const month = round => new Date(round.date).getMonth();
     for (let i = 0; i < currentMonth; i++) {
-      pastMonths.push( {name: monthMap[i], rounds: 0, spent: 0, show: false} );
+      pastMonths.push( {name: monthMap[i], rounds: 0, spent: 0} );
     }
     rounds.forEach(round => {
       if (new Date(round.date).getFullYear() === currentYear) ytdRounds.push(round);
@@ -96,22 +73,28 @@ export default class Home extends Component {
   }
 
   render() {
-    let { revealAnim } = this.state;
     const pastMonths = this.state.pastMonths.map((month, i) => {
-      const details = month.show
-                    ? <View>
-                        <WhiteText>{month.rounds} rounds played</WhiteText>
-                        <WhiteText>${month.spent} spent</WhiteText>
+      const details = (
+                      <View style={styles.detailsWrap}>
+                        <View style={styles.detailsColumn}>
+                          <WhiteText>Rounds</WhiteText>
+                          <WhiteText>{month.rounds}</WhiteText>
+                        </View>
+                        <View style={styles.detailsColumn}>
+                          <WhiteText>Spent</WhiteText>
+                          <WhiteText>${month.spent}</WhiteText>
+                        </View>
                       </View>
-                    : '';
+                    );
       return (
-        <Animated.View key={i} style={ [styles.months, {height: revealAnim}] }>
-          <View>
-            {/* onPress={() => this.showMonthDetails(i)} */}
-            <WhiteText onPress={this.animateReveal}>{month.name}</WhiteText>
-            {details}
-          </View>
-        </Animated.View>
+        <HomeMonth
+          key={i}
+          i={i}
+          name={month.name}
+          height={ {start: 40, end: 100} }
+        >
+          {details}
+        </HomeMonth>
       )
     });
     const handicap  = !this.props.user
@@ -122,20 +105,29 @@ export default class Home extends Component {
     return (
       <ScrollView style={styles.home}>
 
-          <WhiteText>Your handicap index: {handicap}</WhiteText>
-          <WhiteText>Rounds played in {currentYear}: {this.state.ytdRounds}</WhiteText>
-          <WhiteText>You've spent ${this.state.ytdSpent} in {currentYear}</WhiteText>
-          <WhiteText>Rounds played in {monthMap[currentMonth]}: {this.state.mtdRounds}</WhiteText>
-          <WhiteText>You've spent ${this.state.mtdSpent} in {monthMap[currentMonth]}</WhiteText>
+        <WhiteText>Your handicap index: {handicap}</WhiteText>
+        <WhiteText>Rounds played in {currentYear}: {this.state.ytdRounds}</WhiteText>
+        <WhiteText>You've spent ${this.state.ytdSpent} in {currentYear}</WhiteText>
+        <WhiteText>Rounds played in {monthMap[currentMonth]}: {this.state.mtdRounds}</WhiteText>
+        <WhiteText>You've spent ${this.state.mtdSpent} in {monthMap[currentMonth]}</WhiteText>
 
-          {pastMonths}
+
+        <View style={styles.summary}>
+          <View style={styles.summaryCard}>
+            <Text style={styles.summaryText}>{this.state.ytdRounds}</Text>
+            {/* <Text style={styles.summaryText}>|</Text> */}
+            <Text style={styles.summaryText}>${this.state.ytdSpent}</Text>
+          </View>
+        </View>
+
+        {pastMonths}
 
       </ScrollView>
     );
   }
 }
 
-const { purple, darkSeafoam, lightPurple, offWhite, seafoam } = colors;
+const { purple, darkSeafoam, lightPurple, offWhite, seafoam, steelBlue } = colors;
 
 const styles = StyleSheet.create({
   home: {
@@ -144,10 +136,28 @@ const styles = StyleSheet.create({
     // backgroundColor: '#bfd',
     backgroundColor: seafoam,
   },
-  months: {
-    // height: 40,
-    borderBottomWidth: 1,
-    borderBottomColor: offWhite,
-    marginBottom: 15,
+  summary: {
+    padding: 8,
+    // backgroundColor: '#436f88'
+    backgroundColor: steelBlue
+  },
+  summaryCard: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    borderWidth: 2,
+    borderColor: offWhite,
+    borderRadius: 10
+  },
+  summaryText: {
+    color: offWhite,
+    fontSize: 35
+  },
+  detailsWrap: {
+    marginTop: 11,
+    flexDirection: 'row',
+    justifyContent: 'space-around'
+  },
+  detailsColumn: {
+    alignItems: 'center'
   }
 });

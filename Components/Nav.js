@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import Icon from 'react-native-elements';
 import { colors } from '../global_styles/colors';
 import NavButton from './NavButton';
 
@@ -65,7 +64,7 @@ const Nav = props => {
 const styles = StyleSheet.create({
   nav: {
     alignSelf: 'stretch',
-    height: 95,
+    height: 100,
     flexDirection: 'row',
     justifyContent: 'space-between',
     shadowColor: '#222',

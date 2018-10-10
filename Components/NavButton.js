@@ -31,16 +31,20 @@ export default class NavButton extends React.Component {
 const styles = StyleSheet.create({
   navButton: {
     flex: 1,
-    paddingTop: 10
+    paddingTop: 8
   },
   view: {
     flex: 1,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: .3,
+    shadowRadius: 1,
+    shadowOffset: {width: 2, height: 1}
   },
   icon: {
-    marginTop: 8
+    marginTop: 6
   },
   text: {
-    fontSize: 14
+    fontSize: 14.5
   }
 });
