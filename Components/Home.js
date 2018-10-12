@@ -35,6 +35,7 @@ export default class Home extends Component {
     this.state = {
       showYtd: true,
       toggleSlide: new Animated.Value(0),
+      cardSlide: new Animated.Value(-80),
       ytdRounds: 0,
       ytdSpent: 0,
       mtdRounds: 0,
@@ -46,14 +47,18 @@ export default class Home extends Component {
   toggleSlide = () => {
     const { showYtd } = this.state;
     this.setState({showYtd: !this.state.showYtd})
-    const slideTo = this.state.showYtd ? 44 : 0;
-    Animated.timing(
-      this.state.toggleSlide,
-      {
-        toValue: slideTo,
-        duration: 350
-      }
-    ).start();
+    const toggleSlideTo = this.state.showYtd ? 44 : 0;
+    const cardSlideTo = this.state.showYtd ? 0 : -80;
+    Animated.parallel([
+      Animated.timing(this.state.toggleSlide,{
+          toValue: toggleSlideTo,
+          duration: 300
+        }),
+      Animated.timing(this.state.cardSlide,{
+          toValue: cardSlideTo,
+          duration: 300
+        }),
+    ]).start();
   }
 
   componentDidMount() {
@@ -122,7 +127,7 @@ export default class Home extends Component {
     const monthOrYear = this.state.showYtd ? (new Date()).getFullYear() : monthMap[(new Date()).getMonth()];
     const toDateRounds = this.state.showYtd ? this.state.ytdRounds : this.state.mtdRounds;
     const toDateSpent = this.state.showYtd ? this.state.ytdSpent : this.state.mtdSpent;
-    const { toggleSlide } = this.state;
+    const { toggleSlide, cardSlide } = this.state;
     const yearBold = this.state.showYtd ? styles.yearMonthBold : styles.yearMonthNormal;
     const monthBold = this.state.showYtd ? styles.yearMonthNormal : styles.yearMonthBold;
     return (
@@ -146,14 +151,21 @@ export default class Home extends Component {
         </View>
 
         <View style={styles.summary}>
-          <WhiteText style={ {textAlign: 'center'} }>{monthOrYear}</WhiteText>
+          <WhiteText style={styles.summaryMonthYear}>{monthOrYear}</WhiteText>
+          <View style={styles.summaryColumnNames}>
+            <WhiteText>Rounds</WhiteText>
+            <WhiteText>Spent</WhiteText>
+          </View>
           <View style={styles.summaryCard}>
-            <View style={ [styles.card, styles.leftCard] }>
-              <Text style={styles.summaryText}>{toDateRounds}</Text>
-            </View>
-            <View style={ [styles.card, styles.rightCard] }>
-              <Text style={styles.summaryText}>${toDateSpent}</Text>
-            </View>
+            <Animated.View style={ [styles.card, styles.leftCard, { transform: [{translateY: cardSlide}] }] }>
+              {/* <Text style={styles.summaryText}>{toDateRounds}</Text> */}
+              <Text style={styles.summaryText}>{this.state.mtdRounds}</Text>
+              <Text style={styles.summaryText}>{this.state.ytdRounds}</Text>
+            </Animated.View>
+            <Animated.View style={ [styles.card, styles.rightCard, { transform: [{translateY: cardSlide}] }] }>
+              <Text style={styles.summaryText}>${this.state.mtdSpent}</Text>
+              <Text style={styles.summaryText}>${this.state.ytdSpent}</Text>
+            </Animated.View>
           </View>
         </View>
 
@@ -164,7 +176,7 @@ export default class Home extends Component {
   }
 }
 
-const { purple, darkSeafoam, lightPurple, offWhite, seafoam, steelBlue } = colors;
+const { purple, darkSeafoam, lightPurple, offWhite, seafoam, steelBlue, yellow } = colors;
 
 const styles = StyleSheet.create({
   home: {
@@ -182,7 +194,7 @@ const styles = StyleSheet.create({
     width: 75,
     height: 30,
     justifyContent: 'center',
-    backgroundColor: 'blue',
+    backgroundColor: steelBlue,
     borderRadius: 40,
     paddingTop: 12,
     paddingBottom: 12,
@@ -195,7 +207,7 @@ const styles = StyleSheet.create({
   toggleBubble: {
     height: 25,
     width: 25,
-    backgroundColor: 'grey',
+    backgroundColor: yellow,
     borderRadius: 15
   },
   yearMonthBold: {
@@ -211,24 +223,35 @@ const styles = StyleSheet.create({
     // backgroundColor: '#436f88'
     backgroundColor: steelBlue
   },
+  summaryMonthYear: {
+    textAlign: 'center',
+    fontWeight: 'bold'
+  },
+  summaryColumnNames: {
+    flexDirection: 'row',
+    justifyContent: 'space-around'
+  },
   summaryCard: {
+    height: 80,
     flexDirection: 'row',
     justifyContent: 'space-around',
     borderWidth: 2,
     borderColor: offWhite,
-    borderRadius: 10
+    borderRadius: 10,
+    overflow: 'hidden'
   },
   card: {
+    height: 160,
     width: '50%',
-    paddingTop: 20,
-    paddingBottom: 20,
+    justifyContent: 'space-around',
     borderRadius: 10,
   },
   leftCard: {
-    backgroundColor: 'darkred'
+    // backgroundColor: 'darkred',
+    // transform: [{translateY: 10}]
   },
   rightCard: {
-    backgroundColor: 'darkgreen'
+    // backgroundColor: 'darkgreen'
   },
   summaryText: {
     color: offWhite,

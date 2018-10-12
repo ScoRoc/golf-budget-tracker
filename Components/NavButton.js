@@ -4,28 +4,34 @@ import { Icon } from 'react-native-elements';
 import { colors } from '../global_styles/colors';
 import WhiteText from './Text/WhiteText';
 
-export default class NavButton extends React.Component {
-  render() {
-    let nav = this.props.nav
-    return (
-      <TouchableHighlight
-        onPress={() => this.props.changePage(nav.page)}
-        style={[styles.navButton, this.props.bgColor]}
-        underlayColor='rgb(102, 51, 153)'
-        >
-          <View style={styles.view}>
-            <WhiteText style={styles.text}>{nav.text}</WhiteText>
-            <Icon
-              name={nav.icon}
-              type={nav.iconType}
-              size={36}
-              color={colors.yellow}
-              iconStyle={styles.icon}
-            />
-          </View>
-      </TouchableHighlight>
-    );
+const NavButton = props => {
+
+  const handlePress = page => {
+    if (props.changePage) props.changePage(page);
+    if (props.logout) props.logout();
   }
+
+  const nav = props.nav
+
+  return (
+    <TouchableHighlight
+      onPress={() => handlePress(nav.page)}
+      style={[styles.navButton, props.bgColor]}
+      underlayColor='rgb(102, 51, 153)'
+      >
+        <View style={styles.view}>
+          <WhiteText style={styles.text}>{nav.text}</WhiteText>
+          <Icon
+            name={nav.icon}
+            type={nav.iconType}
+            size={36}
+            color={colors.yellow}
+            iconStyle={styles.icon}
+          />
+        </View>
+    </TouchableHighlight>
+  );
+
 }
 
 const styles = StyleSheet.create({
@@ -48,3 +54,5 @@ const styles = StyleSheet.create({
     fontSize: 14.5
   }
 });
+
+export default NavButton;

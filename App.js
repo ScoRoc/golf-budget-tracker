@@ -120,7 +120,7 @@ export default class App extends React.Component {
 
           {pages[this.state.page]}
 
-          <Nav changePage={this.changePage} />
+          <Nav changePage={this.changePage} logout={this.logout} />
 
         </View>
       );

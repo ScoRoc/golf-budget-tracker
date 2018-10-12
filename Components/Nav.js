@@ -56,7 +56,7 @@ const Nav = props => {
       <NavButton changePage={props.changePage} nav={nav.home} bgColor={bgColor.home} />
       <NavButton changePage={props.changePage} nav={nav.myCourses} bgColor={bgColor.myCourses} />
       <NavButton changePage={props.changePage} nav={nav.myRounds} bgColor={bgColor.myRounds} />
-      <NavButton changePage={props.changePage} nav={nav.logout} bgColor={bgColor.logout} />
+      <NavButton logout={props.logout} nav={nav.logout} bgColor={bgColor.logout} />
     </View>
   );
 }
