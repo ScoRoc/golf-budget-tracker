@@ -129,10 +129,6 @@ export default class Home extends Component {
       <ScrollView style={styles.home}>
 
         <WhiteText>Your handicap index: {handicap}</WhiteText>
-        <WhiteText>Rounds played in {currentYear}: {this.state.ytdRounds}</WhiteText>
-        <WhiteText>You've spent ${this.state.ytdSpent} in {currentYear}</WhiteText>
-        <WhiteText>Rounds played in {monthMap[currentMonth]}: {this.state.mtdRounds}</WhiteText>
-        <WhiteText>You've spent ${this.state.mtdSpent} in {monthMap[currentMonth]}</WhiteText>
 
         <View style={styles.toggleWrap}>
           <WhiteText style={yearBold}>Year</WhiteText>
@@ -204,7 +200,7 @@ const styles = StyleSheet.create({
   },
   yearMonthBold: {
     fontWeight: 'bold',
-    fontSize: 18
+    // fontSize: 18
   },
   yearMonthNormal: {
     fontWeight: 'normal'
