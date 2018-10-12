@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import {
+  Animated,
   FlatList,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableWithoutFeedback,
   View
 } from 'react-native';
 import { colors } from '../global_styles/colors';
@@ -32,12 +34,26 @@ export default class Home extends Component {
     super(props)
     this.state = {
       showYtd: true,
+      toggleSlide: new Animated.Value(0),
       ytdRounds: 0,
       ytdSpent: 0,
       mtdRounds: 0,
       mtdSpent: 0,
       pastMonths: []
     }
+  }
+
+  toggleSlide = () => {
+    const { showYtd } = this.state;
+    this.setState({showYtd: !this.state.showYtd})
+    const slideTo = this.state.showYtd ? 44 : 0;
+    Animated.timing(
+      this.state.toggleSlide,
+      {
+        toValue: slideTo,
+        duration: 350
+      }
+    ).start();
   }
 
   componentDidMount() {
@@ -103,9 +119,12 @@ export default class Home extends Component {
                     : this.props.user.handicap === 99
                     ? 'Add a round to find your handicap'
                     : this.props.user.handicap;
+    const monthOrYear = this.state.showYtd ? (new Date()).getFullYear() : monthMap[(new Date()).getMonth()];
     const toDateRounds = this.state.showYtd ? this.state.ytdRounds : this.state.mtdRounds;
     const toDateSpent = this.state.showYtd ? this.state.ytdSpent : this.state.mtdSpent;
-    const monthOrYear = this.state.showYtd ? 'Year' : 'Month';
+    const { toggleSlide } = this.state;
+    const yearBold = this.state.showYtd ? styles.yearMonthBold : styles.yearMonthNormal;
+    const monthBold = this.state.showYtd ? styles.yearMonthNormal : styles.yearMonthBold;
     return (
       <ScrollView style={styles.home}>
 
@@ -115,14 +134,30 @@ export default class Home extends Component {
         <WhiteText>Rounds played in {monthMap[currentMonth]}: {this.state.mtdRounds}</WhiteText>
         <WhiteText>You've spent ${this.state.mtdSpent} in {monthMap[currentMonth]}</WhiteText>
 
-        <Text onPress={() => this.setState({showYtd: !this.state.showYtd})}>Month or Year</Text>
-        <Text>Showing {monthOrYear}</Text>
+        <View style={styles.toggleWrap}>
+          <WhiteText style={yearBold}>Year</WhiteText>
+          <TouchableWithoutFeedback onPress={() => this.toggleSlide()}>
+            <View style={styles.toggleBar}>
+              <Animated.View
+                style={[
+                  styles.toggleBubble,
+                  { transform: [ {translateX: toggleSlide} ] }
+                ]}
+              />
+            </View>
+          </TouchableWithoutFeedback>
+          <WhiteText style={monthBold}>Month</WhiteText>
+        </View>
 
         <View style={styles.summary}>
+          <WhiteText style={ {textAlign: 'center'} }>{monthOrYear}</WhiteText>
           <View style={styles.summaryCard}>
-            <Text style={styles.summaryText}>{toDateRounds}</Text>
-            {/* <Text style={styles.summaryText}>|</Text> */}
-            <Text style={styles.summaryText}>${toDateSpent}</Text>
+            <View style={ [styles.card, styles.leftCard] }>
+              <Text style={styles.summaryText}>{toDateRounds}</Text>
+            </View>
+            <View style={ [styles.card, styles.rightCard] }>
+              <Text style={styles.summaryText}>${toDateSpent}</Text>
+            </View>
           </View>
         </View>
 
@@ -142,8 +177,41 @@ const styles = StyleSheet.create({
     // backgroundColor: '#bfd',
     backgroundColor: seafoam,
   },
+  toggleWrap: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  toggleBar: {
+    width: 75,
+    height: 30,
+    justifyContent: 'center',
+    backgroundColor: 'blue',
+    borderRadius: 40,
+    paddingTop: 12,
+    paddingBottom: 12,
+    paddingLeft: 3,
+    paddingRight: 10,
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 4
+  },
+  toggleBubble: {
+    height: 25,
+    width: 25,
+    backgroundColor: 'grey',
+    borderRadius: 15
+  },
+  yearMonthBold: {
+    fontWeight: 'bold',
+    fontSize: 18
+  },
+  yearMonthNormal: {
+    fontWeight: 'normal'
+  },
   summary: {
-    padding: 8,
+    marginBottom: 30,
+    padding: 15,
     // backgroundColor: '#436f88'
     backgroundColor: steelBlue
   },
@@ -154,9 +222,22 @@ const styles = StyleSheet.create({
     borderColor: offWhite,
     borderRadius: 10
   },
+  card: {
+    width: '50%',
+    paddingTop: 20,
+    paddingBottom: 20,
+    borderRadius: 10,
+  },
+  leftCard: {
+    backgroundColor: 'darkred'
+  },
+  rightCard: {
+    backgroundColor: 'darkgreen'
+  },
   summaryText: {
     color: offWhite,
-    fontSize: 35
+    fontSize: 35,
+    textAlign: 'center'
   },
   detailsWrap: {
     marginTop: 11,
