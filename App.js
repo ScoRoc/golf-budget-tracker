@@ -2,6 +2,7 @@ import React from 'react';
 import { AsyncStorage, TouchableHighlight, StyleSheet, Text, View, ScrollView } from 'react-native';
 import axios from 'axios';
 import Expo from 'expo';
+import { colors } from './global_styles/colors';
 import Header from './Components/Header';
 import Nav from './Components/Nav';
 import Home from './Components/Home';
@@ -91,6 +92,11 @@ export default class App extends React.Component {
 
   render() {
     let userName = this.state.user ? this.state.user.name : 'nothin yet';
+    const colorsMap = {
+      home: colors.seafoam,
+      myCourses: colors.lightBlue,
+      myRounds: colors.purple
+    }
     const pages = {
       home: <Home
               user={this.state.user}
@@ -116,7 +122,8 @@ export default class App extends React.Component {
       return (
         <View style={styles.app}>
 
-          <Header userName={userName} logout={this.logout} />
+          {/* <Header userName={userName} logout={this.logout} /> */}
+          <Header color={colorsMap[this.state.page]} />
 
           {pages[this.state.page]}
 
@@ -146,6 +153,6 @@ const styles = StyleSheet.create({
   app: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   }
 });

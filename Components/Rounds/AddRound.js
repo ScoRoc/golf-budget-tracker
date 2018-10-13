@@ -88,7 +88,7 @@ export default class AddRound extends Component {
       user: this.props.user
     }).then(result => {
       this.props.getUserInfo();
-      // if (this.props.setCourse) this.props.setCourse(this.state.courseName);
+      if (this.props.setCourse) this.props.setCourse(this.state.courseName);
       this.animateClose();
     })
   }

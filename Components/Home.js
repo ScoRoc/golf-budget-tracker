@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   Animated,
   FlatList,
+  ImageBackground,
   ScrollView,
   StyleSheet,
   Text,
@@ -122,8 +123,13 @@ export default class Home extends Component {
     const handicap  = !this.props.user
                     ? ''
                     : this.props.user.handicap === 99
-                    ? 'Add a round to find your handicap'
+                    ? 'N/A'
                     : this.props.user.handicap;
+    const handicapTitle = !this.props.user
+                        ? ''
+                        : this.props.user.handicap === 99
+                        ? 'Add a round to find your handicap'
+                        : 'Handicap'
     const monthOrYear = this.state.showYtd ? (new Date()).getFullYear() : monthMap[(new Date()).getMonth()];
     const toDateRounds = this.state.showYtd ? this.state.ytdRounds : this.state.mtdRounds;
     const toDateSpent = this.state.showYtd ? this.state.ytdSpent : this.state.mtdSpent;
@@ -133,7 +139,14 @@ export default class Home extends Component {
     return (
       <ScrollView style={styles.home}>
 
-        <WhiteText>Your handicap index: {handicap}</WhiteText>
+        <ImageBackground blurRadius={0} imageStyle={styles.image} style={styles.imgBG} source={ require('../assets/imgs/golf_ball_and_hole.jpg') }>
+          <View style={styles.handicapWrap}>
+            <WhiteText>{handicapTitle}</WhiteText>
+            <View style={styles.handicapCircle}>
+              <WhiteText style={styles.handicapNum}>{handicap}</WhiteText>
+            </View>
+          </View>
+        </ImageBackground>
 
         <View style={styles.toggleWrap}>
           <WhiteText style={yearBold}>Year</WhiteText>
@@ -158,7 +171,6 @@ export default class Home extends Component {
           </View>
           <View style={styles.summaryCard}>
             <Animated.View style={ [styles.card, styles.leftCard, { transform: [{translateY: cardSlide}] }] }>
-              {/* <Text style={styles.summaryText}>{toDateRounds}</Text> */}
               <Text style={styles.summaryText}>{this.state.mtdRounds}</Text>
               <Text style={styles.summaryText}>{this.state.ytdRounds}</Text>
             </Animated.View>
@@ -168,6 +180,8 @@ export default class Home extends Component {
             </Animated.View>
           </View>
         </View>
+
+        <WhiteText style={styles.prevMonths}>Previous months in {currentYear}</WhiteText>
 
         {pastMonths}
 
@@ -182,13 +196,50 @@ const styles = StyleSheet.create({
   home: {
     flex: 1,
     alignSelf: 'stretch',
-    // backgroundColor: '#bfd',
     backgroundColor: seafoam,
+  },
+  imgBG: {
+    height: 120,
+    width: '100%',
+    marginBottom: 20,
+    paddingTop: 10,
+  },
+  image: {
+    resizeMode: 'cover',
+    width: '100%',
+    height: 120
+  },
+  handicapWrap: {
+    alignItems: 'center',
+    marginBottom: 30
+    },
+  handicapCircle: {
+    height: 80,
+    width: 80,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: steelBlue,
+    borderRadius: 40,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    shadowColor: 'black',
+    shadowOpacity: .3,
+    shadowOffset: {width: 0, height: 5},
+    shadowRadius: 3
+  },
+  handicapNum: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    shadowColor: 'black',
+    shadowOpacity: .4,
+    shadowOffset: {width: 0, height: 3},
+    shadowRadius: 2
   },
   toggleWrap: {
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginBottom: 20
   },
   toggleBar: {
     width: 75,
@@ -202,7 +253,6 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     marginLeft: 10,
     marginRight: 10,
-    marginBottom: 4
   },
   toggleBubble: {
     height: 25,
@@ -212,7 +262,6 @@ const styles = StyleSheet.create({
   },
   yearMonthBold: {
     fontWeight: 'bold',
-    // fontSize: 18
   },
   yearMonthNormal: {
     fontWeight: 'normal'
@@ -220,7 +269,7 @@ const styles = StyleSheet.create({
   summary: {
     marginBottom: 30,
     padding: 15,
-    // backgroundColor: '#436f88'
+    paddingBottom: 40,
     backgroundColor: steelBlue
   },
   summaryMonthYear: {
@@ -238,7 +287,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: offWhite,
     borderRadius: 10,
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   card: {
     height: 160,
@@ -248,7 +297,6 @@ const styles = StyleSheet.create({
   },
   leftCard: {
     // backgroundColor: 'darkred',
-    // transform: [{translateY: 10}]
   },
   rightCard: {
     // backgroundColor: 'darkgreen'
@@ -256,6 +304,10 @@ const styles = StyleSheet.create({
   summaryText: {
     color: offWhite,
     fontSize: 35,
+    textAlign: 'center'
+  },
+  prevMonths: {
+    marginBottom: 30,
     textAlign: 'center'
   },
   detailsWrap: {
