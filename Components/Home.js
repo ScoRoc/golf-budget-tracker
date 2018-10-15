@@ -139,9 +139,9 @@ export default class Home extends Component {
     return (
       <ScrollView style={styles.home}>
 
-        <ImageBackground blurRadius={0} imageStyle={styles.image} style={styles.imgBG} source={ require('../assets/imgs/golf_ball_and_hole.jpg') }>
+        <ImageBackground blurRadius={0} imageStyle={styles.image} style={styles.imgBG} source={ require('../assets/imgs/wide_angle_course.jpeg') }>
           <View style={styles.handicapWrap}>
-            <WhiteText>{handicapTitle}</WhiteText>
+            <WhiteText style={ {fontSize: 19} }>{handicapTitle}</WhiteText>
             <View style={styles.handicapCircle}>
               <WhiteText style={styles.handicapNum}>{handicap}</WhiteText>
             </View>
@@ -196,26 +196,27 @@ const styles = StyleSheet.create({
   home: {
     flex: 1,
     alignSelf: 'stretch',
-    backgroundColor: seafoam,
+    backgroundColor: seafoam
   },
   imgBG: {
-    height: 120,
+    height: 150,
     width: '100%',
-    marginBottom: 20,
-    paddingTop: 10,
+    marginBottom: 20
   },
   image: {
-    resizeMode: 'cover',
     width: '100%',
-    height: 120
+    resizeMode: 'cover'
   },
   handicapWrap: {
+    height: '100%',
     alignItems: 'center',
-    marginBottom: 30
+    paddingTop: 10,
+    backgroundColor: 'rgba(0, 0, 0, .3)'
     },
   handicapCircle: {
     height: 80,
     width: 80,
+    marginTop: 10,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: steelBlue,
@@ -223,9 +224,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     shadowColor: 'black',
-    shadowOpacity: .3,
-    shadowOffset: {width: 0, height: 5},
-    shadowRadius: 3
+    shadowOpacity: .8,
+    shadowOffset: {width: 0, height: 0},
+    shadowRadius: 5
   },
   handicapNum: {
     fontSize: 20,

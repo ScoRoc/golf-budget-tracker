@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     shadowColor: '#222',
-    shadowOpacity: .4,
+    shadowOpacity: .3,
     shadowRadius: 3,
     shadowOffset: {width: 0, height: -4}
   }

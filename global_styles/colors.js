@@ -2,6 +2,7 @@ const colors = {
   darkGrey: '#333',
   darkGreyTrans: 'rgba(51, 51, 51, .4)',
   purple: '#8046c4',
+  darkOffWhite: '#dbd3c0',
   darkSeafoam: '#1F5942',
   lightBlue: '#3cb2ec',
   lightPurple: '#9a5cff',

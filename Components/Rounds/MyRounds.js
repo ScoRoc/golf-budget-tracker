@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, TouchableHighlight, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, TouchableHighlight, Text, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { colors } from '../../global_styles/colors';
 import WhiteText from '../Text/WhiteText';
@@ -53,6 +53,9 @@ export default class MyRounds extends Component {
                   : '';
     return (
       <View style={styles.myRounds}>
+
+        <ScrollView contentContainerStyle={ {flexGrow: 1} }>
+
           <WhiteText>MyRounds page</WhiteText>
           <View style={styles.addRoundWrap}>
             <TouchableHighlight onPress={() => this.setState({showAddRound: true})} underlayColor='rgb(102, 51, 153)'>
@@ -65,8 +68,11 @@ export default class MyRounds extends Component {
 
           {rounds}
 
-          {roundPage}
-          {addRound}
+        </ScrollView>
+
+        {roundPage}
+        {addRound}
+
       </View>
     );
   }

@@ -25,7 +25,7 @@ export default class AddRound extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      slideAnim: new Animated.Value(Dimensions.get('window').width),
+      slideAnim: new Animated.Value(Dimensions.get('window').height),
       showDatePicker: false,
       showCoursePicker: false,
       showTeeboxPicker: false,
@@ -97,7 +97,7 @@ export default class AddRound extends Component {
     Animated.timing(
       this.state.slideAnim,
       {
-        toValue: Dimensions.get('window').width,
+        toValue: Dimensions.get('window').height,
         duration: slideTime
       }
     ).start();
@@ -148,7 +148,7 @@ export default class AddRound extends Component {
     return (
       <Animated.View style={[
         styles.addRoundsWrapper,
-        { transform: [ {translateX: slideAnim} ]}
+        { transform: [ {translateY: slideAnim} ]}
       ]}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.addRoundsView}>

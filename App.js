@@ -91,7 +91,7 @@ export default class App extends React.Component {
   }
 
   render() {
-    let userName = this.state.user ? this.state.user.name : 'nothin yet';
+    // let userName = this.state.user ? this.state.user.name : 'nothin yet';
     const colorsMap = {
       home: colors.seafoam,
       myCourses: colors.lightBlue,

@@ -24,7 +24,7 @@ export default class Round extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      slideAnim: new Animated.Value(Dimensions.get('window').height),
+      slideAnim: new Animated.Value(Dimensions.get('window').width),
       editable: false,
       showDatePicker: false,
       showCoursePicker: false,
@@ -110,7 +110,7 @@ export default class Round extends Component {
     Animated.timing(
       this.state.slideAnim,
       {
-        toValue: Dimensions.get('window').height,
+        toValue: Dimensions.get('window').width,
         duration: slideTime
       }
     ).start();
@@ -190,7 +190,7 @@ export default class Round extends Component {
     return (
       <Animated.View style={[
         styles.roundWrapper,
-        { transform: [ {translateY: slideAnim} ]}
+        { transform: [ {translateX: slideAnim} ]}
       ]}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.addRoundView}>

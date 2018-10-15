@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
-import { StyleSheet, TouchableHighlight, Text, View } from 'react-native';
+import {
+  ImageBackground,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TouchableHighlight,
+  View
+} from 'react-native';
 import { Icon } from 'react-native-elements';
 import axios from 'axios';
 import { colors } from '../../global_styles/colors';
@@ -41,52 +49,111 @@ export default class MyCourses extends Component {
                   : '';
     let courses = this.props.courses.map( (course, id) => {
       return (
-        <TouchableHighlight onPress={() => this.touchCourseName(id)} underlayColor='rgb(102, 51, 153)' key={id}>
-          <Text style={styles.course}>{course.courseName}</Text>
+        <TouchableHighlight onPress={() => this.touchCourseName(id)} style={styles.courseOuterWrap} underlayColor='rgb(102, 51, 153)' key={id}>
+          <View style={styles.courseInnerWrap}>
+            <WhiteText>{course.courseName}</WhiteText>
+            <Icon
+              name='chevron-right'
+              type='font-awesome'
+              size={20}
+              color={colors.yellow}
+              iconStyle={styles.icon}
+            />
+          </View>
         </TouchableHighlight>
       );
     });
     return (
       <View style={styles.yourCourses}>
-          <WhiteText>YourCourses page</WhiteText>
+
+        <ScrollView contentContainerStyle={ {flexGrow: 1} }>
+
+          <ImageBackground blurRadius={0} imageStyle={styles.image} style={styles.imgBG} source={ require('../../assets/imgs/course_aerial.jpeg') }>
+            <View style={styles.titleWrap}>
+              <WhiteText style={styles.title}>My courses</WhiteText>
+            </View>
+          </ImageBackground>
+
           <View style={styles.addCourseWrap}>
-            <TouchableHighlight onPress={() => this.setState({showAddCourse: true})} underlayColor='rgb(102, 51, 153)'>
+            <TouchableOpacity onPress={() => this.setState({showAddCourse: true})} activeOpacity={.5}>
               <View style={styles.addCourse}>
-                <WhiteText style={ {marginRight: 10} }>Add a course</WhiteText>
-                <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
+                <Icon color={yellow} size={60} name='add-circle-outline' />
+                <WhiteText>Add a course</WhiteText>
               </View>
-            </TouchableHighlight>
+            </TouchableOpacity>
           </View>
+
           {courses}
-          {addCourse}
-          {coursePage}
+
+        </ScrollView>
+
+        {addCourse}
+        {coursePage}
+
       </View>
     );
   }
 }
 
-const { lightBlue, purple } = colors;
+const { darkGrey, darkOffWhite, lightBlue, mediumGrey, offWhite, purple, steelBlue, yellow } = colors;
 
 const styles = StyleSheet.create({
   yourCourses: {
     flex: 1,
     alignSelf: 'stretch',
-    // backgroundColor: '#ea4'
+    height: '100%',
     backgroundColor: lightBlue
-    // backgroundColor: purple
+  },
+  imgBG: {
+    height: 150,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  image: {
+    width: '100%',
+    resizeMode: 'cover'
+  },
+  titleWrap: {
+    height: '100%',
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, .4)'
+  },
+  title: {
+    fontSize: 19,
   },
   addCourseWrap: {
+    marginTop: 30,
+    marginBottom: 50,
     flexDirection: 'row',
-    justifyContent: 'flex-end'
-  },
-  course: {
-    marginBottom: 3,
-    color: 'rgb(195, 58, 161)'
+    justifyContent: 'center',
+    shadowColor: 'black',
+    shadowOpacity: .7,
+    shadowRadius: 3,
+    shadowOffset: {width: 0, height: 0}
   },
   addCourse: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    height: 120,
+    width: 120,
+    justifyContent: 'space-around',
     alignItems: 'center',
-    paddingRight: 30
+    backgroundColor: steelBlue,
+    borderRadius: 15
+  },
+  courseOuterWrap: {
+    width: '100%',
+    alignItems: 'center'
+  },
+  courseInnerWrap: {
+    width: '90%',
+    marginBottom: 5,
+    padding: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: darkOffWhite
   }
 });

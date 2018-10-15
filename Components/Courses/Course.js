@@ -22,7 +22,7 @@ export default class Course extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      slideAnim: new Animated.Value(Dimensions.get('window').height),
+      slideAnim: new Animated.Value(Dimensions.get('window').width),
       showAddTeebox: false,
       showTeexbox: false,
       currentTeeboxIdx: '',
@@ -75,7 +75,7 @@ export default class Course extends Component {
     Animated.timing(
       this.state.slideAnim,
       {
-        toValue: Dimensions.get('window').height,
+        toValue: Dimensions.get('window').width,
         duration: slideTime
       }
     ).start();
@@ -148,7 +148,7 @@ export default class Course extends Component {
     return (
       <Animated.View style={[
         styles.addCoursesWrapper,
-        { transform: [ {translateY: slideAnim} ]}
+        { transform: [ {translateX: slideAnim} ]}
       ]}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.addCoursesView}>
@@ -192,7 +192,7 @@ export default class Course extends Component {
 const styles = StyleSheet.create({
   addCoursesWrapper: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'orange'
+    backgroundColor: 'orange',
   },
   addCoursesView: {
     ...StyleSheet.absoluteFillObject,

@@ -20,7 +20,7 @@ export default class AddTeebox extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      slideAnim: new Animated.Value(Dimensions.get('window').width),
+      slideAnim: new Animated.Value(Dimensions.get('window').height),
       showAddTeebox: false,
       name: '',
       rating: '',
@@ -60,7 +60,7 @@ export default class AddTeebox extends Component {
     Animated.timing(
       this.state.slideAnim,
       {
-        toValue: Dimensions.get('window').width,
+        toValue: Dimensions.get('window').height,
         duration: slideTime
       }
     ).start();
@@ -83,7 +83,7 @@ export default class AddTeebox extends Component {
     return (
       <Animated.View style={[
         styles.addTeeboxWrapper,
-        { transform: [ {translateX: slideAnim} ]}
+        { transform: [ {translateY: slideAnim} ]}
       ]}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.addTeeboxView}>
