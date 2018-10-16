@@ -14,10 +14,10 @@ import {
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import axios from 'axios';
+import { colors } from '../../global_styles/colors';
+import WhiteText from '../Text/WhiteText';
 import AddTeebox from '../Teeboxes/AddTeebox';
 import Teebox from '../Teeboxes/Teebox';
-
-const slideTime = 500;
 
 export default class Course extends Component {
   constructor(props) {
@@ -88,8 +88,9 @@ export default class Course extends Component {
       case x >= half * .75:
         time = 200;
         break;
+      default:
+        time = 250;
     }
-    console.log('x: ', x, 'time: ', time)
     return time;
   }
 
@@ -104,14 +105,15 @@ export default class Course extends Component {
   }
 
   animateClose = x => {
+    const time = this.findDuration(x);
     Animated.timing(
       this.state.slideAnim,
       {
         toValue: Dimensions.get('window').width,
-        duration: this.findDuration(x)
+        duration: time
       }
     ).start();
-    setTimeout(this.props.close, slideTime);
+    setTimeout(this.props.close, time);
   }
 
   componentWillMount() {
@@ -120,20 +122,15 @@ export default class Course extends Component {
         return Math.abs(gestureState.dx) >= 1;
       },
       onPanResponderMove: (e, gestureState) => {
-        console.log('onPanResponderMove');
-        console.log('vx: ', gestureState.vx);
         if (gestureState.x0 <= 30 && gestureState.x0 >= 0) {
-          console.log('gestureState.moveX: ', gestureState.moveX);
           this.state.slideAnim.setValue(gestureState.moveX);
         }
       },
       onPanResponderRelease: (evt, gestureState) => {
-        const dx = gestureState.dx;
-        const vx = gestureState.vx;
+        const { dx, vx, x0 } = gestureState;
         const closeSpeed = 0.85;
         const half = Dimensions.get('window').width / 2;
-        console.log('in onPanResponderRelease');
-        if (vx >= closeSpeed || dx >= half) {
+        if (x0 <= 30 && vx >= closeSpeed || dx >= half) {
           this.animateClose(gestureState.moveX);
         } else {
           this.animateReset(gestureState.moveX);
@@ -144,7 +141,8 @@ export default class Course extends Component {
   }
 
   componentDidMount() {
-    let course = this.props.course;
+    const course = this.props.course;
+    const time = 350;
     this.setState({
       course: course,
       name: course.courseName,
@@ -154,17 +152,16 @@ export default class Course extends Component {
       this.state.slideAnim,
       {
         toValue: 0,
-        duration: slideTime
+        duration: time
       }
     ).start();
   }
 
   render() {
-    // if (this.state.course) this.state.course.teeboxes.forEach(teebox => console.log('teebox handi: ', teebox))
     let { slideAnim } = this.state;
     let editSave = this.state.editable
-                 ? <Text onPress={this.editCourse}>Done</Text>
-                 : <Text onPress={() => this.setState({editable: true})}>Edit</Text>;
+                 ? <Text style={styles.editSave} onPress={this.editCourse}>Done</Text>
+                 : <Text style={styles.editSave} onPress={() => this.setState({editable: true})}>Edit</Text>;
     let name = this.state.course ? this.state.course.courseName : '';
     let notes = this.state.course ? this.state.course.notes : '';
     let deleteCourse = this.state.editable ? <Button title='Delete course' onPress={this.deleteCourse}  /> : '';
@@ -210,17 +207,26 @@ export default class Course extends Component {
       <Animated.View
         {...this._panResponder.panHandlers}
         style={[
-        styles.addCoursesWrapper,
+        styles.courseWrapper,
         { transform: [ {translateX: slideAnim} ]}
       ]}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.addCoursesView}>
-            <View style={ {flexDirection: 'row', justifyContent: 'space-between'} }>
-              <Text onPress={this.animateClose}>~~~Close~~~</Text>
+          <View style={styles.courseMainView}>
+
+            <View style={styles.topBarView}>
+              <TouchableWithoutFeedback onPress={this.animateClose}>
+                <Icon
+                  name='chevron-left'
+                  type='font-awesome'
+                  size={20}
+                  color={colors.yellow}
+                  iconStyle={ {marginLeft: 0} }
+                />
+              </TouchableWithoutFeedback>
               {editSave}
             </View>
 
-            <Text>Course name:</Text>
+            <WhiteText>Course name:</WhiteText>
             <TextInput
               editable={this.state.editable}
               value={name}
@@ -252,13 +258,28 @@ export default class Course extends Component {
   }
 }
 
+const { darkOffWhite, darkOffWhiteTrans, lightBlueDark, yellow } = colors;
+
 const styles = StyleSheet.create({
-  addCoursesWrapper: {
+  courseWrapper: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'orange',
+    backgroundColor: lightBlueDark,
   },
-  addCoursesView: {
+  courseMainView: {
     ...StyleSheet.absoluteFillObject,
+    padding: 15,
+  },
+  topBarView: {
+    marginBottom: 30,
+    paddingBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderBottomColor: darkOffWhiteTrans
+  },
+  editSave: {
+    color: yellow,
+    fontSize: 18
   },
   teebox: {
     marginBottom: 3,
