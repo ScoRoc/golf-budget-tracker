@@ -5,10 +5,12 @@ import {
   Dimensions,
   Keyboard,
   PanResponder,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableHighlight,
+  TouchableOpacity,
   TouchableWithoutFeedback,
   View
 } from 'react-native';
@@ -117,9 +119,10 @@ export default class Course extends Component {
   }
 
   componentWillMount() {
+    const threshold = 8;
     this._panResponder = PanResponder.create({
       onMoveShouldSetPanResponder: (e, gestureState) => {
-        return Math.abs(gestureState.dx) >= 1;
+        return Math.abs(gestureState.dx) >= threshold;
       },
       onPanResponderMove: (e, gestureState) => {
         if (gestureState.x0 <= 30 && gestureState.x0 >= 0) {
@@ -164,16 +167,45 @@ export default class Course extends Component {
                  : <Text style={styles.editSave} onPress={() => this.setState({editable: true})}>Edit</Text>;
     let name = this.state.course ? this.state.course.courseName : '';
     let notes = this.state.course ? this.state.course.notes : '';
-    let deleteCourse = this.state.editable ? <Button title='Delete course' onPress={this.deleteCourse}  /> : '';
-    const teeboxes = this.state.course
-                   ? this.state.course.teeboxes.map((teebox, idx) => {
-                       return (
-                         <TouchableHighlight onPress={() => this.setState({ currentTeeboxIdx: idx, showTeebox: true })} underlayColor='rgb(102, 51, 153)' key={idx}>
-                           <Text style={styles.teebox}>{teebox.name} --- teebox handicap: {teebox.teeboxHandicap}</Text>
-                         </TouchableHighlight>
-                       )
-                     })
-                   : '';
+    let deleteCourse  = this.state.editable
+                      ? <View style={styles.deleteWrap}>
+                          <TouchableOpacity style={styles.deleteButton} onPress={this.deleteCourse} activeOpacity={.5}>
+                            <Text style={styles.deleteText}>Delete course</Text>
+                          </TouchableOpacity>
+                        </View>
+                      : '';
+    const teeboxes  = this.state.course
+                    ? this.state.course.teeboxes.map((teebox, idx) => {
+                        return (
+                          <TouchableHighlight
+                             onPress={() => this.setState({ currentTeeboxIdx: idx, showTeebox: true })}
+                             style={styles.teeboxOuterWrap} underlayColor='rgb(102, 51, 153)'
+                             key={idx}
+                          >
+                            <View style={styles.teeboxInnerWrap}>
+
+                              <View style={styles.teeboxNameAndHDCPWrap}>
+                                <View style={styles.teeboxHDCPBox}>
+                                  <WhiteText style={ {fontSize: 10} }>HDCP</WhiteText>
+                                  <WhiteText style={ {fontSize: 10} }>{teebox.teeboxHandicap}</WhiteText>
+                                </View>
+
+                                <WhiteText style={ {fontSize: 17} }>{teebox.name}</WhiteText>
+                              </View>
+
+                              <Icon
+                                name='chevron-right'
+                                type='font-awesome'
+                                size={20}
+                                color={colors.yellow}
+                                iconStyle={styles.icon}
+                              />
+
+                            </View>
+                          </TouchableHighlight>
+                        )
+                      })
+                    : '';
     let teeboxPage  = this.state.showTeebox
                     ? <Teebox
                         api={this.props.api}
@@ -196,13 +228,14 @@ export default class Course extends Component {
                     />
                   : '';
     let addTeeboxPlus = this.state.editable
-                      ? <TouchableHighlight onPress={() => this.setState({showAddTeebox: true})} underlayColor='rgb(102, 51, 153)'>
+                      ? <TouchableOpacity onPress={() => this.setState({showAddTeebox: true})}>
                           <View style={styles.addTeebox}>
-                            <Text style={ {marginRight: 10} }>Add</Text>
-                            <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
+                            <WhiteText style={ {marginRight: 10} }>Add</WhiteText>
+                            <Icon color={offWhite} size={30} name='add-circle-outline' />
                           </View>
-                        </TouchableHighlight>
+                        </TouchableOpacity>
                       : '';
+    const editable = this.state.editable ? styles.editable : '';
     return (
       <Animated.View
         {...this._panResponder.panHandlers}
@@ -211,7 +244,7 @@ export default class Course extends Component {
         { transform: [ {translateX: slideAnim} ]}
       ]}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.courseMainView}>
+          <View>
 
             <View style={styles.topBarView}>
               <TouchableWithoutFeedback onPress={this.animateClose}>
@@ -226,31 +259,44 @@ export default class Course extends Component {
               {editSave}
             </View>
 
-            <WhiteText>Course name:</WhiteText>
-            <TextInput
-              editable={this.state.editable}
-              value={name}
-              onChangeText={text => this.setState({name: text})}
-            />
+            <ScrollView style={styles.courseScrollView} contentContainerStyle={ {flexGrow: 1} }>
+            {/* <ScrollView style={styles.courseScrollView} stickyHeaderIndices={[0]} contentContainerStyle={ {flexGrow: 1} }> */}
 
-            <Text>Notes:</Text>
-            <TextInput
-              editable={this.state.editable}
-              value={notes}
-              onChangeText={text => this.setState({notes: text})}
-            />
+              <TextInput
+                style={ [styles.courseName, editable] }
+                placeholder='Course name'
+                multiline={true}
+                editable={this.state.editable}
+                value={name}
+                onChangeText={text => this.setState({name: text})}
+              />
 
-            <View style={styles.addTeeboxWrap}>
-              <Text>Tee Boxes</Text>
-              {addTeeboxPlus}
-            </View>
+              <View style={styles.addTeeboxWrap}>
+                <WhiteText style={styles.sectionTitle}>Tee Boxes</WhiteText>
+                {addTeeboxPlus}
+              </View>
 
-            {teeboxes}
+              {teeboxes}
+
+              <WhiteText style={styles.sectionTitle}>Notes</WhiteText>
+              <TextInput
+                style={ [styles.notes, editable] }
+                placeholder='Notes...'
+                editable={this.state.editable}
+                value={notes}
+                onChangeText={text => this.setState({notes: text})}
+              />
+
+              {deleteCourse}
+
+              {/* filler for space */}
+              <View style={ {height: 60} }></View>
+
+            </ScrollView>
+
             {teeboxPage}
-
             {addTeebox}
 
-            {deleteCourse}
           </View>
         </TouchableWithoutFeedback>
       </Animated.View>
@@ -258,32 +304,56 @@ export default class Course extends Component {
   }
 }
 
-const { darkOffWhite, darkOffWhiteTrans, lightBlueDark, yellow } = colors;
+const { darkOffWhite, darkOffWhiteTrans, darkRed, darkSeafoam, lightBlue, lightBlueDark, mediumGrey, offWhite, purple, redGrey, seafoam, steelBlue, yellow } = colors;
 
 const styles = StyleSheet.create({
   courseWrapper: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: lightBlueDark,
   },
-  courseMainView: {
-    ...StyleSheet.absoluteFillObject,
-    padding: 15,
-  },
   topBarView: {
-    marginBottom: 30,
+    paddingTop: 15,
     paddingBottom: 10,
+    paddingLeft: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    backgroundColor: lightBlue,
     borderBottomWidth: 1,
     borderBottomColor: darkOffWhiteTrans
   },
   editSave: {
+    paddingLeft: 10,
+    paddingRight: 10,
     color: yellow,
-    fontSize: 18
+    fontSize: 18,
+    fontWeight: 'bold'
   },
-  teebox: {
-    marginBottom: 3,
-    color: 'rgb(195, 58, 161)'
+  courseScrollView: {
+    padding: 15,
+    paddingTop: 0
+  },
+  courseName: {
+    marginTop: 15,
+    marginBottom: 15,
+    color: offWhite,
+    fontSize: 38,
+    flexWrap: 'wrap',
+    textAlign: 'center'
+  },
+  sectionTitle: {
+    marginTop: 20,
+    marginBottom: 15,
+    fontSize: 17,
+    fontWeight: 'bold',
+    textDecorationLine: 'underline'
+  },
+  notes: {
+    marginBottom: 20,
+    color: offWhite,
+    fontSize: 16,
+  },
+  editable: {
+    backgroundColor: mediumGrey
   },
   addTeeboxWrap: {
     flexDirection: 'row',
@@ -291,9 +361,65 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   addTeebox: {
+    marginRight: 15,
+    padding: 5,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingRight: 30
+    backgroundColor: yellow,
+    borderRadius: 5,
+    shadowColor: 'black',
+    shadowOpacity: .4,
+    shadowRadius: 3,
+    shadowOffset: {width: 0, height: 0}
   },
+  teeboxOuterWrap: {
+    width: '100%',
+    alignItems: 'center'
+  },
+  teeboxInnerWrap: {
+    width: '90%',
+    marginBottom: 5,
+    padding: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: darkOffWhite
+  },
+  teeboxNameAndHDCPWrap: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  teeboxHDCPBox: {
+    marginRight: 10,
+    padding: 4,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: darkSeafoam,
+    borderRadius: 5
+  },
+  deleteWrap: {
+    marginTop: 30,
+    marginBottom: 20,
+    alignItems: 'center'
+  },
+  deleteButton: {
+    width: '75%',
+    paddingTop: 10,
+    paddingBottom: 10,
+    backgroundColor: redGrey,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: darkOffWhite,
+    borderRadius: 10,
+    shadowColor: 'black',
+    shadowOpacity: .3,
+    shadowRadius: 3,
+    shadowOffset: {width: 0, height: 0}
+  },
+  deleteText: {
+    color: yellow,
+    fontSize: 25,
+    textAlign: 'center'
+  }
 });

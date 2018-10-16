@@ -73,8 +73,8 @@ const {
   darkGrey,
   darkGreyTrans,
   purple,
+  darkMediumGrey,
   darkSeafoam,
-  mediumGrey,
   seafoam,
   offWhite,
   offWhiteTrans,
@@ -82,7 +82,7 @@ const {
   yellow
 } = colors;
 
-const placeholderColor = mediumGrey;
+const placeholderColor = darkMediumGrey;
 
 const styles = StyleSheet.create({
   imgBG: {

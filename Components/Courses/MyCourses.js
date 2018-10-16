@@ -56,7 +56,7 @@ export default class MyCourses extends Component {
               name='chevron-right'
               type='font-awesome'
               size={20}
-              color={colors.yellow}
+              color={yellow}
               iconStyle={styles.icon}
             />
           </View>
@@ -77,8 +77,8 @@ export default class MyCourses extends Component {
           <View style={styles.addCourseWrap}>
             <TouchableOpacity onPress={() => this.setState({showAddCourse: true})} activeOpacity={.5}>
               <View style={styles.addCourse}>
-                <Icon color={yellow} size={60} name='add-circle-outline' />
-                <WhiteText>Add a course</WhiteText>
+                <Icon color={offWhite} size={45} name='add-circle-outline' />
+                <WhiteText style={ {fontSize: 11, fontWeight: 'bold'} }>Add a course</WhiteText>
               </View>
             </TouchableOpacity>
           </View>
@@ -95,7 +95,7 @@ export default class MyCourses extends Component {
   }
 }
 
-const { darkGrey, darkOffWhite, lightBlue, mediumGrey, offWhite, purple, steelBlue, yellow } = colors;
+const { darkGrey, darkOffWhite, lightBlue, mauve, mediumGrey, offWhite, purple, steelBlue, yellow } = colors;
 
 const styles = StyleSheet.create({
   yourCourses: {
@@ -125,21 +125,23 @@ const styles = StyleSheet.create({
     fontSize: 19,
   },
   addCourseWrap: {
-    marginTop: 30,
-    marginBottom: 50,
+    marginTop: 35,
+    marginBottom: 25,
     flexDirection: 'row',
     justifyContent: 'center',
     shadowColor: 'black',
-    shadowOpacity: .7,
+    shadowOpacity: .4,
     shadowRadius: 3,
     shadowOffset: {width: 0, height: 0}
   },
   addCourse: {
-    height: 120,
-    width: 120,
+    height: 85,
+    width: 85,
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: steelBlue,
+    backgroundColor: yellow,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: darkOffWhite,
     borderRadius: 15
   },
   courseOuterWrap: {
