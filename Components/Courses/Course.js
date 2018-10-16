@@ -4,6 +4,7 @@ import {
   Button,
   Dimensions,
   Keyboard,
+  PanResponder,
   StyleSheet,
   Text,
   TextInput,
@@ -16,7 +17,7 @@ import axios from 'axios';
 import AddTeebox from '../Teeboxes/AddTeebox';
 import Teebox from '../Teeboxes/Teebox';
 
-const slideTime = 700;
+const slideTime = 500;
 
 export default class Course extends Component {
   constructor(props) {
@@ -71,15 +72,75 @@ export default class Course extends Component {
     })
   }
 
-  animateClose = () => {
+  findDuration = x => {
+    const half = Dimensions.get('window').width / 2;
+    let time = 0;
+    switch (true) {
+      case x < half * .25:
+        time = 50;
+        break;
+      case x >= half * .25 && x < half * .5:
+        time = 100;
+        break;
+      case x >= half * .5 && x < half * .75:
+        time = 150;
+        break;
+      case x >= half * .75:
+        time = 200;
+        break;
+    }
+    console.log('x: ', x, 'time: ', time)
+    return time;
+  }
+
+  animateReset = x => {
+    Animated.timing(
+      this.state.slideAnim,
+      {
+        toValue: 0,
+        duration: this.findDuration(x)
+      }
+    ).start();
+  }
+
+  animateClose = x => {
     Animated.timing(
       this.state.slideAnim,
       {
         toValue: Dimensions.get('window').width,
-        duration: slideTime
+        duration: this.findDuration(x)
       }
     ).start();
     setTimeout(this.props.close, slideTime);
+  }
+
+  componentWillMount() {
+    this._panResponder = PanResponder.create({
+      onMoveShouldSetPanResponder: (e, gestureState) => {
+        return Math.abs(gestureState.dx) >= 1;
+      },
+      onPanResponderMove: (e, gestureState) => {
+        console.log('onPanResponderMove');
+        console.log('vx: ', gestureState.vx);
+        if (gestureState.x0 <= 30 && gestureState.x0 >= 0) {
+          console.log('gestureState.moveX: ', gestureState.moveX);
+          this.state.slideAnim.setValue(gestureState.moveX);
+        }
+      },
+      onPanResponderRelease: (evt, gestureState) => {
+        const dx = gestureState.dx;
+        const vx = gestureState.vx;
+        const closeSpeed = 0.85;
+        const half = Dimensions.get('window').width / 2;
+        console.log('in onPanResponderRelease');
+        if (vx >= closeSpeed || dx >= half) {
+          this.animateClose(gestureState.moveX);
+        } else {
+          this.animateReset(gestureState.moveX);
+        }
+        return false;
+      }
+    })
   }
 
   componentDidMount() {
@@ -99,7 +160,7 @@ export default class Course extends Component {
   }
 
   render() {
-    if (this.state.course) this.state.course.teeboxes.forEach(teebox => console.log('teebox handi: ', teebox))
+    // if (this.state.course) this.state.course.teeboxes.forEach(teebox => console.log('teebox handi: ', teebox))
     let { slideAnim } = this.state;
     let editSave = this.state.editable
                  ? <Text onPress={this.editCourse}>Done</Text>
@@ -146,44 +207,46 @@ export default class Course extends Component {
                         </TouchableHighlight>
                       : '';
     return (
-      <Animated.View style={[
+      <Animated.View
+        {...this._panResponder.panHandlers}
+        style={[
         styles.addCoursesWrapper,
         { transform: [ {translateX: slideAnim} ]}
       ]}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.addCoursesView}>
-          <View style={ {flexDirection: 'row', justifyContent: 'space-between'} }>
-            <Text onPress={this.animateClose}>~~~Close~~~</Text>
-            {editSave}
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.addCoursesView}>
+            <View style={ {flexDirection: 'row', justifyContent: 'space-between'} }>
+              <Text onPress={this.animateClose}>~~~Close~~~</Text>
+              {editSave}
+            </View>
+
+            <Text>Course name:</Text>
+            <TextInput
+              editable={this.state.editable}
+              value={name}
+              onChangeText={text => this.setState({name: text})}
+            />
+
+            <Text>Notes:</Text>
+            <TextInput
+              editable={this.state.editable}
+              value={notes}
+              onChangeText={text => this.setState({notes: text})}
+            />
+
+            <View style={styles.addTeeboxWrap}>
+              <Text>Tee Boxes</Text>
+              {addTeeboxPlus}
+            </View>
+
+            {teeboxes}
+            {teeboxPage}
+
+            {addTeebox}
+
+            {deleteCourse}
           </View>
-
-          <Text>Course name:</Text>
-          <TextInput
-            editable={this.state.editable}
-            value={name}
-            onChangeText={text => this.setState({name: text})}
-          />
-
-          <Text>Notes:</Text>
-          <TextInput
-            editable={this.state.editable}
-            value={notes}
-            onChangeText={text => this.setState({notes: text})}
-          />
-
-          <View style={styles.addTeeboxWrap}>
-            <Text>Tee Boxes</Text>
-            {addTeeboxPlus}
-          </View>
-
-          {teeboxes}
-          {teeboxPage}
-
-          {addTeebox}
-
-          {deleteCourse}
-        </View>
-      </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
       </Animated.View>
     );
   }

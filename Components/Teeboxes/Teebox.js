@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 
-const slideTime = 700;
+const slideTime = 500;
 
 export default class Teebox extends Component {
   constructor(props) {

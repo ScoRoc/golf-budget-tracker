@@ -11,7 +11,7 @@ import {
   View
 } from 'react-native';
 
-const slideTime = 700;
+const slideTime = 500;
 
 export default class Teebox extends Component {
   constructor(props) {

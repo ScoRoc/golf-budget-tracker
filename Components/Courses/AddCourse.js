@@ -16,7 +16,7 @@ import axios from 'axios';
 import AddTeebox from '../Teeboxes/AddTeebox';
 import PendingTeebox from '../Teeboxes/PendingTeebox';
 
-const slideTime = 700;
+const slideTime = 500;
 
 export default class AddCourse extends Component {
   constructor(props) {

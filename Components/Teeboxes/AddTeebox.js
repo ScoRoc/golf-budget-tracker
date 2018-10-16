@@ -14,7 +14,7 @@ import {
 import { Icon } from 'react-native-elements';
 import axios from 'axios';
 
-const slideTime = 700;
+const slideTime = 500;
 
 export default class AddTeebox extends Component {
   constructor(props) {

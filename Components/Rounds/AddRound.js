@@ -19,7 +19,7 @@ import DatePicker from '../DatePicker';
 import AddCourse from '../Courses/AddCourse';
 import AddTeebox from '../Teeboxes/AddTeebox';
 
-const slideTime = 700;
+const slideTime = 500;
 
 export default class AddRound extends Component {
   constructor(props) {

@@ -18,7 +18,7 @@ import axios from 'axios';
 import DatePicker from '../DatePicker';
 import AddCourse from '../Courses/AddCourse';
 
-const slideTime = 700;
+const slideTime = 500;
 
 export default class Round extends Component {
   constructor(props) {
