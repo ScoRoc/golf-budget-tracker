@@ -5,6 +5,7 @@ import {
   Dimensions,
   Keyboard,
   PanResponder,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -25,6 +26,7 @@ export default class AddCourse extends Component {
     super(props)
     this.state = {
       slideAnim: new Animated.Value(Dimensions.get('window').height),
+      scrolling: false,
       showAddTeebox: false,
       showTeebox: false,
       pendingTeeboxMoving: false,
@@ -109,7 +111,6 @@ export default class AddCourse extends Component {
         duration: this.findDuration(y)
       }
     ).start();
-    this.props.updateAddCourseMoving(false);
   }
 
   animateClose = y => {
@@ -121,7 +122,6 @@ export default class AddCourse extends Component {
         duration: time
       }
     ).start();
-    this.props.updateAddCourseMoving(false);
     setTimeout(this.props.close, time);
   }
 
@@ -129,11 +129,8 @@ export default class AddCourse extends Component {
     const threshold = 8;
     this._panResponder = PanResponder.create({
       onMoveShouldSetPanResponder: (e, gestureState) => {
-        if (Math.abs(gestureState.dy) >= threshold) {
-          this.props.updateAddCourseMoving(true);
-          return true;
-        } else {
-          return false;
+        if (!this.state.pendingTeeboxMoving && !this.state.showTeebox && !this.state.scrolling) {
+          return Math.abs(gestureState.dy) >= threshold;
         }
       },
       onPanResponderMove: (e, gestureState) => {
@@ -211,7 +208,10 @@ export default class AddCourse extends Component {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.addCoursesView}>
 
-            <WhiteText style={styles.pageTitle}>Add a course</WhiteText>
+            {/* <WhiteText style={styles.pageTitle}>Add a course</WhiteText> */}
+            <TouchableOpacity style={styles.addCourseButton} onPress={this.addCourse} activeOpacity={.5}>
+              <WhiteText style={ {fontSize: 20, fontWeight: 'bold'} }>Add course</WhiteText>
+            </TouchableOpacity>
 
             <WhiteText>Course name</WhiteText>
             <TextInput
@@ -253,11 +253,11 @@ export default class AddCourse extends Component {
               style={styles.textInput}
             />
 
-            <TouchableOpacity style={styles.addCourseButton} onPress={this.addCourse} activeOpacity={.5}>
+            {/* <TouchableOpacity style={styles.addCourseButton} onPress={this.addCourse} activeOpacity={.5}>
               <WhiteText style={ {fontSize: 20, fontWeight: 'bold'} }>Add course</WhiteText>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
-            <WhiteText style={ {textAlign: 'center'} }>Swipe down to close</WhiteText>
+            <WhiteText style={ {marginTop: 30, textAlign: 'center'} }>Swipe down to cancel</WhiteText>
             <Icon
               name='chevron-down'
               type='font-awesome'
@@ -286,11 +286,26 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     paddingRight: 15
   },
-  pageTitle: {
-    marginBottom: 20,
-    fontSize: 26,
-    textAlign: 'center'
+  addCourseButton: {
+    alignSelf: 'center',
+    height: 50,
+    width: '70%',
+    marginTop: 20,
+    marginBottom: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: yellow,
+    borderRadius: 5,
+    shadowColor: 'black',
+    shadowOpacity: .4,
+    shadowRadius: 3,
+    shadowOffset: {width: 0, height: 0}
   },
+  // pageTitle: {
+  //   marginBottom: 20,
+  //   fontSize: 26,
+  //   textAlign: 'center'
+  // },
   textInput: {
     marginBottom: 20,
     backgroundColor: mediumGrey,
@@ -329,20 +344,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: darkOffWhite
-  },
-  addCourseButton: {
-    alignSelf: 'center',
-    height: 50,
-    width: '70%',
-    marginTop: 40,
-    marginBottom: 120,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: yellow,
-    borderRadius: 5,
-    shadowColor: 'black',
-    shadowOpacity: .4,
-    shadowRadius: 3,
-    shadowOffset: {width: 0, height: 0}
   }
 });

@@ -16,8 +16,6 @@ import { Icon } from 'react-native-elements';
 import { colors } from '../../global_styles/colors';
 import WhiteText from '../Text/WhiteText';
 
-const slideTime = 500;
-
 export default class Teebox extends Component {
   constructor(props) {
     super(props)
@@ -45,18 +43,88 @@ export default class Teebox extends Component {
     this.animateClose();
   }
 
-  animateClose = () => {
+  findDuration = x => {
+    const half = Dimensions.get('window').width / 2;
+    let time = 0;
+    switch (true) {
+      case x < half * .25:
+        time = 50;
+        break;
+      case x >= half * .25 && x < half * .5:
+        time = 100;
+        break;
+      case x >= half * .5 && x < half * .75:
+        time = 150;
+        break;
+      case x >= half * .75:
+        time = 200;
+        break;
+      default:
+        time = 250;
+    }
+    return time;
+  }
+
+  animateReset = x => {
+    Animated.timing(
+      this.state.slideAnim,
+      {
+        toValue: 0,
+        duration: this.findDuration(x)
+      }
+    ).start();
+    this.props.updatePendingTeeboxMoving(false);
+  }
+
+  animateClose = x => {
+    const time = this.findDuration(x);
     Animated.timing(
       this.state.slideAnim,
       {
         toValue: Dimensions.get('window').width,
-        duration: slideTime
+        duration: time
       }
     ).start();
-    setTimeout(this.props.close, slideTime);
+    this.props.updatePendingTeeboxMoving(false);
+    setTimeout(this.props.close, time);
   }
 
+
+  componentWillMount() {
+    const threshold = 8;
+    this._panResponder = PanResponder.create({
+      onMoveShouldSetPanResponder: (e, gestureState) => {
+        console.log('here');
+        if (Math.abs(gestureState.dx) >= threshold) {
+          this.props.updatePendingTeeboxMoving(true);
+          return true;
+        } else {
+          return false;
+        }
+      },
+      onPanResponderMove: (e, gestureState) => {
+        const { x0, moveX } = gestureState;
+        if (x0 <= 30 && x0 >= 0) {
+          this.state.slideAnim.setValue(moveX);
+        }
+      },
+      onPanResponderRelease: (evt, gestureState) => {
+        const { dx, vx, x0, moveX } = gestureState;
+        const closeSpeed = 0.85;
+        const half = Dimensions.get('window').width / 2;
+        if (x0 <= 30 && vx >= closeSpeed || dx >= half) {
+          this.animateClose(moveX);
+        } else {
+          this.animateReset(moveX);
+        }
+        return false;
+      }
+    })
+  }
+
+
   componentDidMount() {
+    const time = 350;
     let name = this.props.teebox.name ? this.props.teebox.name : '';
     let rating = this.props.teebox.rating ? this.props.teebox.rating.toString() : '';
     let slope = this.props.teebox.slope ? this.props.teebox.slope.toString() : '';
@@ -69,7 +137,7 @@ export default class Teebox extends Component {
       this.state.slideAnim,
       {
         toValue: 0,
-        duration: slideTime
+        duration: time
       }
     ).start();
   }
@@ -92,7 +160,7 @@ export default class Teebox extends Component {
     const editable = this.state.editable ? styles.editable : '';
     return (
       <Animated.View
-        // {...this._panResponder.panHandlers}
+        {...this._panResponder.panHandlers}
         style={ [styles.teeboxWrapper, { transform: [{translateX: slideAnim}] }] }
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

@@ -294,7 +294,7 @@ export default class Course extends Component {
               {deleteCourse}
 
               {/* filler for space */}
-              <View style={ {height: 60} }></View>
+              <View style={ {height: 100} }></View>
 
             </ScrollView>
 
@@ -333,6 +333,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   courseScrollView: {
+    minHeight: '100%',
     padding: 15,
     paddingTop: 0
   },
