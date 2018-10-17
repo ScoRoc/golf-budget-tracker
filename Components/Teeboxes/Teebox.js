@@ -115,9 +115,9 @@ export default class Teebox extends Component {
         }
       },
       onPanResponderMove: (e, gestureState) => {
-        const { dx } = gestureState;
-        if (gestureState.x0 <= 30 && gestureState.x0 >= 0) {
-          this.state.slideAnim.setValue(gestureState.moveX);
+        const { x0, moveX } = gestureState;
+        if (x0 <= 30 && x0 >= 0) {
+          this.state.slideAnim.setValue(moveX);
         }
       },
       onPanResponderRelease: (evt, gestureState) => {

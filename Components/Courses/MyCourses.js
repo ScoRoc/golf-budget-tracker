@@ -20,9 +20,14 @@ export default class MyCourses extends Component {
     super(props)
     this.state = {
       showAddCourse: false,
+      addCourseMoving: false,
       showCourse: false,
       currentCourse: {}
     }
+  }
+
+  updateAddCourseMoving = bool => {
+    this.setState({addCourseMoving: bool});
   }
 
   touchCourseName = idx => {
@@ -35,6 +40,7 @@ export default class MyCourses extends Component {
                       api={this.props.api}
                       user={this.props.user}
                       close={() => this.setState({showAddCourse: false})}
+                      updateAddCourseMoving={this.updateAddCourseMoving}
                       getUserInfo={this.props.getUserInfo}
                     />
                   : '';
@@ -57,7 +63,6 @@ export default class MyCourses extends Component {
               type='font-awesome'
               size={20}
               color={yellow}
-              iconStyle={styles.icon}
             />
           </View>
         </TouchableHighlight>

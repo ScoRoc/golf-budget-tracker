@@ -4,10 +4,12 @@ import {
   Button,
   Dimensions,
   Keyboard,
+  PanResponder,
   StyleSheet,
   Text,
   TextInput,
   TouchableHighlight,
+  TouchableOpacity,
   TouchableWithoutFeedback,
   View
 } from 'react-native';
@@ -18,8 +20,6 @@ import WhiteText from '../Text/WhiteText';
 import AddTeebox from '../Teeboxes/AddTeebox';
 import PendingTeebox from '../Teeboxes/PendingTeebox';
 
-const slideTime = 500;
-
 export default class AddCourse extends Component {
   constructor(props) {
     super(props)
@@ -27,12 +27,17 @@ export default class AddCourse extends Component {
       slideAnim: new Animated.Value(Dimensions.get('window').height),
       showAddTeebox: false,
       showTeebox: false,
+      pendingTeeboxMoving: false,
       currentTeebox: '',
       currentTeeboxIdx: '',
       courseName: '',
       notes: '',
       teeboxes: []
     }
+  }
+
+  updatePendingTeeboxMoving = bool => {
+    this.setState({pendingTeeboxMoving: bool});
   }
 
   addCourse = () => {
@@ -74,23 +79,90 @@ export default class AddCourse extends Component {
     this.setState({currentTeebox: touchedTeebox, currentTeeboxIdx: idx, showTeebox: true});
   }
 
-  animateClose = () => {
-    Animated.timing(
-      this.state.slideAnim,
-      {
-        toValue: Dimensions.get('window').height,
-        duration: slideTime
-      }
-    ).start();
-    setTimeout(this.props.close, slideTime);
+  findDuration = y => {
+    const third = Dimensions.get('window').height / 2;
+    let time = 0;
+    switch (true) {
+      case y < third * .25:
+        time = 50;
+        break;
+      case y >= third * .25 && y < third * .5:
+        time = 100;
+        break;
+      case y >= third * .5 && y < third * .75:
+        time = 150;
+        break;
+      case y >= third * .75:
+        time = 200;
+        break;
+      default:
+        time = 250;
+    }
+    return time;
   }
 
-  componentDidMount() {
+  animateReset = y => {
     Animated.timing(
       this.state.slideAnim,
       {
         toValue: 0,
-        duration: slideTime
+        duration: this.findDuration(y)
+      }
+    ).start();
+    this.props.updateAddCourseMoving(false);
+  }
+
+  animateClose = y => {
+    const time = this.findDuration(y);
+    Animated.timing(
+      this.state.slideAnim,
+      {
+        toValue: Dimensions.get('window').height,
+        duration: time
+      }
+    ).start();
+    this.props.updateAddCourseMoving(false);
+    setTimeout(this.props.close, time);
+  }
+
+  componentWillMount() {
+    const threshold = 8;
+    this._panResponder = PanResponder.create({
+      onMoveShouldSetPanResponder: (e, gestureState) => {
+        if (Math.abs(gestureState.dy) >= threshold) {
+          this.props.updateAddCourseMoving(true);
+          return true;
+        } else {
+          return false;
+        }
+      },
+      onPanResponderMove: (e, gestureState) => {
+        const { dy } = gestureState;
+        if (dy >= 0) {
+          this.state.slideAnim.setValue(dy);
+        }
+      },
+      onPanResponderRelease: (evt, gestureState) => {
+        const { dy, vy } = gestureState;
+        const closeSpeed = 0.85;
+        const third = Dimensions.get('window').height / 3;
+        if (vy >= closeSpeed || dy >= third) {
+          this.animateClose(dy);
+        } else {
+          this.animateReset(dy);
+        }
+        return false;
+      }
+    })
+  }
+
+  componentDidMount() {
+    const time = 350;
+    Animated.timing(
+      this.state.slideAnim,
+      {
+        toValue: 0,
+        duration: time
       }
     ).start();
   }
@@ -110,74 +182,97 @@ export default class AddCourse extends Component {
                       teebox={this.state.currentTeebox}
                       teeboxIdx={this.state.currentTeeboxIdx}
                       close={() => this.setState({showTeebox: false})}
+                      updatePendingTeeboxMoving={this.updatePendingTeeboxMoving}
                       updateTeebox={this.updateTeebox}
                       deleteTeebox={this.deleteTeebox}
                     />
                   : '';
     let teeboxes = this.state.teeboxes.map( (teebox, id) => {
       return (
-        <TouchableHighlight onPress={() => this.touchTeeboxName(id)} underlayColor='rgb(102, 51, 153)' key={id}>
-          <Text style={styles.teebox}>{teebox.name}</Text>
+        <TouchableHighlight onPress={() => this.touchTeeboxName(id)} style={styles.teeboxOuterWrap} underlayColor='rgb(102, 51, 153)' key={id}>
+          <View style={styles.teeboxInnerWrap}>
+            <WhiteText>{teebox.name}</WhiteText>
+            <Icon
+              name='chevron-right'
+              type='font-awesome'
+              size={20}
+              color={yellow}
+            />
+          </View>
         </TouchableHighlight>
       );
     });
     let { slideAnim } = this.state;
     return (
-      <Animated.View style={[
-        styles.addCoursesWrapper,
-        { transform: [ {translateY: slideAnim} ]}
-      ]}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.addCoursesView}>
-          <Text onPress={this.animateClose}>~~~Close~~~</Text>
+      <Animated.View
+        {...this._panResponder.panHandlers}
+        style={ [styles.addCoursesWrapper, { transform: [{translateY: slideAnim}] }] }
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.addCoursesView}>
 
-          <WhiteText style={styles.pageTitle}>Add a course</WhiteText>
+            <WhiteText style={styles.pageTitle}>Add a course</WhiteText>
 
-          <WhiteText>Course name</WhiteText>
-          <TextInput
-            returnKeyType='next'
-            onSubmitEditing={() => this.notesInput.focus()}
-            value={this.state.courseName}
-            onChangeText={courseName => this.setState({courseName})}
-            style={styles.textInput}
-          />
+            <WhiteText>Course name</WhiteText>
+            <TextInput
+              returnKeyType='next'
+              onSubmitEditing={() => this.notesInput.focus()}
+              value={this.state.courseName}
+              onChangeText={courseName => this.setState({courseName})}
+              style={styles.textInput}
+            />
 
-          <View style={styles.teeboxWrapper}>
-            <View style={styles.addTeeboxWrap}>
-              <WhiteText>Tee boxes</WhiteText>
-              <TouchableHighlight onPress={() => this.setState({showAddTeebox: true})} underlayColor='rgb(102, 51, 153)'>
-                <View style={styles.addTeebox}>
-                  <Text style={ {marginRight: 10} }>Add</Text>
-                  <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
-                </View>
-              </TouchableHighlight>
+            <View style={styles.teeboxWrapper}>
+
+              <View style={styles.addTeeboxWrap}>
+                <WhiteText>Tee boxes</WhiteText>
+
+                <TouchableOpacity onPress={() => this.setState({showAddTeebox: true})}>
+                  <View style={styles.addTeebox}>
+                    <WhiteText style={ {fontSize: 15, marginRight: 10} }>Add</WhiteText>
+                    <Icon color={offWhite} size={30} name='add-circle-outline' />
+                  </View>
+                </TouchableOpacity>
+
+              </View>
+
+              {teeboxes}
+
             </View>
-            {teeboxes}
+
+            {addTeebox}
+
+            {pendingTeeboxPage}
+
+            <WhiteText>Notes</WhiteText>
+            <TextInput
+              ref={input => this.notesInput = input}
+              value={this.state.notes}
+              onChangeText={notes => this.setState({notes})}
+              multiline={true}
+              style={styles.textInput}
+            />
+
+            <TouchableOpacity style={styles.addCourseButton} onPress={this.addCourse} activeOpacity={.5}>
+              <WhiteText style={ {fontSize: 20, fontWeight: 'bold'} }>Add course</WhiteText>
+            </TouchableOpacity>
+
+            <WhiteText style={ {textAlign: 'center'} }>Swipe down to close</WhiteText>
+            <Icon
+              name='chevron-down'
+              type='font-awesome'
+              size={50}
+              color={yellow}
+            />
+
           </View>
-
-          {addTeebox}
-
-          {pendingTeeboxPage}
-
-          <WhiteText>Notes</WhiteText>
-          <TextInput
-            ref={input => this.notesInput = input}
-            value={this.state.notes}
-            onChangeText={notes => this.setState({notes})}
-            multiline={true}
-            style={styles.textInput}
-          />
-
-          <Button title='Add course' onPress={this.addCourse} />
-
-        </View>
-      </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
       </Animated.View>
     );
   }
 }
 
-const { lightBlueDark, mediumGrey, offWhite } = colors;
+const { darkOffWhite, lightBlueDark, mediumGrey, offWhite, yellow } = colors;
 
 const styles = StyleSheet.create({
   addCoursesWrapper: {
@@ -187,29 +282,67 @@ const styles = StyleSheet.create({
   },
   addCoursesView: {
     ...StyleSheet.absoluteFillObject,
+    paddingTop: 30,
+    paddingLeft: 15,
+    paddingRight: 15
   },
   pageTitle: {
+    marginBottom: 20,
     fontSize: 26,
     textAlign: 'center'
   },
   textInput: {
+    marginBottom: 20,
     backgroundColor: mediumGrey,
     color: offWhite,
     fontSize: 16
   },
-  teebox: {
-    marginBottom: 3,
-    color: 'rgb(195, 58, 161)'
-  },
   addTeeboxWrap: {
+    marginBottom: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'
   },
   addTeebox: {
+    marginRight: 15,
+    padding: 5,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingRight: 30
+    backgroundColor: yellow,
+    borderRadius: 5,
+    shadowColor: 'black',
+    shadowOpacity: .4,
+    shadowRadius: 3,
+    shadowOffset: {width: 0, height: 0}
   },
+  teeboxOuterWrap: {
+    width: '100%',
+    alignItems: 'center'
+  },
+  teeboxInnerWrap: {
+    width: '90%',
+    marginBottom: 5,
+    padding: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: darkOffWhite
+  },
+  addCourseButton: {
+    alignSelf: 'center',
+    height: 50,
+    width: '70%',
+    marginTop: 40,
+    marginBottom: 120,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: yellow,
+    borderRadius: 5,
+    shadowColor: 'black',
+    shadowOpacity: .4,
+    shadowRadius: 3,
+    shadowOffset: {width: 0, height: 0}
+  }
 });

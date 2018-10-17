@@ -236,7 +236,7 @@ export default class Course extends Component {
     let addTeeboxPlus = this.state.editable
                       ? <TouchableOpacity onPress={() => this.setState({showAddTeebox: true})}>
                           <View style={styles.addTeebox}>
-                            <WhiteText style={ {marginRight: 10} }>Add</WhiteText>
+                            <WhiteText style={ {fontSize: 15, marginRight: 10} }>Add</WhiteText>
                             <Icon color={offWhite} size={30} name='add-circle-outline' />
                           </View>
                         </TouchableOpacity>
