@@ -13,6 +13,8 @@ import {
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import axios from 'axios';
+import { colors } from '../../global_styles/colors';
+import WhiteText from '../Text/WhiteText';
 import AddTeebox from '../Teeboxes/AddTeebox';
 import PendingTeebox from '../Teeboxes/PendingTeebox';
 
@@ -129,18 +131,20 @@ export default class AddCourse extends Component {
         <View style={styles.addCoursesView}>
           <Text onPress={this.animateClose}>~~~Close~~~</Text>
 
-          <Text>CourseName</Text>
+          <WhiteText style={styles.pageTitle}>Add a course</WhiteText>
+
+          <WhiteText>Course name</WhiteText>
           <TextInput
             returnKeyType='next'
             onSubmitEditing={() => this.notesInput.focus()}
             value={this.state.courseName}
             onChangeText={courseName => this.setState({courseName})}
-            style={{backgroundColor: 'red'}}
+            style={styles.textInput}
           />
 
           <View style={styles.teeboxWrapper}>
             <View style={styles.addTeeboxWrap}>
-              <Text>Tee Boxes</Text>
+              <WhiteText>Tee boxes</WhiteText>
               <TouchableHighlight onPress={() => this.setState({showAddTeebox: true})} underlayColor='rgb(102, 51, 153)'>
                 <View style={styles.addTeebox}>
                   <Text style={ {marginRight: 10} }>Add</Text>
@@ -155,13 +159,13 @@ export default class AddCourse extends Component {
 
           {pendingTeeboxPage}
 
-          <Text>Notes</Text>
+          <WhiteText>Notes</WhiteText>
           <TextInput
             ref={input => this.notesInput = input}
             value={this.state.notes}
             onChangeText={notes => this.setState({notes})}
             multiline={true}
-            style={{backgroundColor: 'red'}}
+            style={styles.textInput}
           />
 
           <Button title='Add course' onPress={this.addCourse} />
@@ -173,14 +177,25 @@ export default class AddCourse extends Component {
   }
 }
 
+const { lightBlueDark, mediumGrey, offWhite } = colors;
+
 const styles = StyleSheet.create({
   addCoursesWrapper: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'yellow',
+    backgroundColor: lightBlueDark,
     zIndex: 10
   },
   addCoursesView: {
     ...StyleSheet.absoluteFillObject,
+  },
+  pageTitle: {
+    fontSize: 26,
+    textAlign: 'center'
+  },
+  textInput: {
+    backgroundColor: mediumGrey,
+    color: offWhite,
+    fontSize: 16
   },
   teebox: {
     marginBottom: 3,

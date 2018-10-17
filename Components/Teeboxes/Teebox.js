@@ -17,8 +17,6 @@ import axios from 'axios';
 import { colors } from '../../global_styles/colors';
 import WhiteText from '../Text/WhiteText';
 
-const slideTime = 500;
-
 export default class Teebox extends Component {
   constructor(props) {
     super(props)
@@ -137,6 +135,7 @@ export default class Teebox extends Component {
   }
 
   componentDidMount() {
+    const time = 350;
     this.setState({
       name: this.props.teebox.name,
       rating: this.props.teebox.rating.toString(),
@@ -146,7 +145,7 @@ export default class Teebox extends Component {
       this.state.slideAnim,
       {
         toValue: 0,
-        duration: slideTime
+        duration: time
       }
     ).start();
   }

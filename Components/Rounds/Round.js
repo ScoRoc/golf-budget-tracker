@@ -95,7 +95,7 @@ export default class Round extends Component {
   }
 
   touchTeeboxName = () => {
-    if (this.state.course) {
+    if (this.state.course && this.state.editable) {
       this.setState({showTeeboxPicker: true});
     }
   }
