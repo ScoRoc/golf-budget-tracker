@@ -8,6 +8,7 @@ const colors = {
   darkSeafoam: '#1F5942',
   lightBlue: '#3cb2ec',
   lightBlueDark: '#007dbb',
+  lightOrange: '#e39403',
   lightPurple: '#9a5cff',
   mauve: '#996f92',
   mediumGrey: '#999',

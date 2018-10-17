@@ -26,6 +26,7 @@ export default class Course extends Component {
     super(props)
     this.state = {
       slideAnim: new Animated.Value(Dimensions.get('window').width),
+      teeboxMoving: false,
       showAddTeebox: false,
       showTeexbox: false,
       currentTeeboxIdx: '',
@@ -72,6 +73,10 @@ export default class Course extends Component {
       this.props.getUserInfo();
       this.animateClose();
     })
+  }
+
+  updateTeeboxMoving = bool => {
+    this.setState({teeboxMoving: bool});
   }
 
   findDuration = x => {
@@ -122,7 +127,7 @@ export default class Course extends Component {
     const threshold = 8;
     this._panResponder = PanResponder.create({
       onMoveShouldSetPanResponder: (e, gestureState) => {
-        return Math.abs(gestureState.dx) >= threshold;
+        if (!this.state.teeboxMoving) return Math.abs(gestureState.dx) >= threshold;
       },
       onPanResponderMove: (e, gestureState) => {
         if (gestureState.x0 <= 30 && gestureState.x0 >= 0) {
@@ -130,13 +135,13 @@ export default class Course extends Component {
         }
       },
       onPanResponderRelease: (evt, gestureState) => {
-        const { dx, vx, x0 } = gestureState;
+        const { dx, vx, x0, moveX } = gestureState;
         const closeSpeed = 0.85;
         const half = Dimensions.get('window').width / 2;
         if (x0 <= 30 && vx >= closeSpeed || dx >= half) {
-          this.animateClose(gestureState.moveX);
+          this.animateClose(moveX);
         } else {
-          this.animateReset(gestureState.moveX);
+          this.animateReset(moveX);
         }
         return false;
       }
@@ -211,6 +216,7 @@ export default class Course extends Component {
                         api={this.props.api}
                         user={this.props.user}
                         close={() => this.setState({showTeebox: false})}
+                        updateTeeboxMoving={this.updateTeeboxMoving}
                         teebox={this.state.course.teeboxes[this.state.currentTeeboxIdx]}
                         teeboxIdx={this.state.currentTeeboxIdx}
                         updateCourse={this.updateCourseLocalState}
@@ -239,10 +245,8 @@ export default class Course extends Component {
     return (
       <Animated.View
         {...this._panResponder.panHandlers}
-        style={[
-        styles.courseWrapper,
-        { transform: [ {translateX: slideAnim} ]}
-      ]}>
+        style={ [styles.courseWrapper, { transform: [{translateX: slideAnim}] }] }
+      >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View>
 
@@ -304,7 +308,7 @@ export default class Course extends Component {
   }
 }
 
-const { darkOffWhite, darkOffWhiteTrans, darkRed, darkSeafoam, lightBlue, lightBlueDark, mediumGrey, offWhite, purple, redGrey, seafoam, steelBlue, yellow } = colors;
+const { darkOffWhite, darkOffWhiteTrans, darkSeafoam, lightBlue, lightBlueDark, lightOrange, mediumGrey, offWhite, redGrey, yellow } = colors;
 
 const styles = StyleSheet.create({
   courseWrapper: {
@@ -396,7 +400,7 @@ const styles = StyleSheet.create({
     padding: 4,
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: darkSeafoam,
+    backgroundColor: lightOrange,
     borderRadius: 5
   },
   deleteWrap: {
