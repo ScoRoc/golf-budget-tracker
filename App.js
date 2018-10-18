@@ -95,7 +95,7 @@ export default class App extends React.Component {
     const colorsMap = {
       home: colors.seafoam,
       myCourses: colors.lightBlue,
-      myRounds: colors.purple
+      myRounds: colors.lightPurple
     }
     const pages = {
       home: <Home

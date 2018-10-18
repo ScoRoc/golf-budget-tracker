@@ -184,7 +184,8 @@ export default class Course extends Component {
                         return (
                           <TouchableHighlight
                              onPress={() => this.setState({ currentTeeboxIdx: idx, showTeebox: true })}
-                             style={styles.teeboxOuterWrap} underlayColor='rgb(102, 51, 153)'
+                             style={styles.teeboxOuterWrap}
+                             underlayColor='rgb(102, 51, 153)'
                              key={idx}
                           >
                             <View style={styles.teeboxInnerWrap}>

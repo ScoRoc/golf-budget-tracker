@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet, TouchableHighlight, Text, View } from 'react-native';
+import {
+  ImageBackground,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TouchableHighlight,
+  View
+} from 'react-native';
 import { Icon } from 'react-native-elements';
 import { colors } from '../../global_styles/colors';
 import WhiteText from '../Text/WhiteText';
@@ -24,11 +32,37 @@ export default class MyRounds extends Component {
   render() {
     let rounds = this.props.rounds.map( (round, id) => {
       return (
-        <TouchableHighlight onPress={() => this.touchRound(id)} underlayColor='rgb(102, 51, 153)' key={id}>
-        <View>
-          <Text style={styles.round}>{(new Date(round.date)).toDateString()} ---------- {round.score}</Text>
-          <Text style={styles.round}>---------</Text>
-        </View>
+        <TouchableHighlight
+           onPress={() => this.touchRound(id)}
+           style={styles.roundOuterWrap}
+           underlayColor='rgb(102, 51, 153)'
+           key={id}
+        >
+          <View style={styles.roundInnerWrap}>
+
+            <View style={styles.roundDateAndScoreWrap}>
+
+              <View style={styles.roundScoreBox}>
+                <WhiteText style={ {fontSize: 11} }>Score</WhiteText>
+                <WhiteText style={ {fontSize: 20} }>{round.score}</WhiteText>
+              </View>
+
+              <View style={styles.roundDateAndCourseName}>
+                <WhiteText style={ {fontSize: 12} }>{(new Date(round.date)).toDateString()}</WhiteText>
+                <WhiteText style={styles.roundCourseName}>{round.courseName}</WhiteText>
+              </View>
+
+            </View>
+
+            <Icon
+              name='chevron-right'
+              type='font-awesome'
+              size={20}
+              color={colors.yellow}
+              iconStyle={styles.icon}
+            />
+
+          </View>
         </TouchableHighlight>
       );
     });
@@ -56,14 +90,19 @@ export default class MyRounds extends Component {
 
         <ScrollView contentContainerStyle={ {flexGrow: 1} }>
 
-          <WhiteText>MyRounds page</WhiteText>
+          <ImageBackground blurRadius={0} imageStyle={styles.image} style={styles.imgBG} source={ require('../../assets/imgs/flag_and_water.jpeg') }>
+            <View style={styles.titleWrap}>
+              <WhiteText style={styles.title}>My rounds</WhiteText>
+            </View>
+          </ImageBackground>
+
           <View style={styles.addRoundWrap}>
-            <TouchableHighlight onPress={() => this.setState({showAddRound: true})} underlayColor='rgb(102, 51, 153)'>
+            <TouchableOpacity onPress={() => this.setState({showAddRound: true})} activeOpacity={.5}>
               <View style={styles.addRound}>
-                <WhiteText style={ {marginRight: 10} }>Add a round</WhiteText>
-                <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
+                <Icon color={offWhite} size={45} name='add-circle-outline' />
+                <WhiteText style={ {fontSize: 11, fontWeight: 'bold'} }>Add a round</WhiteText>
               </View>
-            </TouchableHighlight>
+            </TouchableOpacity>
           </View>
 
           {rounds}
@@ -78,27 +117,87 @@ export default class MyRounds extends Component {
   }
 }
 
-const { purple } = colors;
+const { darkOffWhite, lightOrange, lightPurple, offWhite, purple, yellow } = colors;
 
 const styles = StyleSheet.create({
   myRounds: {
     flex: 1,
     alignSelf: 'stretch',
-    // backgroundColor: '#e83'
-    backgroundColor: purple
+    backgroundColor: lightPurple
   },
-  round: {
-    marginBottom: 3,
-    color: 'rgb(195, 58, 161)'
+  imgBG: {
+    height: 150,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  image: {
+    width: '100%',
+    resizeMode: 'cover'
+  },
+  titleWrap: {
+    height: '100%',
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, .3)'
+  },
+  title: {
+    fontSize: 23,
   },
   addRoundWrap: {
+    marginTop: 35,
+    marginBottom: 25,
     flexDirection: 'row',
-    justifyContent: 'flex-end'
+    justifyContent: 'center',
+    shadowColor: 'black',
+    shadowOpacity: .4,
+    shadowRadius: 3,
+    shadowOffset: {width: 0, height: 0}
   },
   addRound: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    height: 85,
+    width: 85,
+    justifyContent: 'space-around',
     alignItems: 'center',
-    paddingRight: 30
+    backgroundColor: yellow,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: darkOffWhite,
+    borderRadius: 15
+  },
+  roundOuterWrap: {
+    width: '100%',
+    alignItems: 'center'
+  },
+  roundInnerWrap: {
+    width: '90%',
+    marginBottom: 5,
+    padding: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: darkOffWhite
+  },
+  roundDateAndScoreWrap: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  roundScoreBox: {
+    height: 50,
+    width: 50,
+    marginRight: 10,
+    padding: 4,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: lightOrange,
+    borderRadius: 5
+  },
+  roundDateAndCourseName: {
+    width: '77%',
+    flexWrap: 'wrap'
+  },
+  roundCourseName: {
+    fontSize: 18
   }
 });

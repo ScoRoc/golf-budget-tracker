@@ -4,17 +4,19 @@ import {
   Button,
   Dimensions,
   Keyboard,
+  PanResponder,
   StyleSheet,
   Text,
   TextInput,
   TouchableHighlight,
+  TouchableOpacity,
   TouchableWithoutFeedback,
   View
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import axios from 'axios';
-
-const slideTime = 500;
+import { colors } from '../../global_styles/colors';
+import WhiteText from '../Text/WhiteText';
 
 export default class AddTeebox extends Component {
   constructor(props) {
@@ -56,23 +58,81 @@ export default class AddTeebox extends Component {
     this.animateClose();
   }
 
-  animateClose = () => {
-    Animated.timing(
-      this.state.slideAnim,
-      {
-        toValue: Dimensions.get('window').height,
-        duration: slideTime
-      }
-    ).start();
-    setTimeout(this.props.close, slideTime);
+  findDuration = y => {
+    const third = Dimensions.get('window').height / 3;
+    let time = 0;
+    switch (true) {
+      case y < third * .25:
+        time = 50;
+        break;
+      case y >= third * .25 && y < third * .5:
+        time = 100;
+        break;
+      case y >= third * .5 && y < third * .75:
+        time = 150;
+        break;
+      case y >= third * .75:
+        time = 200;
+        break;
+      default:
+        time = 250;
+    }
+    return time;
   }
 
-  componentDidMount() {
+  animateReset = y => {
     Animated.timing(
       this.state.slideAnim,
       {
         toValue: 0,
-        duration: slideTime
+        duration: this.findDuration(y)
+      }
+    ).start();
+  }
+
+  animateClose = y => {
+    const time = this.findDuration(y);
+    Animated.timing(
+      this.state.slideAnim,
+      {
+        toValue: Dimensions.get('window').height,
+        duration: time
+      }
+    ).start();
+    setTimeout(this.props.close, time);
+  }
+
+  componentWillMount() {
+    const threshold = 8;
+    this._panResponder = PanResponder.create({
+      onMoveShouldSetPanResponder: (e, gestureState) => Math.abs(gestureState.dy) >= threshold,
+      onPanResponderMove: (e, gestureState) => {
+        const { dy } = gestureState;
+        if (dy >= 0) {
+          this.state.slideAnim.setValue(dy);
+        }
+      },
+      onPanResponderRelease: (evt, gestureState) => {
+        const { dy, vy } = gestureState;
+        const closeSpeed = 0.85;
+        const third = Dimensions.get('window').height / 3;
+        if (vy >= closeSpeed || dy >= third) {
+          this.animateClose(dy);
+        } else {
+          this.animateReset(dy);
+        }
+        return false;
+      }
+    })
+  }
+
+  componentDidMount() {
+    const time = 350;
+    Animated.timing(
+      this.state.slideAnim,
+      {
+        toValue: 0,
+        duration: time
       }
     ).start();
   }
@@ -81,24 +141,25 @@ export default class AddTeebox extends Component {
     let { slideAnim } = this.state;
     let addTeebox = this.props.course ? this.addTeebox : this.packTeebox;
     return (
-      <Animated.View style={[
-        styles.addTeeboxWrapper,
-        { transform: [ {translateY: slideAnim} ]}
-      ]}>
+      <Animated.View
+        {...this._panResponder.panHandlers}
+        style={ [styles.addTeeboxWrapper, { transform: [{translateY: slideAnim}] }] }
+      >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.addTeeboxView}>
-            <Text onPress={this.animateClose}>~~~Close~~~</Text>
 
-            <Text>TeeboxName</Text>
+            <WhiteText style={styles.pageTitle}>Add a teebox</WhiteText>
+
+            <WhiteText>Teebox name</WhiteText>
             <TextInput
               returnKeyType='next'
               onSubmitEditing={() => this.ratingInput.focus()}
               value={this.state.name}
               onChangeText={name => this.setState({name})}
-              style={{backgroundColor: 'red'}}
+              style={styles.textInput}
             />
 
-            <Text>Rating</Text>
+            <WhiteText>Rating</WhiteText>
             <TextInput
               ref={input => this.ratingInput = input}
               onSubmitEditing={() => this.slopeInput.focus()}
@@ -106,20 +167,30 @@ export default class AddTeebox extends Component {
               onChangeText={rating => this.setState({rating})}
               keyboardType='numeric'
               maxLength={4}
-              style={{backgroundColor: 'red'}}
+              style={styles.textInput}
             />
 
-            <Text>Slope</Text>
+            <WhiteText>Slope</WhiteText>
             <TextInput
               ref={input => this.slopeInput = input}
               value={this.state.slope}
               onChangeText={slope => this.setState({slope})}
               keyboardType='numeric'
               maxLength={3}
-              style={{backgroundColor: 'red'}}
+              style={styles.textInput}
             />
 
-            <Button title='Add teebox' onPress={addTeebox} />
+            <TouchableOpacity style={styles.addTeeboxButton} onPress={addTeebox} activeOpacity={.5}>
+              <WhiteText style={ {fontSize: 20, fontWeight: 'bold'} }>Add course</WhiteText>
+            </TouchableOpacity>
+
+            <WhiteText style={ {marginTop: 15, textAlign: 'center'} }>Swipe down to cancel</WhiteText>
+            <Icon
+              name='chevron-down'
+              type='font-awesome'
+              size={50}
+              color={offWhite}
+            />
 
           </View>
         </TouchableWithoutFeedback>
@@ -128,14 +199,31 @@ export default class AddTeebox extends Component {
   }
 }
 
+const { lightOrange, mediumGrey, offWhite, yellow } = colors;
+
 const styles = StyleSheet.create({
   addTeeboxWrapper: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'yellow',
+    backgroundColor: lightOrange,
     zIndex: 20
   },
   addTeeboxView: {
     ...StyleSheet.absoluteFillObject,
+    paddingTop: 30,
+    paddingLeft: 15,
+    paddingRight: 15
+  },
+  pageTitle: {
+    marginTop: 20,
+    marginBottom: 40,
+    fontSize: 26,
+    textAlign: 'center'
+  },
+  textInput: {
+    marginBottom: 20,
+    backgroundColor: mediumGrey,
+    color: offWhite,
+    fontSize: 16
   },
   addTeeboxWrap: {
     flexDirection: 'row',
@@ -148,4 +236,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingRight: 30
   },
+  addTeeboxButton: {
+    alignSelf: 'center',
+    height: 50,
+    width: '70%',
+    marginTop: 60,
+    marginBottom: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: yellow,
+    borderRadius: 5,
+    shadowColor: 'black',
+    shadowOpacity: .4,
+    shadowRadius: 3,
+    shadowOffset: {width: 0, height: 0}
+  }
 });

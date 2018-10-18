@@ -82,7 +82,7 @@ export default class AddCourse extends Component {
   }
 
   findDuration = y => {
-    const third = Dimensions.get('window').height / 2;
+    const third = Dimensions.get('window').height / 3;
     let time = 0;
     switch (true) {
       case y < third * .25:
@@ -131,8 +131,8 @@ export default class AddCourse extends Component {
       onMoveShouldSetPanResponder: (e, gestureState) => {
         const sd = this.state.scrollDimensions;
         const { moveX, moveY } = gestureState;
-        if (!this.state.pendingTeeboxMoving
-            && !this.state.showTeebox
+        if (!this.state.showTeebox
+            && !this.state.showAddTeebox
             && !(moveX > sd.x
                 && moveX < sd.x + sd.width
                 && moveY > sd.y
@@ -252,7 +252,7 @@ export default class AddCourse extends Component {
               onLayout={e => this.setState({scrollDimensions: e.nativeEvent.layout})}
               style={styles.teeboxScrollWrap}
             >
-              <ScrollView ref='scroll' style={styles.teeboxScroll}>
+              <ScrollView style={styles.teeboxScroll}>
                 {teeboxes}
               </ScrollView>
 
@@ -319,21 +319,6 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     paddingRight: 15
   },
-  addCourseButton: {
-    alignSelf: 'center',
-    height: 50,
-    width: '70%',
-    marginTop: 20,
-    marginBottom: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: yellow,
-    borderRadius: 5,
-    shadowColor: 'black',
-    shadowOpacity: .4,
-    shadowRadius: 3,
-    shadowOffset: {width: 0, height: 0}
-  },
   pageTitle: {
     marginBottom: 20,
     fontSize: 26,
@@ -374,9 +359,6 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     paddingLeft: 5,
     paddingRight: 5,
-    // position: 'absolute',
-    // right: 0,
-    // alignSelf: 'flex-end',
     justifyContent: 'space-between',
     borderLeftWidth: StyleSheet.hairlineWidth,
     borderLeftColor: mediumGrey
@@ -405,5 +387,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: darkOffWhite
+  },
+  addCourseButton: {
+    alignSelf: 'center',
+    height: 50,
+    width: '70%',
+    marginTop: 20,
+    marginBottom: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: yellow,
+    borderRadius: 5,
+    shadowColor: 'black',
+    shadowOpacity: .4,
+    shadowRadius: 3,
+    shadowOffset: {width: 0, height: 0}
   }
 });

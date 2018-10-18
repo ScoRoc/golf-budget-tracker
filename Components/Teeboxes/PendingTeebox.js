@@ -94,7 +94,6 @@ export default class Teebox extends Component {
     const threshold = 8;
     this._panResponder = PanResponder.create({
       onMoveShouldSetPanResponder: (e, gestureState) => {
-        console.log('here');
         if (Math.abs(gestureState.dx) >= threshold) {
           this.props.updatePendingTeeboxMoving(true);
           return true;

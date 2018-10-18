@@ -9,7 +9,6 @@ import {
   View
 } from 'react-native';
 import { Icon } from 'react-native-elements';
-import axios from 'axios';
 import { colors } from '../../global_styles/colors';
 import WhiteText from '../Text/WhiteText';
 import AddCourse from './AddCourse';
@@ -123,7 +122,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, .4)'
   },
   title: {
-    fontSize: 19,
+    fontSize: 23,
   },
   addCourseWrap: {
     marginTop: 35,

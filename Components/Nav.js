@@ -42,7 +42,7 @@ const bgColor = {
   },
   myRounds: {
     // backgroundColor: '#e83'
-    backgroundColor: colors.purple
+    backgroundColor: colors.lightPurple
   },
   logout: {
     // backgroundColor: '#e61'
