@@ -126,6 +126,7 @@ export default class AddCourse extends Component {
   }
 
   componentWillMount() {
+    // const { x, y, height, width } = this.state.scrollDimensions;
     const threshold = 8;
     this._panResponder = PanResponder.create({
       onMoveShouldSetPanResponder: (e, gestureState) => {
@@ -246,9 +247,10 @@ export default class AddCourse extends Component {
             </View>
 
             <View
+              onLayout={e => this.setState({scrollDimensions: e.nativeEvent.layout})}
               style={styles.teeboxScrollWrap}
             >
-              <ScrollView style={styles.teeboxScroll} onLayout={e => this.setState({scrollDimensions: e.nativeEvent.layout})}>
+              <ScrollView style={styles.teeboxScroll}>
                 <View style={styles.iconWrap}>
                   <Icon
                     name='chevron-up'
