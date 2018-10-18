@@ -126,14 +126,21 @@ export default class AddCourse extends Component {
   }
 
   componentWillMount() {
-    // const { x, y, height, width } = this.state.scrollDimensions;
     const threshold = 8;
     this._panResponder = PanResponder.create({
       onMoveShouldSetPanResponder: (e, gestureState) => {
         const sd = this.state.scrollDimensions;
-        console.log('gestureState.moveY: ', gestureState.moveY);
+        const { moveX, moveY } = gestureState;
+        console.log('gestureState.moveX: ', moveX);
         console.log('sd: ', sd);
-        if (!this.state.pendingTeeboxMoving && !this.state.showTeebox) {
+        if (!this.state.pendingTeeboxMoving
+            && !this.state.showTeebox
+            && !(moveX > sd.x
+                && moveX < sd.x + sd.width
+                && moveY > sd.y
+                && moveY < sd.y + sd.height
+            )
+        ) {
           return Math.abs(gestureState.dy) >= threshold;
         }
       },
@@ -238,11 +245,10 @@ export default class AddCourse extends Component {
 
             </View>
 
-            <View style={styles.teeboxScrollWrap}>
-              <ScrollView
-                style={styles.teeboxScroll}
-                onLayout={e => this.setState({scrollDimensions: e.nativeEvent.layout})}
-              >
+            <View
+              style={styles.teeboxScrollWrap}
+            >
+              <ScrollView style={styles.teeboxScroll} onLayout={e => this.setState({scrollDimensions: e.nativeEvent.layout})}>
                 <View style={styles.iconWrap}>
                   <Icon
                     name='chevron-up'
