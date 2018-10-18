@@ -131,7 +131,8 @@ export default class AddCourse extends Component {
     this._panResponder = PanResponder.create({
       onMoveShouldSetPanResponder: (e, gestureState) => {
         const sd = this.state.scrollDimensions;
-        console.log('gestureState.y0: ', gestureState.y0);
+        console.log('gestureState.moveY: ', gestureState.moveY);
+        console.log('sd: ', sd);
         if (!this.state.pendingTeeboxMoving && !this.state.showTeebox) {
           return Math.abs(gestureState.dy) >= threshold;
         }
@@ -225,24 +226,41 @@ export default class AddCourse extends Component {
               style={styles.textInput}
             />
 
-            <View style={styles.teeboxWrapper}>
+            <View style={styles.addTeeboxWrap}>
+              <WhiteText>Tee boxes</WhiteText>
 
-              <View style={styles.addTeeboxWrap}>
-                <WhiteText>Tee boxes</WhiteText>
+              <TouchableOpacity onPress={() => this.setState({showAddTeebox: true})}>
+                <View style={styles.addTeebox}>
+                  <WhiteText style={ {fontSize: 15, marginRight: 10} }>Add</WhiteText>
+                  <Icon color={offWhite} size={30} name='add-circle-outline' />
+                </View>
+              </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => this.setState({showAddTeebox: true})}>
-                  <View style={styles.addTeebox}>
-                    <WhiteText style={ {fontSize: 15, marginRight: 10} }>Add</WhiteText>
-                    <Icon color={offWhite} size={30} name='add-circle-outline' />
-                  </View>
-                </TouchableOpacity>
+            </View>
 
-              </View>
+            <View style={styles.teeboxScrollWrap}>
+              <ScrollView
+                style={styles.teeboxScroll}
+                onLayout={e => this.setState({scrollDimensions: e.nativeEvent.layout})}
+              >
+                <View style={styles.iconWrap}>
+                  <Icon
+                    name='chevron-up'
+                    type='font-awesome'
+                    size={15}
+                    color={offWhite}
+                  />
+                  <Icon
+                    name='chevron-down'
+                    type='font-awesome'
+                    size={15}
+                    color={offWhite}
+                  />
+                </View>
 
-              <ScrollView onLayout={e => this.setState({scrollDimensions: e.nativeEvent.layout})}>
                 {teeboxes}
-              </ScrollView>
 
+              </ScrollView>
             </View>
 
             {addTeebox}
@@ -267,7 +285,7 @@ export default class AddCourse extends Component {
               name='chevron-down'
               type='font-awesome'
               size={50}
-              color={yellow}
+              color={offWhite}
             />
 
           </View>
@@ -336,12 +354,39 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     shadowOffset: {width: 0, height: 0}
   },
+  teeboxScroll: {
+    height: 150,
+    position: 'relative'
+  },
+  iconWrap: {
+    height: 150,
+    paddingTop: 10,
+    paddingBottom: 20,
+    paddingLeft: 5,
+    paddingRight: 5,
+    position: 'absolute',
+    right: 0,
+    alignSelf: 'flex-end',
+    justifyContent: 'space-between',
+    borderLeftWidth: StyleSheet.hairlineWidth,
+    borderLeftColor: mediumGrey
+  },
+  teeboxScrollWrap: {
+    backgroundColor: 'transparent',
+    borderColor: lightBlueDark,
+    borderWidth: 10,
+    overflow: 'hidden',
+    shadowColor: 'black',
+    shadowOpacity: .5,
+    shadowRadius: 8,
+    shadowOffset: {width: 0, height: 0},
+  },
   teeboxOuterWrap: {
     width: '100%',
     alignItems: 'center'
   },
   teeboxInnerWrap: {
-    width: '90%',
+    width: '75%',
     marginBottom: 5,
     padding: 10,
     flexDirection: 'row',
