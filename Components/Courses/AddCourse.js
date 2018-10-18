@@ -126,14 +126,11 @@ export default class AddCourse extends Component {
   }
 
   componentWillMount() {
-    // const { x, y, height, width } = this.state.scrollDimensions;
     const threshold = 8;
     this._panResponder = PanResponder.create({
       onMoveShouldSetPanResponder: (e, gestureState) => {
         const sd = this.state.scrollDimensions;
         const { moveX, moveY } = gestureState;
-        console.log('gestureState.moveX: ', moveX);
-        console.log('sd: ', sd);
         if (!this.state.pendingTeeboxMoving
             && !this.state.showTeebox
             && !(moveX > sd.x
@@ -152,10 +149,18 @@ export default class AddCourse extends Component {
         }
       },
       onPanResponderRelease: (evt, gestureState) => {
-        const { dy, vy } = gestureState;
+        const { dy, vy, x0, y0 } = gestureState;
+        const sd = this.state.scrollDimensions;
         const closeSpeed = 0.85;
         const third = Dimensions.get('window').height / 3;
-        if (vy >= closeSpeed || dy >= third) {
+        if (dy >= third
+          || (vy >= closeSpeed
+            && !(x0 > sd.x
+              && x0 < sd.x + sd.width
+              && y0 > sd.y
+              && y0 < sd.y + sd.height)
+            )
+        ) {
           this.animateClose(dy);
         } else {
           this.animateReset(dy);
@@ -221,9 +226,6 @@ export default class AddCourse extends Component {
           <View style={styles.addCoursesView}>
 
             <WhiteText style={styles.pageTitle}>Add a course</WhiteText>
-            {/* <TouchableOpacity style={styles.addCourseButton} onPress={this.addCourse} activeOpacity={.5}>
-              <WhiteText style={ {fontSize: 20, fontWeight: 'bold'} }>Add course</WhiteText>
-            </TouchableOpacity> */}
 
             <WhiteText>Course name</WhiteText>
             <TextInput
@@ -250,25 +252,25 @@ export default class AddCourse extends Component {
               onLayout={e => this.setState({scrollDimensions: e.nativeEvent.layout})}
               style={styles.teeboxScrollWrap}
             >
-              <ScrollView style={styles.teeboxScroll}>
-                <View style={styles.iconWrap}>
-                  <Icon
-                    name='chevron-up'
-                    type='font-awesome'
-                    size={15}
-                    color={offWhite}
-                  />
-                  <Icon
-                    name='chevron-down'
-                    type='font-awesome'
-                    size={15}
-                    color={offWhite}
-                  />
-                </View>
-
+              <ScrollView ref='scroll' style={styles.teeboxScroll}>
                 {teeboxes}
-
               </ScrollView>
+
+              <View style={styles.iconWrap}>
+                <Icon
+                  name='chevron-up'
+                  type='font-awesome'
+                  size={15}
+                  color={darkGrey}
+                />
+                <Icon
+                  name='chevron-down'
+                  type='font-awesome'
+                  size={15}
+                  color={darkGrey}
+                />
+              </View>
+
             </View>
 
             {addTeebox}
@@ -288,7 +290,7 @@ export default class AddCourse extends Component {
               <WhiteText style={ {fontSize: 20, fontWeight: 'bold'} }>Add course</WhiteText>
             </TouchableOpacity>
 
-            <WhiteText style={ {marginTop: 30, textAlign: 'center'} }>Swipe down to cancel</WhiteText>
+            <WhiteText style={ {marginTop: 15, textAlign: 'center'} }>Swipe down to cancel</WhiteText>
             <Icon
               name='chevron-down'
               type='font-awesome'
@@ -303,7 +305,7 @@ export default class AddCourse extends Component {
   }
 }
 
-const { darkOffWhite, lightBlueDark, mediumGrey, offWhite, yellow } = colors;
+const { darkGrey, darkOffWhite, lightBlueDark, mediumGrey, offWhite, yellow } = colors;
 
 const styles = StyleSheet.create({
   addCoursesWrapper: {
@@ -372,14 +374,15 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     paddingLeft: 5,
     paddingRight: 5,
-    position: 'absolute',
-    right: 0,
-    alignSelf: 'flex-end',
+    // position: 'absolute',
+    // right: 0,
+    // alignSelf: 'flex-end',
     justifyContent: 'space-between',
     borderLeftWidth: StyleSheet.hairlineWidth,
     borderLeftColor: mediumGrey
   },
   teeboxScrollWrap: {
+    flexDirection: 'row',
     backgroundColor: 'transparent',
     borderColor: lightBlueDark,
     borderWidth: 10,
