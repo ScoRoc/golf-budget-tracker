@@ -26,7 +26,7 @@ export default class AddCourse extends Component {
     super(props)
     this.state = {
       slideAnim: new Animated.Value(Dimensions.get('window').height),
-      scrolling: false,
+      scrollDimensions: null,
       showAddTeebox: false,
       showTeebox: false,
       pendingTeeboxMoving: false,
@@ -126,10 +126,13 @@ export default class AddCourse extends Component {
   }
 
   componentWillMount() {
+    // const { x, y, height, width } = this.state.scrollDimensions;
     const threshold = 8;
     this._panResponder = PanResponder.create({
       onMoveShouldSetPanResponder: (e, gestureState) => {
-        if (!this.state.pendingTeeboxMoving && !this.state.showTeebox && !this.state.scrolling) {
+        const sd = this.state.scrollDimensions;
+        console.log('gestureState.y0: ', gestureState.y0);
+        if (!this.state.pendingTeeboxMoving && !this.state.showTeebox) {
           return Math.abs(gestureState.dy) >= threshold;
         }
       },
@@ -208,10 +211,10 @@ export default class AddCourse extends Component {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.addCoursesView}>
 
-            {/* <WhiteText style={styles.pageTitle}>Add a course</WhiteText> */}
-            <TouchableOpacity style={styles.addCourseButton} onPress={this.addCourse} activeOpacity={.5}>
+            <WhiteText style={styles.pageTitle}>Add a course</WhiteText>
+            {/* <TouchableOpacity style={styles.addCourseButton} onPress={this.addCourse} activeOpacity={.5}>
               <WhiteText style={ {fontSize: 20, fontWeight: 'bold'} }>Add course</WhiteText>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             <WhiteText>Course name</WhiteText>
             <TextInput
@@ -236,7 +239,9 @@ export default class AddCourse extends Component {
 
               </View>
 
-              {teeboxes}
+              <ScrollView onLayout={e => this.setState({scrollDimensions: e.nativeEvent.layout})}>
+                {teeboxes}
+              </ScrollView>
 
             </View>
 
@@ -253,9 +258,9 @@ export default class AddCourse extends Component {
               style={styles.textInput}
             />
 
-            {/* <TouchableOpacity style={styles.addCourseButton} onPress={this.addCourse} activeOpacity={.5}>
+            <TouchableOpacity style={styles.addCourseButton} onPress={this.addCourse} activeOpacity={.5}>
               <WhiteText style={ {fontSize: 20, fontWeight: 'bold'} }>Add course</WhiteText>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
 
             <WhiteText style={ {marginTop: 30, textAlign: 'center'} }>Swipe down to cancel</WhiteText>
             <Icon
@@ -301,11 +306,11 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     shadowOffset: {width: 0, height: 0}
   },
-  // pageTitle: {
-  //   marginBottom: 20,
-  //   fontSize: 26,
-  //   textAlign: 'center'
-  // },
+  pageTitle: {
+    marginBottom: 20,
+    fontSize: 26,
+    textAlign: 'center'
+  },
   textInput: {
     marginBottom: 20,
     backgroundColor: mediumGrey,
