@@ -10,6 +10,7 @@ import {
   Text,
   TextInput,
   TouchableHighlight,
+  TouchableOpacity,
   TouchableWithoutFeedback,
   View
 } from 'react-native';
@@ -30,7 +31,6 @@ export default class Round extends Component {
       showDatePicker: false,
       showCoursePicker: false,
       showTeeboxPicker: false,
-      showAddCourse: false,
       roundId: '',
       course: null,
       courseId: '',
@@ -155,8 +155,8 @@ export default class Round extends Component {
     const threshold = 8;
     this._panResponder = PanResponder.create({
       onMoveShouldSetPanResponder: (e, gestureState) => {
-        const { showDatePicker, showCoursePicker, showTeeboxPicker, showAddCourse } = this.state;
-        if (!showDatePicker && !showCoursePicker && !showTeeboxPicker && !showAddCourse) return Math.abs(gestureState.dx) >= threshold;
+        const { showDatePicker, showCoursePicker, showTeeboxPicker } = this.state;
+        if (!showDatePicker && !showCoursePicker && !showTeeboxPicker) return Math.abs(gestureState.dx) >= threshold;
       },
       onPanResponderMove: (e, gestureState) => {
         if (gestureState.x0 <= 30 && gestureState.x0 >= 0) {
@@ -216,23 +216,6 @@ export default class Round extends Component {
   }
 
   render() {
-    let addCourse = this.state.showAddCourse
-                  ? <AddCourse
-                      api={this.props.api}
-                      user={this.props.user}
-                      close={() => this.setState({showAddCourse: false})}
-                      getUserInfo={this.props.getUserInfo}
-                      setCourse={this.setCourseFromAddCourse}
-                    />
-                  : '';
-    let addCoursePlus = this.state.editable
-                      ? <TouchableHighlight onPress={() => this.setState({showAddCourse: true})} underlayColor='rgb(102, 51, 153)'>
-                          <View style={styles.addButton}>
-                            <Text style={ {marginRight: 10} }>Add</Text>
-                            <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
-                          </View>
-                        </TouchableHighlight>
-                      : '';
     let editSave = this.state.editable
                  ? <Text style={styles.editSave} onPress={this.editRound}>Done</Text>
                  : <Text style={styles.editSave} onPress={() => this.setState({editable: true})}>Edit</Text>;
@@ -244,10 +227,17 @@ export default class Round extends Component {
                      return <Picker.Item label={teebox.name} value={teebox._id} key={idx} />
                    })
                  : '';
+    let deleteRound  = this.state.editable
+                      ? <View style={styles.deleteWrap}>
+                          <TouchableOpacity style={styles.deleteButton} onPress={this.deleteRound} activeOpacity={.5}>
+                            <Text style={styles.deleteText}>Delete round</Text>
+                          </TouchableOpacity>
+                        </View>
+                      : '';
     let { slideAnim } = this.state;
     let courseName = this.state.course ? this.state.course.courseName : 'Select a course...';
     let teebox = this.state.teebox ? this.state.teebox.name : 'Pick a course to choose a teebox...';
-    let deleteRound = this.state.editable ? <Button title='Delete round' onPress={this.deleteRound}  /> : '';
+    const editable = this.state.editable ? styles.editable : '';
     return (
       <Animated.View
         {...this._panResponder.panHandlers}
@@ -271,17 +261,35 @@ export default class Round extends Component {
 
             <View style={styles.addRoundBodyView}>
 
-              <View style={styles.selectAndAddWrap}>
-                <Text onPress={() => this.openModal('showCoursePicker')}>{courseName}</Text>
-                {addCoursePlus}
+              <View style={styles.scoreCourseTeeboxWrap}>
+                <View style={styles.scoreWrap}>
+                  <WhiteText style={ {fontSize: 14} }>Score</WhiteText>
+                  <TextInput
+                    style={ [styles.score, editable] }
+                    value={this.state.score}
+                    onChangeText={score => this.setState({score})}
+                    keyboardType='numeric'
+                    maxLength={3}
+                    editable={this.state.editable}
+                  />
+                </View>
+
+                <View style={styles.courseTeeboxWrap}>
+                  <View style={styles.courseNameView}>
+                    <WhiteText style={ [{fontSize: 24}, editable] } onPress={() => this.openModal('showCoursePicker')}>{courseName}</WhiteText>
+                  </View>
+                  <WhiteText style={editable} onPress={this.touchTeeboxName}>{teebox}</WhiteText>
+                </View>
+
               </View>
+
               <Modal
                 style={styles.modal}
                 isOpen={this.state.showCoursePicker}
                 backdropPressToClose={true}
                 position='bottom'
                 backdrop={true}
-                animationDuration={500}
+                animationDuration={350}
                 onClosed={() => this.setState({showCoursePicker: false})}
                 >
                   <Picker selectedValue={this.state.courseId} onValueChange={(courseId, idx) => this.handleCoursePicker(courseId, idx)}>
@@ -289,24 +297,14 @@ export default class Round extends Component {
                     {courses}
                   </Picker>
               </Modal>
-              {addCourse}
 
-              <View style={styles.selectAndAddWrap}>
-                <Text onPress={this.touchTeeboxName}>{teebox}</Text>
-                {/* <TouchableHighlight onPress={() => this.setState({showAddTeebox: true})} underlayColor='rgb(102, 51, 153)'>
-                  <View style={styles.addButton}>
-                    <Text style={ {marginRight: 10} }>Add</Text>
-                    <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
-                  </View>
-                </TouchableHighlight> */}
-              </View>
               <Modal
                 style={styles.modal}
                 isOpen={this.state.showTeeboxPicker}
                 backdropPressToClose={true}
                 position='bottom'
                 backdrop={true}
-                animationDuration={500}
+                animationDuration={350}
                 onClosed={() => this.setState({showTeeboxPicker: false})}
                 >
                   <Picker selectedValue={this.state.teeboxId} onValueChange={(teeboxId, idx) => this.handleTeeboxPicker(teeboxId, idx)}>
@@ -314,48 +312,52 @@ export default class Round extends Component {
                     {teeboxes}
                   </Picker>
               </Modal>
-              {/* {addTeebox} */}
 
-              <Text onPress={() => this.openModal('showDatePicker')}>
-                {this.state.date.toDateString()} {this.state.date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}
-              </Text>
+              <View style={styles.dateView}>
+                <Icon
+                  name='calendar'
+                  type='font-awesome'
+                  size={20}
+                  color={offWhite}
+                />
+                <WhiteText style={ [styles.date, editable] } onPress={() => this.openModal('showDatePicker')}>
+                  {this.state.date.toDateString()} {this.state.date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}
+                </WhiteText>
+              </View>
               <Modal
                 style={styles.modal}
                 isOpen={this.state.showDatePicker}
                 backdropPressToClose={true}
                 position='bottom'
                 backdrop={true}
-                animationDuration={500}
+                animationDuration={350}
                 onClosed={() => this.setState({showDatePicker: false})}
                 >
                   <DatePicker date={this.state.date} setDate={date => this.setState({date})} />
               </Modal>
 
-              <Text>Score</Text>
-              <TextInput
-                value={this.state.score}
-                onChangeText={score => this.setState({score})}
-                keyboardType='numeric'
-                maxLength={3}
-                editable={this.state.editable}
-              />
+              <WhiteText style={styles.sectionTitle}>Price</WhiteText>
+              <View style={ {flexDirection: 'row', marginBottom: 20} }>
+                <WhiteText>$</WhiteText>
+                <TextInput
+                  style={ [styles.price, editable] }
+                  placeholder='000'
+                  value={this.state.price}
+                  onChangeText={price => this.setState({price})}
+                  keyboardType='numeric'
+                  maxLength={3}
+                  editable={this.state.editable}
+                />
+              </View>
 
-              <Text>Price</Text>
+              <WhiteText style={styles.sectionTitle}>Notes</WhiteText>
               <TextInput
-                value={this.state.price}
-                onChangeText={price => this.setState({price})}
-                keyboardType='numeric'
-                maxLength={3}
-                editable={this.state.editable}
-              />
-
-              <Text>Notes</Text>
-              <TextInput
+                style={ [styles.notes, editable] }
+                placeholder='Notes...'
                 value={this.state.notes}
                 onChangeText={notes => this.setState({notes})}
                 multiline={true}
                 editable={this.state.editable}
-                style={{backgroundColor: 'red'}}
               />
 
               {deleteRound}
@@ -369,7 +371,7 @@ export default class Round extends Component {
   }
 }
 
-const { darkOffWhiteTrans, purple, yellow } = colors;
+const { darkOffWhite, darkOffWhiteTrans, lightPurple, mediumGrey, offWhite, purple, redGrey, steelBlue, yellow } = colors;
 
 const styles = StyleSheet.create({
   roundWrapper: {
@@ -383,7 +385,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: purple,
+    backgroundColor: lightPurple,
     borderBottomWidth: 1,
     borderBottomColor: darkOffWhiteTrans
   },
@@ -399,19 +401,100 @@ const styles = StyleSheet.create({
     padding: 15,
     paddingTop: 0
   },
-  selectAndAddWrap: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
+  editable: {
+    backgroundColor: mediumGrey
   },
-  addButton: {
+  scoreCourseTeeboxWrap: {
+    marginTop: 40,
+    marginBottom: 30,
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between'
+  },
+  scoreWrap: {
+    height: 80,
+    width: 80,
+    alignSelf: 'center',
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingRight: 30
+    backgroundColor: steelBlue,
+    borderRadius: 10
+  },
+  score: {
+    color: offWhite,
+    fontSize: 38
+  },
+  courseTeeboxWrap: {
+    minHeight: '10%',
+    width: '70%',
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: steelBlue,
+    borderRadius: 10
+  },
+  courseNameView: {
+    marginBottom: 15,
+    borderBottomColor: darkOffWhite,
+    borderBottomWidth: 1
+  },
+  dateView: {
+    marginBottom: 30,
+    padding: 10,
+    paddingLeft: 15,
+    flexDirection: 'row',
+    backgroundColor: steelBlue,
+    borderRadius: 8,
+  },
+  date: {
+    marginLeft: 15,
+    fontSize: 18
+  },
+  sectionTitle: {
+    marginTop: 20,
+    marginBottom: 15,
+    fontSize: 17,
+    fontWeight: 'bold',
+    textDecorationLine: 'underline'
+  },
+  price: {
+    marginLeft: 5,
+    color: offWhite,
+    fontSize: 16,
+  },
+  notes: {
+    marginBottom: 20,
+    color: offWhite,
+    fontSize: 16,
   },
   modal: {
-    paddingTop: '5%',
-    height: '40%'
+    height: '45%',
+    paddingTop: '5%'
+  },
+  deleteWrap: {
+    marginTop: 30,
+    marginBottom: 20,
+    alignItems: 'center'
+  },
+  deleteButton: {
+    width: '75%',
+    paddingTop: 10,
+    paddingBottom: 10,
+    backgroundColor: redGrey,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: darkOffWhite,
+    borderRadius: 10,
+    shadowColor: 'black',
+    shadowOpacity: .3,
+    shadowRadius: 3,
+    shadowOffset: {width: 0, height: 0}
+  },
+  deleteText: {
+    color: yellow,
+    fontSize: 25,
+    textAlign: 'center'
   }
 });

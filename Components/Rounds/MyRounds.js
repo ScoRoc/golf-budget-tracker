@@ -117,7 +117,7 @@ export default class MyRounds extends Component {
   }
 }
 
-const { darkOffWhite, lightOrange, lightPurple, offWhite, purple, yellow } = colors;
+const { darkOffWhite, lightOrange, lightPurple, offWhite, purple, steelBlue, yellow } = colors;
 
 const styles = StyleSheet.create({
   myRounds: {
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     padding: 4,
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: lightOrange,
+    backgroundColor: steelBlue,
     borderRadius: 5
   },
   roundDateAndCourseName: {

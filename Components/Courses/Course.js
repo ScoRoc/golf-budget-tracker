@@ -193,7 +193,7 @@ export default class Course extends Component {
                               <View style={styles.teeboxNameAndHDCPWrap}>
                                 <View style={styles.teeboxHDCPBox}>
                                   <WhiteText style={ {fontSize: 10} }>HDCP</WhiteText>
-                                  <WhiteText style={ {fontSize: 10} }>{teebox.teeboxHandicap}</WhiteText>
+                                  <WhiteText style={ {fontSize: 14} }>{teebox.teeboxHandicap}</WhiteText>
                                 </View>
 
                                 <WhiteText style={ {fontSize: 17} }>{teebox.name}</WhiteText>
@@ -398,6 +398,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   teeboxHDCPBox: {
+    height: 45,
+    width: 45,
     marginRight: 10,
     padding: 4,
     justifyContent: 'space-around',
