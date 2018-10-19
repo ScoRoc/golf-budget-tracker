@@ -4,22 +4,24 @@ import {
   Button,
   Dimensions,
   Keyboard,
+  PanResponder,
   Picker,
   StyleSheet,
   Text,
   TextInput,
   TouchableHighlight,
+  TouchableOpacity,
   TouchableWithoutFeedback,
   View
 } from 'react-native';
+import axios from 'axios';
 import Modal from 'react-native-modalbox';
 import { Icon } from 'react-native-elements';
-import axios from 'axios';
+import { colors } from '../../global_styles/colors';
+import WhiteText from '../Text/WhiteText';
 import DatePicker from '../DatePicker';
 import AddCourse from '../Courses/AddCourse';
 import AddTeebox from '../Teeboxes/AddTeebox';
-
-const slideTime = 500;
 
 export default class AddRound extends Component {
   constructor(props) {
@@ -93,24 +95,92 @@ export default class AddRound extends Component {
     })
   }
 
-  animateClose = () => {
+  findDuration = y => {
+    const third = Dimensions.get('window').height / 3;
+    let time = 0;
+    switch (true) {
+      case y < third * .25:
+        time = 50;
+        break;
+      case y >= third * .25 && y < third * .5:
+        time = 100;
+        break;
+      case y >= third * .5 && y < third * .75:
+        time = 150;
+        break;
+      case y >= third * .75:
+        time = 200;
+        break;
+      default:
+        time = 250;
+    }
+    return time;
+  }
+
+  animateReset = y => {
+    Animated.timing(
+      this.state.slideAnim,
+      {
+        toValue: 0,
+        duration: this.findDuration(y)
+      }
+    ).start();
+  }
+
+  animateClose = y => {
+    const time = this.findDuration(y);
     Animated.timing(
       this.state.slideAnim,
       {
         toValue: Dimensions.get('window').height,
-        duration: slideTime
+        duration: time
       }
     ).start();
-    setTimeout(this.props.close, slideTime);
+    setTimeout(this.props.close, time);
+  }
+
+  componentWillMount() {
+    const threshold = 8;
+    this._panResponder = PanResponder.create({
+      onMoveShouldSetPanResponder: (e, gestureState) => {
+        const { showDatePicker, showCoursePicker, showTeeboxPicker, showAddCourse, showAddTeebox } = this.state;
+        if (!showDatePicker
+            && !showCoursePicker
+            && !showTeeboxPicker
+            && !showAddCourse
+            && !showAddTeebox
+        ) {
+          return Math.abs(gestureState.dy) >= threshold;
+        }
+      },
+      onPanResponderMove: (e, gestureState) => {
+        const { dy } = gestureState;
+        if (dy >= 0) {
+          this.state.slideAnim.setValue(dy);
+        }
+      },
+      onPanResponderRelease: (e, gestureState) => {
+        const { dy, vy, y0 } = gestureState;
+        const closeSpeed = 0.85;
+        const third = Dimensions.get('window').height / 3;
+        if (dy >= third || vy >= closeSpeed) {
+          this.animateClose(dy);
+        } else {
+          this.animateReset(dy);
+        }
+        return false;
+      }
+    })
   }
 
   componentDidMount() {
+    const time = 350;
     this.props.getUserInfo();
     Animated.timing(
       this.state.slideAnim,
       {
         toValue: 0,
-        duration: slideTime
+        duration: time
       }
     ).start();
   }
@@ -146,107 +216,107 @@ export default class AddRound extends Component {
     let courseName = this.state.course ? this.state.course.courseName : 'Select a course...';
     let teebox = this.state.teebox ? this.state.teebox.name : 'Pick a course to choose a teebox...';
     return (
-      <Animated.View style={[
-        styles.addRoundsWrapper,
-        { transform: [ {translateY: slideAnim} ]}
-      ]}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.addRoundsView}>
-          <Text onPress={this.animateClose}>~~~Close~~~</Text>
+      <Animated.View
+        {...this._panResponder.panHandlers}
+        style={ [styles.addRoundsWrapper, { transform: [{translateY: slideAnim}] }] }
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.addRoundsView}>
+            <Text onPress={this.animateClose}>~~~Close~~~</Text>
 
-          <View style={styles.selectAndAddWrap}>
-            <Text onPress={() => this.setState({showCoursePicker: true})}>{courseName}</Text>
-            <TouchableHighlight onPress={() => this.setState({showAddCourse: true})} underlayColor='rgb(102, 51, 153)'>
-              <View style={styles.addButton}>
-                <Text style={ {marginRight: 10} }>Add</Text>
-                <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
-              </View>
-            </TouchableHighlight>
+            <View style={styles.selectAndAddWrap}>
+              <Text onPress={() => this.setState({showCoursePicker: true})}>{courseName}</Text>
+              <TouchableHighlight onPress={() => this.setState({showAddCourse: true})} underlayColor='rgb(102, 51, 153)'>
+                <View style={styles.addButton}>
+                  <Text style={ {marginRight: 10} }>Add</Text>
+                  <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
+                </View>
+              </TouchableHighlight>
+            </View>
+            <Modal
+              style={styles.modal}
+              isOpen={this.state.showCoursePicker}
+              backdropPressToClose={true}
+              position='bottom'
+              backdrop={true}
+              animationDuration={500}
+              onClosed={() => this.setState({showCoursePicker: false})}
+              >
+                <Picker selectedValue={this.state.courseId} onValueChange={(courseId, idx) => this.handleCoursePicker(courseId, idx)}>
+                  <Picker.Item label='Please select a course...' value='pick' />
+                  {courses}
+                </Picker>
+            </Modal>
+            {addCourse}
+
+            {/* <View style={styles.selectAndAddWrap}> */}
+              <Text onPress={this.touchTeeboxName}>{teebox}</Text>
+              {/* <TouchableHighlight onPress={() => this.setState({showAddTeebox: true})} underlayColor='rgb(102, 51, 153)'>
+                <View style={styles.addButton}>
+                  <Text style={ {marginRight: 10} }>Add</Text>
+                  <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
+                </View>
+              </TouchableHighlight>
+            </View> */}
+            <Modal
+              style={styles.modal}
+              isOpen={this.state.showTeeboxPicker}
+              backdropPressToClose={true}
+              position='bottom'
+              backdrop={true}
+              animationDuration={500}
+              onClosed={() => this.setState({showTeeboxPicker: false})}
+              >
+                <Picker selectedValue={this.state.teeboxId} onValueChange={(teeboxId, idx) => this.handleTeeboxPicker(teeboxId, idx)}>
+                  <Picker.Item label='Please select a course...' value='pick' />
+                  {teeboxes}
+                </Picker>
+            </Modal>
+            {/* {addTeebox} */}
+
+            <Text onPress={() => this.setState({showDatePicker: true})}>
+              {this.state.date.toDateString()} {this.state.date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}
+            </Text>
+            <Modal
+              style={styles.modal}
+              isOpen={this.state.showDatePicker}
+              backdropPressToClose={true}
+              position='bottom'
+              backdrop={true}
+              animationDuration={500}
+              onClosed={() => this.setState({showDatePicker: false})}
+              >
+                <DatePicker date={this.state.date} setDate={date => this.setState({date})} />
+            </Modal>
+
+            <Text>Score</Text>
+            <TextInput
+              value={this.state.score}
+              onChangeText={score => this.setState({score})}
+              keyboardType='numeric'
+              maxLength={3}
+            />
+
+            <Text>Price</Text>
+            <TextInput
+              value={this.state.price}
+              onChangeText={price => this.setState({price})}
+              keyboardType='numeric'
+              maxLength={3}
+            />
+
+            <Text>Notes</Text>
+            <TextInput
+              value={this.state.notes}
+              onChangeText={notes => this.setState({notes})}
+              multiline={true}
+              style={{backgroundColor: 'red'}}
+            />
+
+            <Button title='Add round' onPress={this.addRound} />
+
           </View>
-          <Modal
-            style={styles.modal}
-            isOpen={this.state.showCoursePicker}
-            backdropPressToClose={true}
-            position='bottom'
-            backdrop={true}
-            animationDuration={500}
-            onClosed={() => this.setState({showCoursePicker: false})}
-            >
-              <Picker selectedValue={this.state.courseId} onValueChange={(courseId, idx) => this.handleCoursePicker(courseId, idx)}>
-                <Picker.Item label='Please select a course...' value='pick' />
-                {courses}
-              </Picker>
-          </Modal>
-          {addCourse}
-
-          {/* <View style={styles.selectAndAddWrap}> */}
-            <Text onPress={this.touchTeeboxName}>{teebox}</Text>
-            {/* <TouchableHighlight onPress={() => this.setState({showAddTeebox: true})} underlayColor='rgb(102, 51, 153)'>
-              <View style={styles.addButton}>
-                <Text style={ {marginRight: 10} }>Add</Text>
-                <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
-              </View>
-            </TouchableHighlight>
-          </View> */}
-          <Modal
-            style={styles.modal}
-            isOpen={this.state.showTeeboxPicker}
-            backdropPressToClose={true}
-            position='bottom'
-            backdrop={true}
-            animationDuration={500}
-            onClosed={() => this.setState({showTeeboxPicker: false})}
-            >
-              <Picker selectedValue={this.state.teeboxId} onValueChange={(teeboxId, idx) => this.handleTeeboxPicker(teeboxId, idx)}>
-                <Picker.Item label='Please select a course...' value='pick' />
-                {teeboxes}
-              </Picker>
-          </Modal>
-          {/* {addTeebox} */}
-
-          <Text onPress={() => this.setState({showDatePicker: true})}>
-            {this.state.date.toDateString()} {this.state.date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}
-          </Text>
-          <Modal
-            style={styles.modal}
-            isOpen={this.state.showDatePicker}
-            backdropPressToClose={true}
-            position='bottom'
-            backdrop={true}
-            animationDuration={500}
-            onClosed={() => this.setState({showDatePicker: false})}
-            >
-              <DatePicker date={this.state.date} setDate={date => this.setState({date})} />
-          </Modal>
-
-          <Text>Score</Text>
-          <TextInput
-            value={this.state.score}
-            onChangeText={score => this.setState({score})}
-            keyboardType='numeric'
-            maxLength={3}
-          />
-
-          <Text>Price</Text>
-          <TextInput
-            value={this.state.price}
-            onChangeText={price => this.setState({price})}
-            keyboardType='numeric'
-            maxLength={3}
-          />
-
-          <Text>Notes</Text>
-          <TextInput
-            value={this.state.notes}
-            onChangeText={notes => this.setState({notes})}
-            multiline={true}
-            style={{backgroundColor: 'red'}}
-          />
-
-          <Button title='Add round' onPress={this.addRound} />
-
-        </View>
-      </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
       </Animated.View>
     );
   }
