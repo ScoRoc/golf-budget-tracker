@@ -222,7 +222,6 @@ export default class AddRound extends Component {
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.addRoundsView}>
-            <Text onPress={this.animateClose}>~~~Close~~~</Text>
 
             <View style={styles.selectAndAddWrap}>
               <Text onPress={() => this.setState({showCoursePicker: true})}>{courseName}</Text>
@@ -313,7 +312,17 @@ export default class AddRound extends Component {
               style={{backgroundColor: 'red'}}
             />
 
-            <Button title='Add round' onPress={this.addRound} />
+            <TouchableOpacity style={styles.addRoundButton} onPress={this.addRound} activeOpacity={.5}>
+              <WhiteText style={ {fontSize: 20, fontWeight: 'bold'} }>Add round</WhiteText>
+            </TouchableOpacity>
+
+            <WhiteText style={ {marginTop: 15, textAlign: 'center'} }>Swipe down to cancel</WhiteText>
+            <Icon
+              name='chevron-down'
+              type='font-awesome'
+              size={50}
+              color={offWhite}
+            />
 
           </View>
         </TouchableWithoutFeedback>
@@ -322,10 +331,12 @@ export default class AddRound extends Component {
   }
 }
 
+const { offWhite, purple, yellow } = colors;
+
 const styles = StyleSheet.create({
   addRoundsWrapper: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'yellow'
+    backgroundColor: purple
   },
   addRoundsView: {
     ...StyleSheet.absoluteFillObject,
@@ -344,5 +355,20 @@ const styles = StyleSheet.create({
   modal: {
     paddingTop: '5%',
     height: '40%'
+  },
+  addRoundButton: {
+    alignSelf: 'center',
+    height: 50,
+    width: '70%',
+    marginTop: 20,
+    marginBottom: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: yellow,
+    borderRadius: 5,
+    shadowColor: 'black',
+    shadowOpacity: .4,
+    shadowRadius: 3,
+    shadowOffset: {width: 0, height: 0}
   }
 });
