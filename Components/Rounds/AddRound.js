@@ -223,15 +223,21 @@ export default class AddRound extends Component {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.addRoundsView}>
 
-            <View style={styles.selectAndAddWrap}>
-              <Text onPress={() => this.setState({showCoursePicker: true})}>{courseName}</Text>
-              <TouchableHighlight onPress={() => this.setState({showAddCourse: true})} underlayColor='rgb(102, 51, 153)'>
-                <View style={styles.addButton}>
-                  <Text style={ {marginRight: 10} }>Add</Text>
-                  <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
+            <View style={styles.courseWrap}>
+
+              <View style={styles.courseNameView}>
+                <WhiteText onPress={() => this.setState({showCoursePicker: true})}>{courseName}</WhiteText>
+              </View>
+
+              <TouchableOpacity onPress={() => this.setState({showAddCourse: true})}>
+                <View style={styles.addCourse}>
+                  <WhiteText style={ {fontSize: 15, marginRight: 10} }>Add</WhiteText>
+                  <Icon color={offWhite} size={30} name='add-circle-outline' />
                 </View>
-              </TouchableHighlight>
+              </TouchableOpacity>
+
             </View>
+
             <Modal
               style={styles.modal}
               isOpen={this.state.showCoursePicker}
@@ -248,15 +254,10 @@ export default class AddRound extends Component {
             </Modal>
             {addCourse}
 
-            {/* <View style={styles.selectAndAddWrap}> */}
-              <Text onPress={this.touchTeeboxName}>{teebox}</Text>
-              {/* <TouchableHighlight onPress={() => this.setState({showAddTeebox: true})} underlayColor='rgb(102, 51, 153)'>
-                <View style={styles.addButton}>
-                  <Text style={ {marginRight: 10} }>Add</Text>
-                  <Icon color='rgb(195, 58, 161)' name='add-circle-outline' />
-                </View>
-              </TouchableHighlight>
-            </View> */}
+            <View style={styles.teeboxView}>
+              <WhiteText onPress={this.touchTeeboxName}>{teebox}</WhiteText>
+            </View>
+
             <Modal
               style={styles.modal}
               isOpen={this.state.showTeeboxPicker}
@@ -273,9 +274,18 @@ export default class AddRound extends Component {
             </Modal>
             {/* {addTeebox} */}
 
-            <Text onPress={() => this.setState({showDatePicker: true})}>
-              {this.state.date.toDateString()} {this.state.date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}
-            </Text>
+            <View style={styles.dateView}>
+              <Icon
+                name='calendar'
+                type='font-awesome'
+                size={20}
+                color={offWhite}
+              />
+              <WhiteText style={styles.date} onPress={() => this.setState({showDatePicker: true})}>
+                {this.state.date.toDateString()} {this.state.date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}
+              </WhiteText>
+            </View>
+
             <Modal
               style={styles.modal}
               isOpen={this.state.showDatePicker}
@@ -288,28 +298,30 @@ export default class AddRound extends Component {
                 <DatePicker date={this.state.date} setDate={date => this.setState({date})} />
             </Modal>
 
-            <Text>Score</Text>
+            <WhiteText>Score</WhiteText>
             <TextInput
+              style={styles.textInput}
               value={this.state.score}
               onChangeText={score => this.setState({score})}
               keyboardType='numeric'
               maxLength={3}
             />
 
-            <Text>Price</Text>
+            <WhiteText>Price</WhiteText>
             <TextInput
+              style={styles.textInput}
               value={this.state.price}
               onChangeText={price => this.setState({price})}
               keyboardType='numeric'
               maxLength={3}
             />
 
-            <Text>Notes</Text>
+            <WhiteText>Notes</WhiteText>
             <TextInput
+              style={styles.textInput}
               value={this.state.notes}
               onChangeText={notes => this.setState({notes})}
               multiline={true}
-              style={{backgroundColor: 'red'}}
             />
 
             <TouchableOpacity style={styles.addRoundButton} onPress={this.addRound} activeOpacity={.5}>
@@ -331,7 +343,7 @@ export default class AddRound extends Component {
   }
 }
 
-const { offWhite, purple, yellow } = colors;
+const { mediumGrey, offWhite, purple, yellow } = colors;
 
 const styles = StyleSheet.create({
   addRoundsWrapper: {
@@ -340,8 +352,12 @@ const styles = StyleSheet.create({
   },
   addRoundsView: {
     ...StyleSheet.absoluteFillObject,
+    paddingTop: 40,
+    paddingLeft: 15,
+    paddingRight: 15
   },
-  selectAndAddWrap: {
+  courseWrap: {
+    marginBottom: 25,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'
@@ -352,9 +368,53 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingRight: 30
   },
+  courseNameView: {
+    width: '70%',
+    padding: 5,
+    paddingLeft: 15,
+    backgroundColor: mediumGrey,
+    borderRadius: 8,
+  },
+  addCourse: {
+    padding: 5,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    backgroundColor: yellow,
+    borderRadius: 5,
+    shadowColor: 'black',
+    shadowOpacity: .4,
+    shadowRadius: 3,
+    shadowOffset: {width: 0, height: 0}
+  },
+  teeboxView: {
+    marginBottom: 25,
+    padding: 5,
+    paddingLeft: 15,
+    backgroundColor: mediumGrey,
+    borderRadius: 8,
+  },
+  dateView: {
+    marginBottom: 25,
+    padding: 5,
+    paddingLeft: 15,
+    flexDirection: 'row',
+    backgroundColor: mediumGrey,
+    borderRadius: 8,
+  },
+  date: {
+    marginLeft: 15,
+    fontSize: 18
+  },
   modal: {
     paddingTop: '5%',
     height: '40%'
+  },
+  textInput: {
+    marginBottom: 25,
+    backgroundColor: mediumGrey,
+    color: offWhite,
+    fontSize: 16
   },
   addRoundButton: {
     alignSelf: 'center',
