@@ -33,7 +33,7 @@ export default class Teebox extends Component {
     let { name } = this.state;
     let rating = parseFloat(this.state.rating);
     let slope = parseInt(this.state.slope);
-    axios.put(`http://${this.props.api}/api/teebox`, {  /////// FIX URL
+    axios.put(`${this.props.http}${this.props.api}/api/teebox`, {
       name,
       rating,
       slope,
@@ -47,7 +47,7 @@ export default class Teebox extends Component {
 
   deleteTeebox = () => {
     axios({
-      url: `http://${this.props.api}/api/teebox`,  /////// FIX URL
+      url: `${this.props.http}${this.props.api}/api/teebox`,
       method: 'delete',
       data: {id: this.props.teebox._id}
     }).then(result => {

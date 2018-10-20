@@ -21,7 +21,7 @@ class Signup extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    axios.post(`http://${this.props.api}/api/auth/signup`, {  ////////////// FIX FIX FIX FIX FIX FIX FIX
+    axios.post(`${this.props.http}${this.props.api}/api/auth/signup`, {
       name: this.state.name,
       email: this.state.email,
       password: this.state.password
@@ -30,7 +30,7 @@ class Signup extends Component {
         console.log(result.data.err.msg);
         return;
       }
-      AsyncStorage.setItem('golf-budget-tracker-token', result.data.token) // change 'mernToken' to your app name or something useful
+      AsyncStorage.setItem('golf-budget-tracker-token', result.data.token)
       this.props.liftToken(result.data);
       this.props.getUserInfo();
       this.props.changePageFromAuth();

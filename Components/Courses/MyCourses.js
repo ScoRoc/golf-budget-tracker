@@ -32,6 +32,7 @@ export default class MyCourses extends Component {
     let addCourse = this.state.showAddCourse
                   ? <AddCourse
                       api={this.props.api}
+                      http={this.props.http}
                       user={this.props.user}
                       close={() => this.setState({showAddCourse: false})}
                       getUserInfo={this.props.getUserInfo}
@@ -40,6 +41,7 @@ export default class MyCourses extends Component {
     let coursePage = this.state.showCourse
                   ? <Course
                       api={this.props.api}
+                      http={this.props.http}
                       user={this.props.user}
                       course={this.state.currentCourse}
                       close={() => this.setState({showCourse: false})}

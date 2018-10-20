@@ -54,7 +54,7 @@ export default class Course extends Component {
   }
 
   editCourse = () => {
-    axios.put(`http://${this.props.api}/api/course`, {  /////// FIX URL
+    axios.put(`${this.props.http}${this.props.api}/api/course`, {
       courseName: this.state.name,
       notes: this.state.notes,
       courseId: this.state.course._id
@@ -66,7 +66,7 @@ export default class Course extends Component {
 
   deleteCourse = () => {
     axios({
-      url: `http://${this.props.api}/api/course`,  /////// FIX URL
+      url: `${this.props.http}${this.props.api}/api/course`,
       method: 'delete',
       data: {courseId: this.state.course._id}
     }).then(result => {
@@ -215,6 +215,7 @@ export default class Course extends Component {
     let teeboxPage  = this.state.showTeebox
                     ? <Teebox
                         api={this.props.api}
+                        http={this.props.http}
                         user={this.props.user}
                         close={() => this.setState({showTeebox: false})}
                         updateTeeboxMoving={this.updateTeeboxMoving}
@@ -227,6 +228,7 @@ export default class Course extends Component {
     let addTeebox = this.state.showAddTeebox
                   ? <AddTeebox
                       api={this.props.api}
+                      http={this.props.http}
                       user={this.props.user}
                       close={() => this.setState({showAddTeebox: false})}
                       course={this.state.course}

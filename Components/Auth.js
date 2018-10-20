@@ -43,6 +43,7 @@ export default class NavButton extends React.Component {
             <View style={styles.auth}>
               <Signup
                 api={this.props.api}
+                http={this.props.http}
                 placeholderColor={placeholderColor}
                 passedStyles={passedStyles}
                 getUserInfo={this.props.getUserInfo}
@@ -54,6 +55,7 @@ export default class NavButton extends React.Component {
 
               <Login
                 api={this.props.api}
+                http={this.props.http}
                 placeholderColor={placeholderColor}
                 passedStyles={passedStyles}
                 getUserInfo={this.props.getUserInfo}

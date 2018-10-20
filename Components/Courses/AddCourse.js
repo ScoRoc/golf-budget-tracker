@@ -43,7 +43,7 @@ export default class AddCourse extends Component {
   }
 
   addCourse = () => {
-    axios.post(`http://${this.props.api}/api/course`, {  ///////// FIX URL
+    axios.post(`${this.props.http}${this.props.api}/api/course`, {
       courseName: this.state.courseName,
       notes: this.state.notes,
       user: this.props.user,
@@ -185,6 +185,7 @@ export default class AddCourse extends Component {
     let addTeebox = this.state.showAddTeebox
                   ? <AddTeebox
                       api={this.props.api}
+                      http={this.props.http}
                       user={this.props.user}
                       close={() => this.setState({showAddTeebox: false})}
                       addTeebox={this.addTeebox}

@@ -20,7 +20,7 @@ class Login extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    axios.post(`http://${this.props.api}/api/auth/login`, {  ////////////// FIX FIX FIX FIX FIX FIX FIX
+    axios.post(`${this.props.http}${this.props.api}/api/auth/login`, {
       email: this.state.email,
       password: this.state.password
     }).then( result => {

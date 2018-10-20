@@ -10,12 +10,18 @@ import MyCourses from './Components/Courses/MyCourses';
 import MyRounds from './Components/Rounds/MyRounds';
 import Auth from './Components/Auth';
 
-const { manifest } = Expo.Constants;
-const api = (typeof manifest.packagerOpts === `object`) && manifest.packagerOpts.dev
-          ? manifest.debuggerHost.split(`:`).shift().concat(`:3000`)
-          : `api.example.com`;
+// FOR LOCAL DEPLOYMENT
+// const { manifest } = Expo.Constants;
+// const api = (typeof manifest.packagerOpts === `object`) && manifest.packagerOpts.dev
+//           ? manifest.debuggerHost.split(`:`).shift().concat(`:3000`)
+//           : `api.example.com`;
+// const http = 'http://';
+//
+// console.log('top of app - api: ', api);
 
-console.log('top of app - api: ', api);
+// FOR HEROKU
+const http = 'https://';
+const api = 'my-golf-tracker.herokuapp.com';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -34,7 +40,7 @@ export default class App extends React.Component {
   }
 
   getUserInfo = async () => {
-    axios.get(`http://${api}/api/user/${this.state.user._id}`).then(result => {  //////// FIX URL
+    axios.get(`${http}${api}/api/user/${this.state.user._id}`).then(result => {
       this.setState({user: result.data.user, courses: result.data.courses, rounds: result.data.rounds});
     });
   }
@@ -54,7 +60,7 @@ export default class App extends React.Component {
 
   ////////////////////////////////////////////
   fakeLogin() {
-    axios.post(`http://${api}/api/auth/login`, {  ////////////// FIX FIX FIX FIX FIX FIX FIX
+    axios.post(`${http}${api}/api/auth/login`, {
       email: 'k@k.com',
       password: 'password'
     }).then( result => {
@@ -68,7 +74,7 @@ export default class App extends React.Component {
 
   componentDidMount = () => {
     //////////////
-    this.fakeLogin();  ////// GET RID OF THIS
+    // this.fakeLogin();  ////// GET RID OF THIS
     //////////////
     var token = AsyncStorage.getItem('golf-budget-tracker-token');
     if (typeof token !== 'string' || token === 'undefined' || token === 'null' || token === '') {
@@ -78,7 +84,7 @@ export default class App extends React.Component {
         user: null
       });
     } else {
-      axios.post(`http://${api}/api/auth/me/from/token`, {  ////////////// FIX FIX FIX FIX FIX FIX FIX
+      axios.post(`${http}${api}/api/auth/me/from/token`, {  ////////////// FIX FIX FIX FIX FIX FIX FIX
         token
       }).then( result => {
         AsyncStorage.setItem('golf-budget-tracker-token', result.data.token);
@@ -105,12 +111,14 @@ export default class App extends React.Component {
             />,
       myCourses: <MyCourses
                     api={api}
+                    http={http}
                     user={this.state.user}
                     getUserInfo={this.getUserInfo}
                     courses={this.state.courses}
                   />,
       myRounds: <MyRounds
                   api={api}
+                  http={http}
                   user={this.state.user}
                   getUserInfo={this.getUserInfo}
                   courses={this.state.courses}
@@ -137,6 +145,7 @@ export default class App extends React.Component {
 
           <Auth
             api={api}
+            http={http}
             getUserInfo={this.getUserInfo}
             liftToken={this.liftTokenToState}
             changePage={this.changePage}

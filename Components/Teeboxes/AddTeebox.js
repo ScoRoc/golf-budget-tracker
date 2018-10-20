@@ -34,7 +34,7 @@ export default class AddTeebox extends Component {
     const { name } = this.state;
     const rating = parseFloat(this.state.rating);
     const slope = parseInt(this.state.slope);
-    axios.post(`http://${this.props.api}/api/teebox`, {  /////// FIX URL
+    axios.post(`${this.props.http}${this.props.api}/api/teebox`, {
       name,
       rating,
       slope,
@@ -181,7 +181,7 @@ export default class AddTeebox extends Component {
             />
 
             <TouchableOpacity style={styles.addTeeboxButton} onPress={addTeebox} activeOpacity={.5}>
-              <WhiteText style={ {fontSize: 20, fontWeight: 'bold'} }>Add course</WhiteText>
+              <WhiteText style={ {fontSize: 20, fontWeight: 'bold'} }>Add teebox</WhiteText>
             </TouchableOpacity>
 
             <WhiteText style={ {marginTop: 15, textAlign: 'center'} }>Swipe down to cancel</WhiteText>

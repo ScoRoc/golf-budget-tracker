@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "golf-budget-tracker",
-    "description": "This project is really great.",
-    "slug": "golf-budget-tracker",
+    "name": "My Golf Tracker",
+    "description": "An app to track your golf rounds.",
+    "slug": "my-golf-tracker",
     "privacy": "public",
     "sdkVersion": "30.0.0",
     "platforms": ["ios", "android"],
@@ -11,7 +11,7 @@
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "updates": {
@@ -21,7 +21,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mygolftracker.mygolftrackerapp"
     }
   }
 }

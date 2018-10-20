@@ -80,7 +80,7 @@ export default class AddRound extends Component {
     const { course, teebox, date, notes } = this.state;
     const score = parseInt(this.state.score);
     const price = parseInt(this.state.price);
-    axios.post(`http://${this.props.api}/api/round`, {  ///////// FIX URL
+    axios.post(`${this.props.http}${this.props.api}/api/round`, {
       course,
       teebox,
       date,
@@ -189,6 +189,7 @@ export default class AddRound extends Component {
     let addCourse = this.state.showAddCourse
                   ? <AddCourse
                       api={this.props.api}
+                      http={this.props.http}
                       user={this.props.user}
                       close={() => this.setState({showAddCourse: false})}
                       getUserInfo={this.props.getUserInfo}

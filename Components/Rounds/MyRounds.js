@@ -69,6 +69,7 @@ export default class MyRounds extends Component {
     let addRound = this.state.showAddRound
                   ? <AddRound
                       api={this.props.api}
+                      http={this.props.http}
                       user={this.props.user}
                       courses={this.props.courses}
                       getUserInfo={this.props.getUserInfo}
@@ -78,6 +79,7 @@ export default class MyRounds extends Component {
     let roundPage = this.state.showRound
                   ? <Round
                       api={this.props.api}
+                      http={this.props.http}
                       user={this.props.user}
                       round={this.state.currentRound}
                       courses={this.props.courses}
