@@ -11,17 +11,17 @@ import MyRounds from './Components/Rounds/MyRounds';
 import Auth from './Components/Auth';
 
 // FOR LOCAL DEPLOYMENT
-// const { manifest } = Expo.Constants;
-// const api = (typeof manifest.packagerOpts === `object`) && manifest.packagerOpts.dev
-//           ? manifest.debuggerHost.split(`:`).shift().concat(`:3000`)
-//           : `api.example.com`;
-// const http = 'http://';
-//
-// console.log('top of app - api: ', api);
+const { manifest } = Expo.Constants;
+const api = (typeof manifest.packagerOpts === `object`) && manifest.packagerOpts.dev
+          ? manifest.debuggerHost.split(`:`).shift().concat(`:3000`)
+          : `api.example.com`;
+const http = 'http://';
+
+console.log('top of app - api: ', api);
 
 // FOR HEROKU
-const http = 'https://';
-const api = 'my-golf-tracker.herokuapp.com';
+// const http = 'https://';
+// const api = 'my-golf-tracker.herokuapp.com';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -64,7 +64,7 @@ export default class App extends React.Component {
       email: 'k@k.com',
       password: 'password'
     }).then( result => {
-      AsyncStorage.setItem('golf-budget-tracker-token', result.data.token) // change 'mernToken' to your app name or something useful
+      AsyncStorage.setItem('golf-budget-tracker-token', result.data.token)
       this.liftTokenToState(result.data);
       this.getUserInfo();
       this.setState({ page: 'home' })
@@ -74,7 +74,7 @@ export default class App extends React.Component {
 
   componentDidMount = () => {
     //////////////
-    // this.fakeLogin();  ////// GET RID OF THIS
+    this.fakeLogin();  ////// GET RID OF THIS
     //////////////
     var token = AsyncStorage.getItem('golf-budget-tracker-token');
     if (typeof token !== 'string' || token === 'undefined' || token === 'null' || token === '') {
@@ -84,7 +84,7 @@ export default class App extends React.Component {
         user: null
       });
     } else {
-      axios.post(`${http}${api}/api/auth/me/from/token`, {  ////////////// FIX FIX FIX FIX FIX FIX FIX
+      axios.post(`${http}${api}/api/auth/me/from/token`, {
         token
       }).then( result => {
         AsyncStorage.setItem('golf-budget-tracker-token', result.data.token);

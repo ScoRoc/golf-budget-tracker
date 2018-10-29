@@ -248,11 +248,11 @@ export default class AddRound extends Component {
               backdrop={true}
               animationDuration={500}
               onClosed={() => this.setState({showCoursePicker: false})}
-              >
-                <Picker selectedValue={this.state.courseId} onValueChange={(courseId, idx) => this.handleCoursePicker(courseId, idx)}>
-                  <Picker.Item label='Please select a course...' value='pick' />
-                  {courses}
-                </Picker>
+            >
+              <Picker selectedValue={this.state.courseId} onValueChange={(courseId, idx) => this.handleCoursePicker(courseId, idx)}>
+                <Picker.Item label='Please select a course...' value='pick' />
+                {courses}
+              </Picker>
             </Modal>
             {addCourse}
 
@@ -268,11 +268,11 @@ export default class AddRound extends Component {
               backdrop={true}
               animationDuration={500}
               onClosed={() => this.setState({showTeeboxPicker: false})}
-              >
-                <Picker selectedValue={this.state.teeboxId} onValueChange={(teeboxId, idx) => this.handleTeeboxPicker(teeboxId, idx)}>
-                  <Picker.Item label='Please select a course...' value='pick' />
-                  {teeboxes}
-                </Picker>
+            >
+              <Picker selectedValue={this.state.teeboxId} onValueChange={(teeboxId, idx) => this.handleTeeboxPicker(teeboxId, idx)}>
+                <Picker.Item label='Please select a course...' value='pick' />
+                {teeboxes}
+              </Picker>
             </Modal>
             {/* {addTeebox} */}
 

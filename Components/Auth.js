@@ -9,6 +9,8 @@ import {
   View
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Modal from 'react-native-modalbox';
+import WhiteText from './Text/WhiteText';
 import Signup from './Signup';
 import Login from './Login';
 import { colors } from '../global_styles/colors';
@@ -17,8 +19,15 @@ export default class NavButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showSpinner: false
+      showSpinner: false,
+      showLoginErrMsg: false,
+      errMsg: ''
     }
+  }
+
+  errMsgPopup = msg => {
+    this.setState({showLoginErrMsg: true, errMsg: msg});
+    setTimeout(() => this.setState({showLoginErrMsg: false}), 3000);
   }
 
   changePageFromAuth = () => {
@@ -48,6 +57,7 @@ export default class NavButton extends React.Component {
                 passedStyles={passedStyles}
                 getUserInfo={this.props.getUserInfo}
                 liftToken={this.props.liftToken}
+                errMsgPopup={this.errMsgPopup}
                 changePageFromAuth={this.changePageFromAuth}
               />
 
@@ -60,9 +70,23 @@ export default class NavButton extends React.Component {
                 passedStyles={passedStyles}
                 getUserInfo={this.props.getUserInfo}
                 liftToken={this.props.liftToken}
+                errMsgPopup={this.errMsgPopup}
                 changePageFromAuth={this.changePageFromAuth}
               />
             </View>
+
+            <Modal
+              style={styles.modal}
+              isOpen={this.state.showLoginErrMsg}
+              backdropPressToClose={true}
+              entry='top'
+              position='top'
+              backdrop={true}
+              animationDuration={350}
+              onClosed={() => this.setState({showLoginErrMsg: false})}
+            >
+              <WhiteText style={ {color: 'red'} }>{this.state.errMsg}</WhiteText>
+            </Modal>
 
           </KeyboardAwareScrollView>
         </TouchableWithoutFeedback>
@@ -118,6 +142,12 @@ const styles = StyleSheet.create({
     color: offWhite,
     fontSize: 22,
     fontWeight: 'bold',
+  },
+  modal: {
+    height: '20%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ddd'
   }
 });
 

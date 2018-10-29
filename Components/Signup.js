@@ -27,7 +27,7 @@ class Signup extends Component {
       password: this.state.password
     }).then( result => {
       if (result.data.err) {
-        console.log(result.data.err.msg);
+        this.props.errMsgPopup(result.data.err.msg);
         return;
       }
       AsyncStorage.setItem('golf-budget-tracker-token', result.data.token)
