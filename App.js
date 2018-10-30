@@ -1,8 +1,17 @@
 import React from 'react';
-import { AsyncStorage, TouchableHighlight, StyleSheet, Text, View, ScrollView } from 'react-native';
+import {
+  AsyncStorage,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View
+} from 'react-native';
 import axios from 'axios';
 import Expo from 'expo';
+import Modal from 'react-native-modalbox';
 import { colors } from './global_styles/colors';
+import WhiteText from './Components/Text/WhiteText';
 import Header from './Components/Header';
 import Nav from './Components/Nav';
 import Home from './Components/Home';
@@ -27,6 +36,7 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      showLogout: false,
       page: 'auth',
       token: null,
       user: null,
@@ -53,16 +63,19 @@ export default class App extends React.Component {
   }
 
   logout = () => {
-    console.log('Logging out')
+    console.log('Logging out');
     AsyncStorage.removeItem('golf-budget-tracker-token')
-    this.setState({ token: null, user: null, page: 'auth' });
+    this.setState({ showLogout: false, token: null, user: null, page: 'auth' });
   }
 
   ////////////////////////////////////////////
   fakeLogin() {
+    // let email = 'k@k.com';
+    let email = 'donnatest@donnatest.com';
+    let password = 'password';
     axios.post(`${http}${api}/api/auth/login`, {
-      email: 'k@k.com',
-      password: 'password'
+      email,
+      password
     }).then( result => {
       AsyncStorage.setItem('golf-budget-tracker-token', result.data.token)
       this.liftTokenToState(result.data);
@@ -135,7 +148,34 @@ export default class App extends React.Component {
 
           {pages[this.state.page]}
 
-          <Nav changePage={this.changePage} logout={this.logout} />
+          <Modal
+            style={styles.modal}
+            isOpen={this.state.showLogout}
+            backdropPressToClose={true}
+            entry='bottom'
+            position='center'
+            backdrop={true}
+            animationDuration={350}
+            onClosed={() => this.setState({showLogout: false})}
+          >
+            <View style={styles.modalTop}>
+              <WhiteText style={ {color: 'black'} }>Are you sure you want to logout?</WhiteText>
+            </View>
+            <View style={styles.modalBottom}>
+              <TouchableHighlight onPress={() => this.setState({showLogout: false})} underlayColor='rgb(102, 51, 153)'>
+                <View style={styles.push}>
+                  <WhiteText style={ {color: 'blue'} }>Cancel</WhiteText>
+                </View>
+              </TouchableHighlight>
+              <TouchableHighlight onPress={this.logout} underlayColor='rgb(102, 51, 153)'>
+                <View style={styles.push}>
+                  <WhiteText style={ {color: 'red'} }>Logout</WhiteText>
+                </View>
+              </TouchableHighlight>
+            </View>
+          </Modal>
+
+          <Nav changePage={this.changePage} logout={() => this.setState({showLogout: true})} />
 
         </View>
       );
@@ -163,5 +203,30 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  modal: {
+    height: '15%',
+    width: '75%',
+    borderRadius: 10,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'white'
+  },
+  modalTop: {
+    height: '50%',
+    width: '100%',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    // borderBottomWidth: StyleSheet.hairlineWidth
+  },
+  modalBottom: {
+    height: '50%',
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center'
+  },
+  push: {
+    padding: 10
   }
 });
