@@ -140,7 +140,6 @@ export default class AddRound extends Component {
   }
 
   componentWillMount() {
-    console.log(Dimensions.get('window').height)
     const threshold = 8;
     this._panResponder = PanResponder.create({
       onMoveShouldSetPanResponder: (e, gestureState) => {
@@ -359,8 +358,7 @@ const styles = StyleSheet.create({
     paddingRight: 15
   },
   courseWrap: {
-    // marginBottom: 25,
-    marginBottom: 5,
+    marginBottom: 25,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'
@@ -391,16 +389,14 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 0}
   },
   teeboxView: {
-    // marginBottom: 25,
-    marginBottom: 5,
+    marginBottom: 25,
     padding: 5,
     paddingLeft: 15,
     backgroundColor: mediumGrey,
     borderRadius: 8,
   },
   dateView: {
-    // marginBottom: 25,
-    marginBottom: 5,
+    marginBottom: 25,
     padding: 5,
     paddingLeft: 15,
     flexDirection: 'row',
@@ -416,8 +412,7 @@ const styles = StyleSheet.create({
     height: '40%'
   },
   textInput: {
-    // marginBottom: 25,
-    marginBottom: 5,
+    marginBottom: 25,
     backgroundColor: mediumGrey,
     color: offWhite,
     fontSize: 16

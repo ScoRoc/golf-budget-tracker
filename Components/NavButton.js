@@ -1,5 +1,10 @@
 import React from 'react';
-import { View, StyleSheet, Text, TouchableHighlight } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View
+} from 'react-native';
 import { Icon } from 'react-native-elements';
 import { colors } from '../global_styles/colors';
 import WhiteText from './Text/WhiteText';

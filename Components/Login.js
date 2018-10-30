@@ -23,12 +23,19 @@ class Login extends Component {
     axios.post(`${this.props.http}${this.props.api}/api/auth/login`, {
       email: this.state.email,
       password: this.state.password
-    }).then( result => {
+    }).then( async result => {
       if (result.data.err) {
         this.props.errMsgPopup(result.data.err.msg);
         return;
       }
-      AsyncStorage.setItem('golf-budget-tracker-token', result.data.token);
+      const setToken = async token => {
+        try {
+          await AsyncStorage.setItem('my-golf-tracker-token', token);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      await setToken(result.data.token);
       this.props.liftToken(result.data);
       this.props.getUserInfo();
       this.props.changePageFromAuth();

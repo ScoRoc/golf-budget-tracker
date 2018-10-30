@@ -62,36 +62,62 @@ export default class App extends React.Component {
     })
   }
 
-  logout = () => {
+  setToken = async token => {
+    try {
+      await AsyncStorage.setItem('my-golf-tracker-token', token);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  getToken = async () => {
+    let token = '';
+    try {
+      token = await AsyncStorage.getItem('my-golf-tracker-token') || 'none';
+    } catch (err) {
+      console.log(err);
+    }
+    return token;
+  }
+
+  deleteToken = async () => {
+    try {
+      await AsyncStorage.removeItem('my-golf-tracker-token');
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  logout = async () => {
     console.log('Logging out');
-    AsyncStorage.removeItem('golf-budget-tracker-token')
+    await this.deleteToken();
     this.setState({ showLogout: false, token: null, user: null, page: 'auth' });
   }
 
   ////////////////////////////////////////////
-  fakeLogin() {
+  fakeLogin = () => {
     // let email = 'k@k.com';
     let email = 'donnatest@donnatest.com';
     let password = 'password';
     axios.post(`${http}${api}/api/auth/login`, {
       email,
       password
-    }).then( result => {
-      AsyncStorage.setItem('golf-budget-tracker-token', result.data.token)
+    }).then( async result => {
+      await this.setToken(result.data.token);
       this.liftTokenToState(result.data);
       this.getUserInfo();
-      this.setState({ page: 'home' })
+      this.changePage('home');
     }).catch( err => console.log(err) )
   }
   ////////////////////////////////////////////
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
     //////////////
     // this.fakeLogin();  ////// GET RID OF THIS
     //////////////
-    var token = AsyncStorage.getItem('golf-budget-tracker-token');
-    if (typeof token !== 'string' || token === 'undefined' || token === 'null' || token === '') {
-      AsyncStorage.removeItem('golf-budget-tracker-token');
+    let token = await this.getToken();
+    if (typeof token !== 'string' || token === 'none' || token === '') {
+      await this.deleteToken();
       this.setState({
         token: null,
         user: null
@@ -99,11 +125,12 @@ export default class App extends React.Component {
     } else {
       axios.post(`${http}${api}/api/auth/me/from/token`, {
         token
-      }).then( result => {
-        AsyncStorage.setItem('golf-budget-tracker-token', result.data.token);
+      }).then( async result => {
+        await this.setToken(result.data.token);
         this.setState({
           token: result.data.token,
-          user: result.data.user
+          user: result.data.user,
+          page: 'home'
         });
       }).catch( err => console.log(err));
     }

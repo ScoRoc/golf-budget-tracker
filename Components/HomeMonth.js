@@ -60,8 +60,6 @@ export default class HomeMonth extends Component {
   }
 
   handlePress = () => {
-    console.log('in handlePress');
-    console.log('props key: ', this.props.i)
     this.animateReveal();
   }
 
