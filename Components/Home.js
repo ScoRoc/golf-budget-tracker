@@ -129,7 +129,7 @@ export default class Home extends Component {
                         ? ''
                         : this.props.user.handicap === 99
                         ? 'Add a round to find your handicap'
-                        : 'Handicap'
+                        : 'Handicap Index'
     const monthOrYear = this.state.showYtd ? (new Date()).getFullYear() : monthMap[(new Date()).getMonth()];
     const toDateRounds = this.state.showYtd ? this.state.ytdRounds : this.state.mtdRounds;
     const toDateSpent = this.state.showYtd ? this.state.ytdSpent : this.state.mtdSpent;

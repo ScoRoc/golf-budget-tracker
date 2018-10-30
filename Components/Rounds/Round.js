@@ -182,7 +182,7 @@ export default class Round extends Component {
     let { notes } = this.props.round;
     let date = new Date(this.props.round.date);
     let score = this.props.round.score.toString();
-    let price = this.props.round.price.toString();
+    let price = this.props.round.price ? this.props.round.price.toString() : '';
     let course = 'No course selected';
     let teebox = 'No teebox selected';
     this.props.courses.forEach(oneCourse => {
