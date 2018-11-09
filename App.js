@@ -113,7 +113,7 @@ export default class App extends React.Component {
 
   componentDidMount = async () => {
     //////////////
-    this.fakeLogin();  ////// GET RID OF THIS
+    // this.fakeLogin();  ////// GET RID OF THIS
     //////////////
     let token = await this.getToken();
     if (typeof token !== 'string' || token === 'none' || token === '') {
