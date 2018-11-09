@@ -20,17 +20,17 @@ import MyRounds from './Components/Rounds/MyRounds';
 import Auth from './Components/Auth';
 
 // FOR LOCAL DEPLOYMENT
-// const { manifest } = Expo.Constants;
-// const api = (typeof manifest.packagerOpts === `object`) && manifest.packagerOpts.dev
-//           ? manifest.debuggerHost.split(`:`).shift().concat(`:3000`)
-//           : `api.example.com`;
-// const http = 'http://';
-//
-// console.log('top of app - api: ', api);
+const { manifest } = Expo.Constants;
+const api = (typeof manifest.packagerOpts === `object`) && manifest.packagerOpts.dev
+          ? manifest.debuggerHost.split(`:`).shift().concat(`:3000`)
+          : `api.example.com`;
+const http = 'http://';
+
+console.log('top of app - api: ', api);
 
 // FOR HEROKU
-const http = 'https://';
-const api = 'my-golf-tracker.herokuapp.com';
+// const http = 'https://';
+// const api = 'my-golf-tracker.herokuapp.com';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -113,7 +113,7 @@ export default class App extends React.Component {
 
   componentDidMount = async () => {
     //////////////
-    // this.fakeLogin();  ////// GET RID OF THIS
+    this.fakeLogin();  ////// GET RID OF THIS
     //////////////
     let token = await this.getToken();
     if (typeof token !== 'string' || token === 'none' || token === '') {

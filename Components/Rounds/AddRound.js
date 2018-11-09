@@ -33,12 +33,14 @@ export default class AddRound extends Component {
       showTeeboxPicker: false,
       showAddCourse: false,
       showAddTeebox: false,
+      errorModal: false,
       course: null,
       courseId: '',
       teebox: null,
       teeboxId: '',
       date: new Date(),
       score: '',
+      teamScore: false,
       price: '',
       notes: ''
     }
@@ -77,14 +79,20 @@ export default class AddRound extends Component {
   }
 
   addRound = () => {
-    const { course, teebox, date, notes } = this.state;
+    const { course, teebox, date, teamScore, notes } = this.state;
     const score = parseInt(this.state.score);
     const price = parseInt(this.state.price);
+    if (!course || !teebox || !score) {
+      this.setState({errorModal: true});
+      setTimeout(() => this.setState({errorModal: false}), 3000);
+      return;
+    }
     axios.post(`${this.props.http}${this.props.api}/api/round`, {
       course,
       teebox,
       date,
       score,
+      teamScore,
       price,
       notes,
       user: this.props.user
@@ -216,6 +224,7 @@ export default class AddRound extends Component {
     let { slideAnim } = this.state;
     let courseName = this.state.course ? this.state.course.courseName : 'Select a course...';
     let teebox = this.state.teebox ? this.state.teebox.name : 'Pick a course to choose a teebox...';
+    let teamScore = this.state.teamScore ? 'teamScoreChecked' : 'teamScoreNotChecked';
     return (
       <Animated.View
         {...this._panResponder.panHandlers}
@@ -299,14 +308,29 @@ export default class AddRound extends Component {
                 <DatePicker date={this.state.date} setDate={date => this.setState({date})} />
             </Modal>
 
-            <WhiteText>Score</WhiteText>
-            <TextInput
-              style={styles.textInput}
-              value={this.state.score}
-              onChangeText={score => this.setState({score})}
-              keyboardType='numeric'
-              maxLength={3}
-            />
+            <View style={styles.scoreWrapper}>
+
+              <View style={styles.scoreView}>
+                <WhiteText>Score</WhiteText>
+                <TextInput
+                  style={styles.textInput}
+                  value={this.state.score}
+                  onChangeText={score => this.setState({score})}
+                  keyboardType='numeric'
+                  maxLength={3}
+                />
+              </View>
+
+              <View style={styles.teamScoreView}>
+                <WhiteText>Team Score</WhiteText>
+                <TouchableHighlight onPress={() => this.setState({teamScore: !this.state.teamScore})}>
+                  <View style={styles.teamScoreOuterBox}>
+                    <View style={ [styles.teamScoreBox, styles[teamScore]] }></View>
+                  </View>
+                </TouchableHighlight>
+              </View>
+
+            </View>
 
             <WhiteText>Price</WhiteText>
             <TextInput
@@ -324,6 +348,19 @@ export default class AddRound extends Component {
               onChangeText={notes => this.setState({notes})}
               multiline={true}
             />
+
+            <Modal
+              style={styles.errorModal}
+              isOpen={this.state.errorModal}
+              backdropPressToClose={true}
+              entry='top'
+              position='center'
+              backdrop={true}
+              animationDuration={350}
+              onClosed={() => this.setState({errorModal: false})}
+            >
+              <WhiteText style={ {color: 'red'} }>Please select a course and a teebox and add a score.</WhiteText>
+            </Modal>
 
             <TouchableOpacity style={styles.addRoundButton} onPress={this.addRound} activeOpacity={.5}>
               <WhiteText style={ {fontSize: 20, fontWeight: 'bold'} }>Add round</WhiteText>
@@ -344,7 +381,7 @@ export default class AddRound extends Component {
   }
 }
 
-const { mediumGrey, offWhite, purple, yellow } = colors;
+const { darkSeafoam, mediumGrey, offWhite, purple, yellow } = colors;
 
 const styles = StyleSheet.create({
   addRoundsWrapper: {
@@ -411,11 +448,45 @@ const styles = StyleSheet.create({
     paddingTop: '5%',
     height: '40%'
   },
+  scoreWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  scoreView: {
+    width: '50%'
+  },
+  teamScoreView: {
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  teamScoreOuterBox: {
+    height: 30,
+    width: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: mediumGrey
+  },
+  teamScoreBox: {
+    height: '70%',
+    width: '70%'
+  },
+  teamScoreChecked: {
+    backgroundColor: darkSeafoam
+  },
+  teamScoreNotChecked: {
+    backgroundColor: 'transparent'
+  },
   textInput: {
     marginBottom: 25,
     backgroundColor: mediumGrey,
     color: offWhite,
     fontSize: 16
+  },
+  errorModal: {
+    height: '20%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ddd'
   },
   addRoundButton: {
     alignSelf: 'center',

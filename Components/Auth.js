@@ -80,7 +80,7 @@ export default class NavButton extends React.Component {
               isOpen={this.state.showLoginErrMsg}
               backdropPressToClose={true}
               entry='top'
-              position='top'
+              position='center'
               backdrop={true}
               animationDuration={350}
               onClosed={() => this.setState({showLoginErrMsg: false})}
