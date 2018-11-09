@@ -38,13 +38,14 @@ export default class Round extends Component {
       teeboxId: '',
       date: new Date(),
       score: '',
+      teamScore: false,
       price: '',
       notes: ''
     }
   }
 
   editRound = () => {
-    const { roundId, course, teebox, date, notes } = this.state;
+    const { roundId, course, teebox, date, teamScore, notes } = this.state;
     const score = parseInt(this.state.score);
     const price = parseInt(this.state.price);
     axios.put(`${this.props.http}${this.props.api}/api/round`, {
@@ -53,6 +54,7 @@ export default class Round extends Component {
       teebox,
       date,
       score,
+      teamScore,
       price,
       notes,
       user: this.props.user
@@ -104,6 +106,12 @@ export default class Round extends Component {
   openModal = modal => {
     if (this.state.editable) {
       this.setState({[modal]: true});
+    }
+  }
+
+  updateTeamScore = () => {
+    if (this.state.editable) {
+      this.setState({teamScore: !this.state.teamScore});
     }
   }
 
@@ -179,7 +187,9 @@ export default class Round extends Component {
 
   componentDidMount() {
     const time = 350;
-    let { notes } = this.props.round;
+    let { teamScore, notes } = this.props.round;
+    console.log('teamScore: ', teamScore);
+
     let date = new Date(this.props.round.date);
     let score = this.props.round.score.toString();
     let price = this.props.round.price ? this.props.round.price.toString() : '';
@@ -203,6 +213,7 @@ export default class Round extends Component {
       teeboxId: teebox._id,
       date,
       score,
+      teamScore,
       price,
       notes
     });
@@ -238,6 +249,8 @@ export default class Round extends Component {
     let courseName = this.state.course ? this.state.course.courseName : 'Select a course...';
     let teebox = this.state.teebox ? this.state.teebox.name : 'Pick a course to choose a teebox...';
     const editable = this.state.editable ? styles.editable : '';
+    let teamScore = this.state.teamScore ? 'Team' : 'Solo';
+    let underlay = this.state.editable ? 'rgb(102, 51, 153)' : 'rgba(102, 51, 153, 0)';
     return (
       <Animated.View
         {...this._panResponder.panHandlers}
@@ -262,16 +275,22 @@ export default class Round extends Component {
             <View style={styles.addRoundBodyView}>
 
               <View style={styles.scoreCourseTeeboxWrap}>
-                <View style={styles.scoreWrap}>
-                  <WhiteText style={ {fontSize: 14} }>Score</WhiteText>
-                  <TextInput
-                    style={ [styles.score, editable] }
-                    value={this.state.score}
-                    onChangeText={score => this.setState({score})}
-                    keyboardType='numeric'
-                    maxLength={3}
-                    editable={this.state.editable}
-                  />
+
+                <View style={styles.scoreOuterWrap}>
+                  <View style={styles.scoreWrap}>
+                    <WhiteText style={ {fontSize: 14} }>Score</WhiteText>
+                    <TextInput
+                      style={ [styles.score, editable] }
+                      value={this.state.score}
+                      onChangeText={score => this.setState({score})}
+                      keyboardType='numeric'
+                      maxLength={3}
+                      editable={this.state.editable}
+                    />
+                  </View>
+                  <TouchableHighlight onPress={this.updateTeamScore} underlayColor={underlay}>
+                    <WhiteText style={editable}>{teamScore}</WhiteText>
+                  </TouchableHighlight>
                 </View>
 
                 <View style={styles.courseTeeboxWrap}>
@@ -409,6 +428,10 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     flexDirection: 'row',
     justifyContent: 'space-between'
+  },
+  scoreOuterWrap: {
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
   scoreWrap: {
     height: 80,
