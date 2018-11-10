@@ -106,7 +106,7 @@ export default class App extends React.Component {
       await this.setToken(result.data.token);
       this.liftTokenToState(result.data);
       this.getUserInfo();
-      this.changePage('home');
+      setTimeout(() => this.changePage('home'), 100);
     }).catch( err => console.log(err) )
   }
   ////////////////////////////////////////////
@@ -127,11 +127,13 @@ export default class App extends React.Component {
         token
       }).then( async result => {
         await this.setToken(result.data.token);
+        console.log('result.data')
         this.setState({
           token: result.data.token,
-          user: result.data.user,
-          page: 'home'
+          user: result.data.user
         });
+        this.getUserInfo();
+        setTimeout(() => this.changePage('home'), 100);
       }).catch( err => console.log(err));
     }
   }

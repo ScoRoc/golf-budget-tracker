@@ -381,7 +381,7 @@ export default class AddRound extends Component {
   }
 }
 
-const { darkSeafoam, mediumGrey, offWhite, purple, yellow } = colors;
+const { mediumGrey, offWhite, purple, steelBlue, yellow } = colors;
 
 const styles = StyleSheet.create({
   addRoundsWrapper: {
@@ -471,7 +471,7 @@ const styles = StyleSheet.create({
     width: '70%'
   },
   teamScoreChecked: {
-    backgroundColor: darkSeafoam
+    backgroundColor: steelBlue
   },
   teamScoreNotChecked: {
     backgroundColor: 'transparent'

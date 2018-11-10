@@ -13,6 +13,7 @@ import { colors } from '../../global_styles/colors';
 import WhiteText from '../Text/WhiteText';
 import AddRound from './AddRound';
 import Round from './Round';
+import MiniScoreBox from './MiniScoreBox';
 
 
 export default class MyRounds extends Component {
@@ -42,10 +43,7 @@ export default class MyRounds extends Component {
 
             <View style={styles.roundDateAndScoreWrap}>
 
-              <View style={styles.roundScoreBox}>
-                <WhiteText style={ {fontSize: 11} }>Score</WhiteText>
-                <WhiteText style={ {fontSize: 20} }>{round.score}</WhiteText>
-              </View>
+              <MiniScoreBox round={round} />
 
               <View style={styles.roundDateAndCourseName}>
                 <WhiteText style={ {fontSize: 12} }>{(new Date(round.date)).toDateString()}</WhiteText>

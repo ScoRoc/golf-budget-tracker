@@ -188,8 +188,6 @@ export default class Round extends Component {
   componentDidMount() {
     const time = 350;
     let { teamScore, notes } = this.props.round;
-    console.log('teamScore: ', teamScore);
-
     let date = new Date(this.props.round.date);
     let score = this.props.round.score.toString();
     let price = this.props.round.price ? this.props.round.price.toString() : '';
@@ -249,6 +247,7 @@ export default class Round extends Component {
     let courseName = this.state.course ? this.state.course.courseName : 'Select a course...';
     let teebox = this.state.teebox ? this.state.teebox.name : 'Pick a course to choose a teebox...';
     const editable = this.state.editable ? styles.editable : '';
+    const color = this.state.teamScore ? styles.team : styles.solo;
     let teamScore = this.state.teamScore ? 'Team' : 'Solo';
     let underlay = this.state.editable ? 'rgb(102, 51, 153)' : 'rgba(102, 51, 153, 0)';
     return (
@@ -277,7 +276,7 @@ export default class Round extends Component {
               <View style={styles.scoreCourseTeeboxWrap}>
 
                 <View style={styles.scoreOuterWrap}>
-                  <View style={styles.scoreWrap}>
+                  <View style={ [styles.scoreWrap, color] }>
                     <WhiteText style={ {fontSize: 14} }>Score</WhiteText>
                     <TextInput
                       style={ [styles.score, editable] }
@@ -293,7 +292,7 @@ export default class Round extends Component {
                   </TouchableHighlight>
                 </View>
 
-                <View style={styles.courseTeeboxWrap}>
+                <View style={ [styles.courseTeeboxWrap, color] }>
                   <View style={styles.courseNameView}>
                     <WhiteText style={ [{fontSize: 24}, editable] } onPress={() => this.openModal('showCoursePicker')}>{courseName}</WhiteText>
                   </View>
@@ -332,7 +331,7 @@ export default class Round extends Component {
                   </Picker>
               </Modal>
 
-              <View style={styles.dateView}>
+              <View style={ [styles.dateView, color] }>
                 <Icon
                   name='calendar'
                   type='font-awesome'
@@ -390,7 +389,7 @@ export default class Round extends Component {
   }
 }
 
-const { darkOffWhite, darkOffWhiteTrans, lightPurple, mediumGrey, offWhite, purple, redGrey, steelBlue, yellow } = colors;
+const { darkOffWhite, darkOffWhiteTrans, darkSeafoam, lightPurple, mediumGrey, offWhite, purple, redGrey, steelBlue, yellow } = colors;
 
 const styles = StyleSheet.create({
   roundWrapper: {
@@ -423,6 +422,12 @@ const styles = StyleSheet.create({
   editable: {
     backgroundColor: mediumGrey
   },
+  solo: {
+    backgroundColor: darkSeafoam
+  },
+  team: {
+    backgroundColor: steelBlue
+  },
   scoreCourseTeeboxWrap: {
     marginTop: 40,
     marginBottom: 30,
@@ -439,7 +444,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: steelBlue,
     borderRadius: 10
   },
   score: {
@@ -456,7 +460,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: steelBlue,
     borderRadius: 10
   },
   courseNameView: {
@@ -469,7 +472,6 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingLeft: 15,
     flexDirection: 'row',
-    backgroundColor: steelBlue,
     borderRadius: 8,
   },
   date: {
